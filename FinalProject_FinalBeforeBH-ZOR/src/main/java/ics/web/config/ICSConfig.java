@@ -1,0 +1,102 @@
+package ics.web.config;
+
+
+
+import org.hibernate.SessionFactory;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.orm.hibernate4.support.OpenSessionInViewInterceptor;
+import org.springframework.web.servlet.config.annotation.EnableWebMvc;
+import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
+import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
+import org.springframework.web.servlet.view.InternalResourceViewResolver;
+
+import ics.dao.ProductDAO;
+import ics.dao.ProductInMemoryDAOImpl;
+import ics.dao.UserDAO;
+import ics.dao.UserDAOImpl;
+import ics.model.Product;
+import ics.model.Role;
+import ics.model.Vendor;
+import ics.services.ProductService;
+import ics.services.ProductServiceImpl;
+import ics.services.SecurityService;
+import ics.services.SecurityServiceImpl;
+import ics.services.UserService;
+import ics.services.UserServiceImpl;
+
+
+
+@Configuration
+@EnableWebMvc
+@ComponentScan("ics")
+public class ICSConfig extends WebMvcConfigurerAdapter {
+	@Autowired
+	SessionFactory sessionFactory;
+	
+	@Bean
+	public InternalResourceViewResolver viewResolver() {
+		InternalResourceViewResolver vr = new InternalResourceViewResolver();
+		vr.setPrefix("/WEB-INF/view/");
+		vr.setSuffix(".jsp");
+		
+		return vr;
+	}
+	
+	@Override
+	public void addViewControllers(ViewControllerRegistry registry) {
+		System.out.println("view controller in ICSConfig is called");
+		//registry.addViewController("/login.html").setViewName("login");
+//		registry.addViewController("/").setViewName("vendor");
+	}
+	
+	@Bean
+	public Product product() {
+		return new Product();
+	}
+	
+	@Bean
+	public Vendor vendor() {
+		return new Vendor();
+	}
+	
+	@Bean
+	public ProductDAO productDAO() {
+		return new ProductInMemoryDAOImpl();
+	}
+	
+	@Bean
+	public ProductService productService() {
+		return new ProductServiceImpl();
+	}
+
+	@Bean
+	public UserDAO userDAO() {
+		return new UserDAOImpl();
+	}
+	
+	@Bean
+	public UserService UserService() {
+		return new UserServiceImpl();
+	}
+	@Bean
+	public SecurityService SecurityService() {
+		return new SecurityServiceImpl();
+	}
+	@Bean
+	public Role role() {
+		return new Role();
+	}
+	
+	
+	@Override
+	public void addInterceptors(InterceptorRegistry registry) {
+		OpenSessionInViewInterceptor osiv = new OpenSessionInViewInterceptor();
+		osiv.setSessionFactory(sessionFactory);
+		registry.addWebRequestInterceptor(osiv);
+	}	
+	
+}
