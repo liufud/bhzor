@@ -21,7 +21,7 @@
 	<div class="container">
 		<div class="row">
 			<div class="col"></div>
-			<div class="col-10">
+			<div class="col-12">
 			<div class="row">
 				<div class="col"></div>
 				<%-- <sec:authorize access="hasAuthority('Manager')"> --%>
@@ -35,8 +35,8 @@
 				<ul class="nav nav-tabs">
 					<sec:authorize access="hasAuthority('Manager')">
 					  <li class="nav-item">
-					    <a class="nav-link" href="customer">Customer</a>
-					  </li>					
+					    <a class="nav-link" href="users">Users</a>
+					  </li>					  				
 					  <li class="nav-item">
 					    <a class="nav-link" href="vendor">Vendor</a>
 					  </li>
@@ -63,7 +63,7 @@
 	            </sec:authorize>
 	            <sec:authorize access="hasAuthority('Manager')">
 	            <p>
-	              <a class="btn btn-primary" href="customer" role="button">Get Started &raquo;</a>
+	              <a class="btn btn-primary" href="users" role="button">Get Started &raquo;</a>
 	            </p>
 	            </sec:authorize>
 	          </div>

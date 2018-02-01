@@ -14,7 +14,7 @@ import javax.persistence.UniqueConstraint;
 
 @Entity
 @Table(name="user_roles",uniqueConstraints = @UniqueConstraint(
-		columnNames = { "role", "username" }))
+		columnNames = { "role", "userId" }))
 public class Role {
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -24,7 +24,7 @@ public class Role {
 	@Column(name = "role", nullable = false, length = 45)
 	private String roleName;
 	@ManyToOne(fetch=FetchType.LAZY)
-	@JoinColumn(name = "username", nullable = false)
+	@JoinColumn(name = "userId", nullable = false)
 	private User user;
 	
 	public Role() {

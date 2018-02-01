@@ -16,6 +16,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import ics.dao.ProductDAO;
 import ics.dao.ProductInMemoryDAOImpl;
+import ics.dao.RoleDAO;
+import ics.dao.RoleDAOImpl;
 import ics.dao.UserDAO;
 import ics.dao.UserDAOImpl;
 import ics.model.Product;
@@ -23,6 +25,8 @@ import ics.model.Role;
 import ics.model.Vendor;
 import ics.services.ProductService;
 import ics.services.ProductServiceImpl;
+import ics.services.RoleService;
+import ics.services.RoleServiceImpl;
 import ics.services.SecurityService;
 import ics.services.SecurityServiceImpl;
 import ics.services.UserService;
@@ -71,6 +75,16 @@ public class ICSConfig extends WebMvcConfigurerAdapter {
 	@Bean
 	public ProductService productService() {
 		return new ProductServiceImpl();
+	}
+	
+	@Bean
+	public RoleDAO RoleDAO() {
+		return new RoleDAOImpl();
+	}
+	
+	@Bean
+	public RoleService roleService() {
+		return new RoleServiceImpl();
 	}
 
 	@Bean

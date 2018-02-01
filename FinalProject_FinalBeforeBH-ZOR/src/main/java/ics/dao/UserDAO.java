@@ -11,4 +11,7 @@ public interface UserDAO {
 	User findUser(Long userId);
 	User findUserByName(String username);
 	List<User> getAllUsers();
+	List<User> getAllCustomers();
+	List<User> getAllDistributors();
+	List<User> getAllAdministrators();
 }

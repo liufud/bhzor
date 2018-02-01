@@ -35,5 +35,17 @@ public class UserServiceImpl implements UserService {
 		return userDAO.getAllUsers();
 	}
 
+	public List<User> getAllCustomers() {
+		return userDAO.getAllCustomers();
+	}
+
+	public List<User> getAllDistributors() {
+		return userDAO.getAllDistributors();
+	}
+
+	public List<User> getAllAdministrators() {
+		return userDAO.getAllAdministrators();
+	}
+
 
 }

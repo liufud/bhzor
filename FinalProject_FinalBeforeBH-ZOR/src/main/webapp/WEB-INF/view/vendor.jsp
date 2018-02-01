@@ -20,7 +20,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col"></div>
-		<div class="col-10">
+		<div class="col-12">
 		<div class="row">
 			<div class="col"></div>
 			<div class="col5"><h1>Inventory Tracker</h1></div>
@@ -28,10 +28,10 @@
 		</div>
 			<ul class="nav nav-tabs">
 				  <li class="nav-item">
-				    <a class="nav-link" href="customer">Customer</a>
+				    <a class="nav-link" href="users">Users</a>
 				  </li>
 				  <li class="nav-item">
-				    <a class="nav-link  active" href="vendor">Vendor</a>
+				    <a class="nav-link active" href="vendor">Vendor</a>
 				  </li>
 				  <li class="nav-item">
 				    <a class="nav-link" href="products">Product</a>
@@ -47,7 +47,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col"></div>
-		<div class="col-10">
+		<div class="col-12">
 		<h2>Vendors</h2>Logged in as: <sec:authentication property="name"/> <sec:authentication property="authorities"/>
 			<br/>
 				<table class="table">								
@@ -67,12 +67,14 @@
 							<th scope="row">${vendor.vendorID}</th>
 							<td>${vendor.vendorName}</td>
 							<td>${vendor.vendorAddress}</td>
-							<td>${vendor.created_at}</td>
-							<td><a href="vendor/${vendor.vendorID}/products">Products</a></td>
-							<sec:authorize access="hasAuthority('Manager')">							
-							<td><a href="vendor/${vendor.vendorID}/updateVendor">Update</a></td>
-							<td><a href="vendor/${vendor.vendorID}/deleteVendor">Delete</a></td>
-							</sec:authorize>
+							<td>${vendor.created_at}</td>						
+							<td>
+								<a href="vendor/${vendor.vendorID}/products">Products</a>&nbsp&nbsp
+								<sec:authorize access="hasAuthority('Manager')">
+								<a href="vendor/${vendor.vendorID}/updateVendor">Update</a>&nbsp&nbsp
+								<a href="vendor/${vendor.vendorID}/deleteVendor">Delete</a>
+								</sec:authorize>
+							</td>							
 						</tr>
 					</c:forEach>
 				</c:if>

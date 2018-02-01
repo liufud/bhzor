@@ -20,7 +20,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col"></div>
-		<div class="col-10">
+		<div class="col-12">
 		<div class="row">
 				<div class="col"></div>
 				<div class="col5"><h1>Inventory Tracker</h1></div>
@@ -28,7 +28,7 @@
 			</div>
 			<ul class="nav nav-tabs">
 				  <li class="nav-item">
-				    <a class="nav-link active" href="customer">Customer</a>
+				    <a class="nav-link active" href="users">Users</a>
 				  </li>
 				  <li class="nav-item">
 				    <a class="nav-link" href="vendor">Vendor</a>
@@ -47,9 +47,12 @@
 <div class="container">
 	<div class="row">
 		<div class="col"></div>
-		<div class="col-10">
+		<div class="col-12">
 		<h2>Customers</h2>Logged in as: <sec:authentication property="name"/> <sec:authentication property="authorities"/>
 			<br/>
+			
+			<!-- Check Order List -->
+			
 			<c:if test="${!empty orderList}">
 			<h4>Order placed by ${orderplacedby}</h4>
 				<table class="table">								
@@ -85,15 +88,19 @@
 					</tbody>
 				</table>
 			</c:if>
+			
+			<!-- List All Customers -->
+			
 				<table class="table">								
 					<thead>
 						<tr>
-							<th scope="col">Customer ID</th>
+							<th scope="col">User ID</th>
 							<th scope="col">Username</th>
 							<th scope="col">Email</th>
 							<th scope="col">Phone Number</th>
 							<th scope="col">Shipping Address</th>
 							<th scope="col">Created At</th>
+							<th scope="col">Role</th>
 							<th scope="col">Action</th>
 						</tr>
 					</thead>					
@@ -107,10 +114,13 @@
 							<td>${customer.phoneNumber}</td>
 							<td>${customer.shippingAddress}</td>
 							<td>${customer.created_at}</td>
-							<td><a href="customer/${customer.username}/viewOrder">View Order</a></td>							
-							<sec:authorize access="hasAuthority('Manager')">							
-							<td><a href="customer/${customer.userId}/deleteCustomer">Delete</a></td>
-							</sec:authorize>
+							<td>${customer.roleName}</td>
+							<td>
+								<a href="customer/${customer.username}/viewOrder">View Order</a><br/>
+								<sec:authorize access="hasAuthority('Manager')">							
+								<a href="user/${customer.userId}/deleteCustomer">Delete</a>
+								</sec:authorize>						
+							</td>							
 						</tr>
 					</c:forEach>
 				</c:if>
@@ -122,6 +132,7 @@
 			<c:if test="${not empty userHasOrder}">
 				<p class="text-warning">Error: ${userHasOrder}</p>
 			</c:if>	
+		<a href="users">back</a><br/>
 		<a href="back">Home</a><br/>		
 		<a href="<c:url value="/perform_logout" />">Logout</a>	
 		</div>

@@ -23,9 +23,6 @@ public class RegisterController {
 	private UserService userService;
 	
 	@Autowired
-	private Role role;
-	
-	@Autowired
 	private SecurityService securityService;
 	
 	@RequestMapping(method=RequestMethod.GET)
@@ -43,12 +40,20 @@ public class RegisterController {
 		if(bindingResult.hasErrors()) {
 			return "registration";
 		}
-		role.setRoleName("Customer");
-		user.getRoles().add(role);
-		user.setEnabled(true);
-		role.setUser(user);
-		userService.addUser(user);
-		securityService.autologin(user.getUsername(), user.getPassword(),request);
+		try {
+			Role role = new Role();
+			role.setRoleName("Customer");
+			user.getRoles().add(role);
+			user.setRoleName("Customer");
+			user.setEnabled(true);
+			role.setUser(user);
+			userService.addUser(user);
+			System.out.println("user registration successful");
+		} catch (Exception e) {
+			System.out.println(e);
+		}
+		
+		//securityService.autologin(user.getUsername(), user.getPassword(),request);
 		
 		return "login";
 	}

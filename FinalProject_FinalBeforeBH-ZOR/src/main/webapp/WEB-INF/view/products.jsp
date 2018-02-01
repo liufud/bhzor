@@ -21,7 +21,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col"></div>
-		<div class="col-10">
+		<div class="col-12">
 		<div class="row">
 				<div class="col"></div>
 				<div class="col5"><h1>Inventory Tracker</h1></div>
@@ -30,7 +30,7 @@
 			<ul class="nav nav-tabs">
 			<sec:authorize access="hasAuthority('Manager')">
 				  <li class="nav-item">
-				    <a class="nav-link" href="customer">Customer</a>
+				    <a class="nav-link" href="users">Users</a>
 				  </li>
 				  <li class="nav-item">
 				    <a class="nav-link" href="vendor">Vendor</a>
@@ -50,7 +50,7 @@
 <div class="container">
 	<div class="row">
 		<div class="col"></div>
-		<div class="col-10">
+		<div class="col-12">
 		<h2>Product</h2>Logged in as: <sec:authentication property="name"/> <sec:authentication property="authorities"/>
 			<br/>
 				<table class="table">								

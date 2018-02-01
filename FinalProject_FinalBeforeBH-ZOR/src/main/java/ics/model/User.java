@@ -48,6 +48,7 @@ public class User {
 	private List<Role> roles = new ArrayList<Role>();
 	@UpdateTimestamp
 	private Date created_at;
+	private String roleName;
 
 	public User() {
 		
@@ -146,4 +147,11 @@ public class User {
 		this.created_at = created_at;
 	}
 
+	public String getRoleName() {
+		return roleName;
+	}
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
 }
