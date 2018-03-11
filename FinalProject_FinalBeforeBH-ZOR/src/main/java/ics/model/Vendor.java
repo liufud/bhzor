@@ -31,8 +31,8 @@ public class Vendor {
 	private String vendorName;
 	@NotEmpty(message="Please enter vendor address")
 	private String vendorAddress;
-	@OneToMany(mappedBy="vendor", cascade = {CascadeType.ALL},fetch=FetchType.EAGER)
-	private List<Product> products = new ArrayList<Product>();
+//	@OneToMany(mappedBy="vendor", cascade = {CascadeType.ALL},fetch=FetchType.EAGER)
+//	private List<Product> products = new ArrayList<Product>();
 	@UpdateTimestamp
     private Date created_at;
 	
@@ -61,12 +61,12 @@ public class Vendor {
 	public void setVendorAddress(String vendorAddress) {
 		this.vendorAddress = vendorAddress;
 	}
-	public List<Product> getProducts() {
-		return products;
-	}
-	public void setProducts(List<Product> products) {
-		this.products = products;
-	}
+//	public List<Product> getProducts() {
+//		return products;
+//	}
+//	public void setProducts(List<Product> products) {
+//		this.products = products;
+//	}
 	
 	@Override
 	public String toString() {

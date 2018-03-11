@@ -11,6 +11,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
@@ -36,43 +37,40 @@ public class User {
 	nullable = false, length = 60)
 	@Size(min=6,max=15,message="Your password must be betwen 6 and 15 characters")
 	private String password;
+	@Size(min=6,max=15,message="Please confirm your password")
+	private String passwordConfirm;
 	@NotEmpty(message="Please provide your email")
 	@Email
 	private String email;
+	@NotEmpty(message="Enter your first name")
+	private String firstName;
+	@NotEmpty(message="Enter your last name")
+	private String lastName;
 	private Long phoneNumber;
-	@NotEmpty(message="Please provide your shipping address")
-	private String shippingAddress;
+	@NotEmpty(message="Please provide your address")
+	private String address;
+	@NotEmpty(message="Please enter city")
+	private String city;
+	@NotEmpty(message="Please enter state")
+	private String state;
+	@NotEmpty(message="Please enter zip code")
+	private String zip;
 	@Column(name = "enabled", nullable = false)
 	private boolean enabled;
-	@OneToMany(fetch = FetchType.LAZY, mappedBy="user",cascade = {CascadeType.ALL})
+	@OneToMany(fetch = FetchType.EAGER, mappedBy="user",cascade = {CascadeType.ALL})
 	private List<Role> roles = new ArrayList<Role>();
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="createByUser",cascade = {CascadeType.ALL})
+	private List<Order> orders = new ArrayList<Order>();
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="createByUser",cascade = {CascadeType.ALL})
+	private List<Order> rpOrders = new ArrayList<Order>();
+	@OneToOne
+	private Cart cart;
 	@UpdateTimestamp
 	private Date created_at;
 	private String roleName;
-
+	
 	public User() {
 		
-	}
-
-	public User(String username, Long userId, String password, String email, Long phoneNumber, String shippingAddress,
-			boolean enabled, List<Role> roles, Date created_at) {
-		super();
-		this.username = username;
-		this.userId = userId;
-		this.password = password;
-		this.email = email;
-		this.phoneNumber = phoneNumber;
-		this.shippingAddress = shippingAddress;
-		this.enabled = enabled;
-		this.roles = roles;
-		this.created_at = created_at;
-	}
-
-	@Override
-	public String toString() {
-		return "User [username=" + username + ", userId=" + userId + ", password=" + password + ", email=" + email
-				+ ", phoneNumber=" + phoneNumber + ", shippingAddress=" + shippingAddress + ", enabled=" + enabled
-				+ ", roles=" + roles + ", created_at=" + created_at + "]";
 	}
 
 	public String getUsername() {
@@ -99,12 +97,36 @@ public class User {
 		this.password = password;
 	}
 
+	public String getPasswordConfirm() {
+		return passwordConfirm;
+	}
+
+	public void setPasswordConfirm(String passwordConfirm) {
+		this.passwordConfirm = passwordConfirm;
+	}
+
 	public String getEmail() {
 		return email;
 	}
 
 	public void setEmail(String email) {
 		this.email = email;
+	}
+
+	public String getFirstName() {
+		return firstName;
+	}
+
+	public void setFirstName(String firstName) {
+		this.firstName = firstName;
+	}
+
+	public String getLastName() {
+		return lastName;
+	}
+
+	public void setLastName(String lastName) {
+		this.lastName = lastName;
 	}
 
 	public Long getPhoneNumber() {
@@ -115,12 +137,36 @@ public class User {
 		this.phoneNumber = phoneNumber;
 	}
 
-	public String getShippingAddress() {
-		return shippingAddress;
+	public String getAddress() {
+		return address;
 	}
 
-	public void setShippingAddress(String shippingAddress) {
-		this.shippingAddress = shippingAddress;
+	public void setAddress(String address) {
+		this.address = address;
+	}
+
+	public String getCity() {
+		return city;
+	}
+
+	public void setCity(String city) {
+		this.city = city;
+	}
+
+	public String getState() {
+		return state;
+	}
+
+	public void setState(String state) {
+		this.state = state;
+	}
+
+	public String getZip() {
+		return zip;
+	}
+
+	public void setZip(String zip) {
+		this.zip = zip;
 	}
 
 	public boolean isEnabled() {
@@ -139,6 +185,30 @@ public class User {
 		this.roles = roles;
 	}
 
+	public List<Order> getOrders() {
+		return orders;
+	}
+
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
+	}
+
+	public List<Order> getRpOrders() {
+		return rpOrders;
+	}
+
+	public void setRpOrders(List<Order> rpOrders) {
+		this.rpOrders = rpOrders;
+	}
+
+	public Cart getCart() {
+		return cart;
+	}
+
+	public void setCart(Cart cart) {
+		this.cart = cart;
+	}
+
 	public Date getCreated_at() {
 		return created_at;
 	}
@@ -154,4 +224,15 @@ public class User {
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
 	}
+
+	@Override
+	public String toString() {
+		return "User [username=" + username + ", userId=" + userId + ", password=" + password + ", passwordConfirm="
+				+ passwordConfirm + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName
+				+ ", phoneNumber=" + phoneNumber + ", address=" + address + ", city=" + city + ", state=" + state
+				+ ", zip=" + zip + ", enabled=" + enabled + ", roles=" + roles + ", orders=" + orders + ", rpOrders="
+				+ rpOrders + ", cart=" + cart + ", created_at=" + created_at + ", roleName=" + roleName + "]";
+	}
+
+	
 }

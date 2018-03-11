@@ -10,6 +10,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.orm.hibernate4.support.OpenSessionInViewInterceptor;
 import org.springframework.web.servlet.config.annotation.EnableWebMvc;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
+import org.springframework.web.servlet.config.annotation.ResourceHandlerRegistry;
 import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurerAdapter;
 import org.springframework.web.servlet.view.InternalResourceViewResolver;
@@ -23,8 +24,12 @@ import ics.dao.UserDAOImpl;
 import ics.model.Product;
 import ics.model.Role;
 import ics.model.Vendor;
+import ics.services.CartService;
+import ics.services.CartServiceImpl;
 import ics.services.ProductService;
 import ics.services.ProductServiceImpl;
+import ics.services.ReplenishmentOrderService;
+import ics.services.ReplenishmentOrderServiceImpl;
 import ics.services.RoleService;
 import ics.services.RoleServiceImpl;
 import ics.services.SecurityService;
@@ -44,10 +49,16 @@ public class ICSConfig extends WebMvcConfigurerAdapter {
 	@Bean
 	public InternalResourceViewResolver viewResolver() {
 		InternalResourceViewResolver vr = new InternalResourceViewResolver();
-		vr.setPrefix("/WEB-INF/view/");
+		vr.setPrefix("WEB-INF/view/");
 		vr.setSuffix(".jsp");
 		
 		return vr;
+	}
+	
+	@Override
+	public void addResourceHandlers(final ResourceHandlerRegistry registry) {
+	    registry.addResourceHandler("/img/**").addResourceLocations("/img/");
+	    registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
 	}
 	
 	@Override
@@ -99,6 +110,15 @@ public class ICSConfig extends WebMvcConfigurerAdapter {
 	@Bean
 	public SecurityService SecurityService() {
 		return new SecurityServiceImpl();
+	}
+
+	@Bean
+	public CartService cartService() {
+		return new CartServiceImpl();
+	}
+	@Bean
+	public ReplenishmentOrderService rpOS() {
+		return new ReplenishmentOrderServiceImpl();
 	}
 	@Bean
 	public Role role() {

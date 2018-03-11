@@ -23,34 +23,43 @@
 			<div class="col"></div>
 			<div class="col-12">
 			<div class="row">
-				<div class="col"></div>
+				<div class="col"><img src="img/BH-ZOR_logo.png" height="70"></div>
 				<%-- <sec:authorize access="hasAuthority('Manager')"> --%>
-				<div class="col5"><h1>Inventory Tracker</h1></div>
+				<div class="col"><h1>Inventory Tracker</h1></div>
 <%-- 				</sec:authorize>
 				<sec:authorize access="hasAuthority('Customer')">
 				<div class="col5"><h1>Welcome</h1></div>
 				</sec:authorize> --%>
 				<div class="col"></div>
-			</div>		
-				<ul class="nav nav-tabs">
-					<sec:authorize access="hasAuthority('Manager')">
-					  <li class="nav-item">
-					    <a class="nav-link" href="users">Users</a>
-					  </li>					  				
-					  <li class="nav-item">
-					    <a class="nav-link" href="vendor">Vendor</a>
-					  </li>
-					</sec:authorize>
-					  <li class="nav-item">
-					    <a class="nav-link" href="products">Product</a>
-					  </li>
-					  <li class="nav-item">
-					    <a class="nav-link" href="invoice">Order</a>
-					  </li>
-				</ul>
-				Logged in as: <sec:authentication property="name"/> <sec:authentication property="authorities"/>
-			<br/>
-			
+			</div>
+			<div class="row">
+				<div class="col"></div>
+				<div class="col-12">
+					<br/>	
+						<ul class="nav nav-tabs">
+							<sec:authorize access="hasAuthority('Manager')">
+							  <li class="nav-item">
+							    <a class="nav-link" href="dashboard">Dashboard</a>
+							  </li>					  				
+							  <li class="nav-item">
+							    <a class="nav-link" href="sales">Sales</a>
+							  </li>
+							</sec:authorize>
+							  <li class="nav-item">
+							    <a class="nav-link" href="orders">Orders</a>
+							  </li>
+							  <li class="nav-item">
+							    <a class="nav-link" href="inventory">Inventory</a>
+							  </li>
+							  <li class="nav-item">
+							    <a class="nav-link" href="siteManagement">Site Management</a>
+							  </li>
+						</ul>
+						Logged in as: <sec:authentication property="name"/> <sec:authentication property="authorities"/>
+					<br/>
+				</div>
+				<div class="col"></div>
+			</div>			
 		  <main role="main">
 	        <div class="jumbotron">
 	          <div class="col-sm-8 mx-auto text-dark">

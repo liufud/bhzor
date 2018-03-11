@@ -69,16 +69,16 @@ public class UserController {
 //		return "redirect:/customer";
 //	}
 	
-	@RequestMapping(value="user/{userId}/updateRole",method=RequestMethod.GET)
-	public String updateRole(@PathVariable Long userId, RedirectAttributes attr) {
-		System.out.println("updateRole is called");
-		User user = userService.findUser(userId);
-		Role role = roleService.findRoleByUserId(userId);
-		attr.addFlashAttribute("user",user);
-		attr.addFlashAttribute("role", role);
-		//attr.addFlashAttribute("", role);
-		return "redirect:/allUsers";
-	}
+//	@RequestMapping(value="user/{userId}/updateRole",method=RequestMethod.GET)
+//	public String updateRole(@PathVariable Long userId, RedirectAttributes attr) {
+//		System.out.println("updateRole is called");
+//		User user = userService.findUser(userId);
+//		Role role = roleService.findRoleByUserId(userId);
+//		attr.addFlashAttribute("user",user);
+//		attr.addFlashAttribute("role", role);
+//		//attr.addFlashAttribute("", role);
+//		return "redirect:/allUsers";
+//	}
 	
     @ModelAttribute("roleList")
     public List<String> getroleList() {
@@ -90,27 +90,27 @@ public class UserController {
        return roleList;
     }
 	
-	@RequestMapping(value="user/{userId}/updateRole",method=RequestMethod.POST)
-	public String updateRole(@Valid@ModelAttribute("user")Role role,
-							@PathVariable("userId")Long userId,
-							ModelMap model, BindingResult bindingResult, 
-							RedirectAttributes attr) {
-		System.out.println("Role updating..........");
-		if(bindingResult.hasErrors()) {
-			System.out.println("data binding unsuccessful");
-			attr.addFlashAttribute("org.springframework.validation.BindingResult.user",bindingResult);
-			attr.addFlashAttribute("role",role);
-			return "redirect:/allUsers";
-		}
-		Role oldRole = roleService.findRoleByUserId(userId);
-		oldRole.setRoleName(role.getRoleName());
-		User user = userService.findUser(userId);
-		user.setRoleName(role.getRoleName());
-		roleService.updateRole(oldRole);
-		userService.editUser(user);
-		System.out.println("Role updated..........");
-		return "redirect:/allUsers";
-	}
+//	@RequestMapping(value="user/{userId}/updateRole",method=RequestMethod.POST)
+//	public String updateRole(@Valid@ModelAttribute("user")Role role,
+//							@PathVariable("userId")Long userId,
+//							ModelMap model, BindingResult bindingResult, 
+//							RedirectAttributes attr) {
+//		System.out.println("Role updating..........");
+//		if(bindingResult.hasErrors()) {
+//			System.out.println("data binding unsuccessful");
+//			attr.addFlashAttribute("org.springframework.validation.BindingResult.user",bindingResult);
+//			attr.addFlashAttribute("role",role);
+//			return "redirect:/allUsers";
+//		}
+//		Role oldRole = roleService.findRoleByUserId(userId);
+//		oldRole.setRoleName(role.getRoleName());
+//		User user = userService.findUser(userId);
+//		user.setRoleName(role.getRoleName());
+//		roleService.updateRole(oldRole);
+//		userService.editUser(user);
+//		System.out.println("Role updated..........");
+//		return "redirect:/allUsers";
+//	}
 	
 	@RequestMapping(value="user/{userId}/deleteCustomer", method=RequestMethod.GET)
 	public String deleteCustomer(@PathVariable Long userId, RedirectAttributes attr) {
@@ -123,14 +123,6 @@ public class UserController {
 		userService.deleteUser(userId);
 		
 		return "redirect:/customer";
-	}
-	
-	@RequestMapping(value="user/{userId}/deleteUser", method=RequestMethod.GET)
-	public String deleteUser(@PathVariable Long userId, RedirectAttributes attr) {
-		System.out.println("deleteUser is called");
-		userService.deleteUser(userId);
-		
-		return "redirect:/allUsers";
 	}
 	
 	
@@ -180,13 +172,6 @@ public class UserController {
 	@RequestMapping(value= "users",method=RequestMethod.GET)
 	public String listUsers() {
 		return "users";
-	}
-	
-	@RequestMapping(value= "allUsers",method=RequestMethod.GET)
-	public String listAllUsers(Model model) {
-		System.out.println("listAllUsers is called");		
-		model.addAttribute("userList",userService.getAllUsers());
-		return "allUsers";
 	}
 	
 	@RequestMapping(value= "allDistributors",method=RequestMethod.GET)

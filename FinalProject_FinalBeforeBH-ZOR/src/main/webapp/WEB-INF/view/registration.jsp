@@ -18,13 +18,28 @@
 	<div class="row">
 		<div class="col">
 		</div>
-		<div class="col-5">
-			<br/><br/><br/><br/><br/>
+		<div class="col-6">
 			<form:form method="POST" modelAttribute="userForm" class="form-signin">
 		        <h2 class="form-signin-heading">Create your account</h2>
+		        <spring:bind path="firstName">
+		            <div class="form-group">
+		                <form:input type="text" path="firstName" class="form-control" placeholder="First Name"
+		                            autofocus="true"></form:input>
+		                <form:errors path="firstName"></form:errors>
+		            </div>
+		        </spring:bind>
+		        
+		        <spring:bind path="lastName">
+		            <div class="form-group">
+		                <form:input type="text" path="lastName" class="form-control" placeholder="Last Name"
+		                            autofocus="true"></form:input>
+		                <form:errors path="lastName"></form:errors>
+		            </div>
+		        </spring:bind>
+		        
 		        <spring:bind path="username">
 		            <div class="form-group">
-		                <form:input type="text" path="username" class="form-control" placeholder="username*"
+		                <form:input type="text" path="username" class="form-control" placeholder="Username"
 		                            autofocus="true"></form:input>
 		                <form:errors path="username"></form:errors>
 		            </div>
@@ -32,14 +47,23 @@
 		        
 		        <spring:bind path="password">
 		            <div class="form-group">
-		                <form:input type="password" path="password" class="form-control" placeholder="password*"></form:input>
+		                <form:input type="password" path="password" class="form-control" placeholder="Password"></form:input>
 		                <form:errors path="password"></form:errors>
 		            </div>
-		        </spring:bind>		        
+		        </spring:bind>	
+		        <c:if test="${not empty passwordError}">
+					<p class="text-warning">Error: ${passwordError}</p>
+				</c:if>
+		        <spring:bind path="passwordConfirm">
+		            <div class="form-group">
+		                <form:input type="password" path="passwordConfirm" class="form-control" placeholder="Confirm Password"></form:input>
+		                <form:errors path="passwordConfirm"></form:errors>
+		            </div>
+		        </spring:bind>	        
 		        
 		        <spring:bind path="email">
 		            <div class="form-group">
-		                <form:input type="text" path="email" class="form-control" placeholder="email@example.com*"
+		                <form:input type="text" path="email" class="form-control" placeholder="email@example.com"
 		                            autofocus="true"></form:input>
 		                <form:errors path="email"></form:errors>
 		            </div>
@@ -53,17 +77,47 @@
 		            </div>
 		        </spring:bind>
 		        
-		        <spring:bind path="shippingAddress">
+		        <spring:bind path="address">
 		            <div class="form-group">
-		                <form:input type="text" path="shippingAddress" class="form-control" placeholder="Shipping Address*"
+		                <form:input type="text" path="address" class="form-control" placeholder="Address"
 		                            autofocus="true"></form:input>
-		                <form:errors path="shippingAddress"></form:errors>
+		                <form:errors path="address"></form:errors>
+		            </div>
+		        </spring:bind>
+		        
+		        <spring:bind path="city">
+		            <div class="form-group">
+		                <form:input type="text" path="city" class="form-control" placeholder="City"
+		                            autofocus="true"></form:input>
+		                <form:errors path="city"></form:errors>
+		            </div>
+		        </spring:bind>
+		        
+		        <spring:bind path="state">
+		            <div class="form-group">
+		                <form:input type="text" path="state" class="form-control" placeholder="State"
+		                            autofocus="true"></form:input>
+		                <form:errors path="state"></form:errors>
+		            </div>
+		        </spring:bind>
+		        
+		        <spring:bind path="zip">
+		            <div class="form-group">
+		                <form:input type="text" path="zip" class="form-control" placeholder="Zip Code"
+		                            autofocus="true"></form:input>
+		                <form:errors path="zip"></form:errors>
 		            </div>
 		        </spring:bind>
 		
 		        <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
 		    </form:form>
-		    <br/><a href="login">Go Back</a>
+		    <br/>
+		    <c:if test="${empty addUser}">
+		    	<a href="login">Go Back</a>
+		    </c:if>
+		    <c:if test="${!empty addUser}">
+		    	<a href="addUser/backTOsiteManagement">Go Back</a>
+		    </c:if>
 		</div>
 		<div class="col">
 		</div>

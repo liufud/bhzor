@@ -7,6 +7,7 @@
   <version>0.0.1-SNAPSHOT</version>
   <name>FinalProject Maven Webapp</name>
   <url>http://maven.apache.org</url>
+  
   <dependencies>
     <dependency>
       <groupId>junit</groupId>
@@ -14,6 +15,27 @@
       <version>3.8.1</version>
       <scope>test</scope>
     </dependency>
+    
+      <!-- Bootstrap -->
+	<dependency>
+	    <groupId>org.webjars</groupId>
+	    <artifactId>bootstrap</artifactId>
+	    <version>4.0.0</version>
+	    <exclusions>
+        <exclusion>
+            <groupId>org.webjars</groupId>
+            <artifactId>jquery</artifactId>
+        </exclusion>
+    </exclusions>
+	</dependency>
+	
+	<!-- JQeury -->
+	<dependency>
+	    <groupId>org.webjars.bower</groupId>
+	    <artifactId>jquery</artifactId>
+	    <version>3.2.1</version>
+	</dependency>
+	
     
     <dependency>
 	    <groupId>org.springframework</groupId>

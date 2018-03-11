@@ -9,7 +9,7 @@ import ics.model.Order;
 public interface OrderService {
 	void createOrder(Order order);
 	Order getOrder(Long orderID);
-	List<Order> getOrderByUsername(String username);
+	List<Order> getOrderByUserId(Long userId);
 	public Collection<Order> listOrders();
 	public void delete(Long orderID);
 }

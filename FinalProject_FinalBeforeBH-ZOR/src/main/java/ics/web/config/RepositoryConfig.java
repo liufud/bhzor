@@ -17,17 +17,16 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import ics.dao.CartDAO;
+import ics.dao.CartHibernateDAOImpl;
 import ics.dao.OrderDAO;
 import ics.dao.OrderHibernateDAOImpl;
 import ics.dao.ProductDAO;
 import ics.dao.ProductHibernateDAOImpl;
+import ics.dao.ReplenishmentOrderDAO;
 import ics.dao.VendorDAO;
 import ics.dao.VendorHibernateDAOImpl;
-import ics.model.Order;
-import ics.model.Product;
-import ics.model.Role;
-import ics.model.User;
-import ics.model.Vendor;
+import ics.model.ReplenishmentOrder;
 
 @Configuration
 @EnableTransactionManagement
@@ -79,9 +78,9 @@ public class RepositoryConfig {
 		public SessionFactory sessionFactory() {
 			LocalSessionFactoryBean lsfb = new LocalSessionFactoryBean();
 			lsfb.setDataSource(getDataSource());
-			lsfb.setPackagesToScan("com.concretepage.entity");
+			lsfb.setPackagesToScan(new String[] {"ics.model"});
 			lsfb.setHibernateProperties(getHibernateProperties());
-			lsfb.setAnnotatedClasses(new Class[] {Product.class,Vendor.class,User.class,Role.class,Order.class});
+//			lsfb.setAnnotatedClasses(new Class[] {Product.class,Vendor.class,User.class,Role.class,Order.class});
 			try {
 				lsfb.afterPropertiesSet();
 			} catch (IOException e) {
@@ -116,6 +115,16 @@ public class RepositoryConfig {
 		@Bean
 		public VendorDAO vendorHibernateDAOImpl(SessionFactory sessionFactory) {
 			return new VendorHibernateDAOImpl(sessionFactory);
+		}
+		@Autowired
+		@Bean
+		public CartDAO cartHibernateDAOImpl(SessionFactory sessionFactory) {
+			return new CartHibernateDAOImpl(sessionFactory);
+		}
+		@Autowired
+		@Bean
+		public ReplenishmentOrderDAO ReplenishmentOrderHibernateDAOImpl(SessionFactory sessionFactory) {
+			return new ics.dao.ReplenishmentOrderHibernateDAOImpl(sessionFactory);
 		}
     
 }

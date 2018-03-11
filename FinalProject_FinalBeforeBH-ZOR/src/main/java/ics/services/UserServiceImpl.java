@@ -47,5 +47,21 @@ public class UserServiceImpl implements UserService {
 		return userDAO.getAllAdministrators();
 	}
 
+	public List<User> getUsersByRole(String roleName) {
+		return userDAO.getUsersByRole(roleName);
+	}
+
+	public Long totalUserNum() {
+		return userDAO.totalUserNum();
+	}
+
+	public List<User> list(Integer offset, Integer maxResults) {
+		return userDAO.list(offset, maxResults);
+	}
+
+	public User findUserByEmail(String email) {
+		return userDAO.findUserByEmail(email);
+	}
+
 
 }

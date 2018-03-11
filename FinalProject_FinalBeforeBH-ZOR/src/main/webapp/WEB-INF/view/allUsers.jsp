@@ -127,7 +127,7 @@
 							<td>${user.username}</td>
 							<td>${user.email}</td>
 							<td>${user.phoneNumber}</td>
-							<td>${user.shippingAddress}</td>
+							<td>${user.address}, ${user.city}, ${user.state} ${user.zip}</td>
 							<td>${user.created_at}</td>
 							<td>${user.roleName}</td>
 							<td>

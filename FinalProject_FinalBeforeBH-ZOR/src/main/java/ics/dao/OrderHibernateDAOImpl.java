@@ -45,12 +45,12 @@ public class OrderHibernateDAOImpl implements OrderDAO {
 	}
 	@SuppressWarnings("unchecked")
 	@Transactional
-	public List<Order> getOrderByUsername(String username) {
+	public List<Order> getOrderByUserId(Long userId) {
 		List<Order> orders = new ArrayList<Order>();
 
 		orders = sessionFactory.getCurrentSession()
 			.createQuery("from Order where createByUser=?")
-			.setParameter(0, username)
+			.setParameter(0, userId)
 			.list();
 		//System.out.println("check if order size is greater than 0 ============");
 		if (orders.size() > 0) {

@@ -1,12 +1,20 @@
 package ics.model;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.JoinTable;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
@@ -21,92 +29,93 @@ public class Order {
 	@GeneratedValue(generator="increment")
 	@GenericGenerator(name="increment", strategy = "increment")
 	private Long orderID;
-	@ManyToOne
-	@JoinColumn
-	private Product product;	
-	private String productName;
-	@NotNull(message="You must provide a quantity")
-	private Integer quantity;
+
+/*	@OneToMany(mappedBy="order", cascade = {CascadeType.ALL},fetch=FetchType.EAGER)
+//	@JoinTable(name="Order_Product",joinColumns=@JoinColumn(name="Order_ID"),
+//				inverseJoinColumns=@JoinColumn(name="Product_ID"))
+	private List<Product> products = new ArrayList<Product>();*/
+	
+	@ManyToMany(fetch=FetchType.EAGER)
+	@JoinTable(name="Order_Product",joinColumns= {@JoinColumn(name="Order_ID")},
+				inverseJoinColumns= {@JoinColumn(name="Product_ID")})
+	private List<Product> products = new ArrayList<Product>();
 	@NotNull
-	private Integer unitPrice;
-	@NotNull
-	private Integer totalPrice;
+	private Double totalPrice;
+	@ManyToOne(fetch=FetchType.EAGER)
+	private User createByUser;
 	@NotEmpty
-	private String createByUser;
+	private String paymentMethod;
+	@NotEmpty
+	private String orderStatus;
+	@NotEmpty
+	private String paymentStatus;
+	@NotEmpty
+	private String shipmentStatus;
+	@OneToOne(mappedBy = "order", cascade=CascadeType.ALL, orphanRemoval=true)
+	private BillingInfo billingInfo;
 	@UpdateTimestamp
 	private Date created_At;
 	
-	@Override
-	public String toString() {
-		return "Order [orderID=" + orderID + ", productName=" + productName + ", quantity="
-				+ quantity + ", unitPrice=" + unitPrice + ", totalPrice=" + totalPrice + ", createByUser="
-				+ createByUser + ", created_At=" + created_At + "]";
-	}
-
+	
 	public Long getOrderID() {
 		return orderID;
 	}
-
 	public void setOrderID(Long orderID) {
 		this.orderID = orderID;
 	}
-
-	public Product getProduct() {
-		return product;
+	public List<Product> getProducts() {
+		return products;
 	}
-
-	public void setProduct(Product product) {
-		this.product = product;
+	public void setProducts(List<Product> products) {
+		this.products = products;
 	}
-
-	public String getProductName() {
-		return productName;
-	}
-
-	public void setProductName(String productName) {
-		this.productName = productName;
-	}
-
-	public Integer getQuantity() {
-		return quantity;
-	}
-
-	public void setQuantity(Integer quantity) {
-		this.quantity = quantity;
-	}
-
-	public Integer getUnitPrice() {
-		return unitPrice;
-	}
-
-	public void setUnitPrice(Integer unitPrice) {
-		this.unitPrice = unitPrice;
-	}
-
-	public Integer getTotalPrice() {
+	public Double getTotalPrice() {
 		return totalPrice;
 	}
-
-	public void setTotalPrice(Integer totalPrice) {
+	public void setTotalPrice(Double totalPrice) {
 		this.totalPrice = totalPrice;
 	}
-
-	public String getCreateByUser() {
+	public User getCreateByUser() {
 		return createByUser;
 	}
-
-	public void setCreateByUser(String createByUser) {
+	public void setCreateByUser(User createByUser) {
 		this.createByUser = createByUser;
 	}
-
+	public String getPaymentMethod() {
+		return paymentMethod;
+	}
+	public void setPaymentMethod(String paymentMethod) {
+		this.paymentMethod = paymentMethod;
+	}
+	public String getOrderStatus() {
+		return orderStatus;
+	}
+	public void setOrderStatus(String orderStatus) {
+		this.orderStatus = orderStatus;
+	}
+	public String getPaymentStatus() {
+		return paymentStatus;
+	}
+	public void setPaymentStatus(String paymentStatus) {
+		this.paymentStatus = paymentStatus;
+	}
+	public String getShipmentStatus() {
+		return shipmentStatus;
+	}
+	public void setShipmentStatus(String shipmentStatus) {
+		this.shipmentStatus = shipmentStatus;
+	}
 	public Date getCreated_At() {
 		return created_At;
 	}
-
 	public void setCreated_At(Date created_At) {
 		this.created_At = created_At;
+	}	
+	public BillingInfo getBillingInfo() {
+		return billingInfo;
 	}
-	
-	
-	
+	public void setBillingInfo(BillingInfo billingInfo) {
+		this.billingInfo = billingInfo;
+	}
+
 }

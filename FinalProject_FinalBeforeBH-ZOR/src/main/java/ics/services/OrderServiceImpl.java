@@ -31,8 +31,8 @@ public class OrderServiceImpl implements OrderService {
 		orderDAO.delete(orderID);
 	}
 
-	public List<Order> getOrderByUsername(String username) {		
-		return orderDAO.getOrderByUsername(username);
+	public List<Order> getOrderByUserId(Long userId) {		
+		return orderDAO.getOrderByUserId(userId);
 	}
 
 }

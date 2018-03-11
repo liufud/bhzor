@@ -23,7 +23,7 @@ public class Role {
 	private Integer userRoleId;
 	@Column(name = "role", nullable = false, length = 45)
 	private String roleName;
-	@ManyToOne(fetch=FetchType.LAZY)
+	@ManyToOne(fetch=FetchType.EAGER)
 	@JoinColumn(name = "userId", nullable = false)
 	private User user;
 	

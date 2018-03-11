@@ -10,6 +10,7 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
@@ -28,97 +29,76 @@ public class Product {
 	private Long productID;
 	@NotEmpty(message = "Product name not specified")
 	private String productName;
-	@NotNull(message="please enter inventory level")
-	private Integer inventoryLevel;
 	@NotNull(message="please enter cost from manufacturer")
-	private Integer costFromManufacturer;
-	@NotNull(message="please enter cost for sale")
-	private Integer costForSale;
+	private Integer cost;
+	@NotNull(message="please enter price for sale")
+	private Integer price;
+//	@NotNull(message="You must provide a quantity")
+	private Integer quantity;
 	@ManyToOne
-	@JoinColumn(name="VENDOR_ID")
-	private Vendor vendor;
-	@OneToMany(mappedBy="product", cascade = {CascadeType.ALL},fetch=FetchType.EAGER)
+	private Cart cart;
+//	@ManyToOne
+//	private Order order;
+	
+	@ManyToMany(mappedBy="products",fetch=FetchType.EAGER)
 	private List<Order> orders = new ArrayList<Order>();
-
-	@Override
-	public String toString() {
-		return "Product [productID=" + productID + ", productName=" + productName + ", inventoryLevel=" + inventoryLevel
-				+ ", costFromManufacturer=" + costFromManufacturer + ", costForSale=" + costForSale + ", vendor="
-				+ vendor;
-	}
-
+	@ManyToMany(mappedBy="rpProducts",fetch=FetchType.EAGER)
+	private List<ReplenishmentOrder> rpOrders = new ArrayList<ReplenishmentOrder>();
 
 	public Long getProductID() {
 		return productID;
 	}
 
-
 	public void setProductID(Long productID) {
 		this.productID = productID;
 	}
-
 
 	public String getProductName() {
 		return productName;
 	}
 
-
 	public void setProductName(String productName) {
 		this.productName = productName;
 	}
 
-
-	public Integer getInventoryLevel() {
-		return inventoryLevel;
+	public Integer getCost() {
+		return cost;
 	}
 
-
-	public void setInventoryLevel(Integer inventoryLevel) {
-		this.inventoryLevel = inventoryLevel;
+	public void setCost(Integer cost) {
+		this.cost = cost;
 	}
 
-
-	public Integer getCostFromManufacturer() {
-		return costFromManufacturer;
+	public Integer getPrice() {
+		return price;
 	}
 
-
-	public void setCostFromManufacturer(Integer costFromManufacturer) {
-		this.costFromManufacturer = costFromManufacturer;
+	public void setPrice(Integer price) {
+		this.price = price;
 	}
-
-
-	public Integer getCostForSale() {
-		return costForSale;
-	}
-
-
-	public void setCostForSale(Integer costForSale) {
-		this.costForSale = costForSale;
-	}
-
-
-	public Vendor getVendor() {
-		return vendor;
-	}
-
-
-	public void setVendor(Vendor vendor) {
-		this.vendor = vendor;
-	}
-
 
 	public List<Order> getOrders() {
 		return orders;
 	}
 
-
 	public void setOrders(List<Order> orders) {
 		this.orders = orders;
 	}
 	
-	
+	public Integer getQuantity() {
+		return quantity;
+	}
 
-	
+	public void setQuantity(Integer quantity) {
+		this.quantity = quantity;
+	}
+
+	public Cart getCart() {
+		return cart;
+	}
+
+	public void setCart(Cart cart) {
+		this.cart = cart;
+	}
 		
 }

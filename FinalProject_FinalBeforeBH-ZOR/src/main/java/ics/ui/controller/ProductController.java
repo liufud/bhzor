@@ -28,30 +28,30 @@ public class ProductController {
 	private VendorService vendorService;
 	
 	
-	@RequestMapping(value="vendor/{vendorID}/createproducts",method=RequestMethod.POST)
-	public String addProduct(@PathVariable Long vendorID,@Valid Product product, 
-			BindingResult bindingResult, Model model, RedirectAttributes attr, HttpSession session) {
-		System.out.println("addProduct is called");
-		if(bindingResult.hasErrors()) {
-			System.out.println("data binding unsuccessful");
-			attr.addFlashAttribute("org.springframework.validation.BindingResult.product",bindingResult);
-			attr.addFlashAttribute("product",product);
-			attr.addFlashAttribute("createProduct", "create product");
-			return "redirect:/vendor/" + vendorID + "/products";
-		}
-		try {		
-			attr.addFlashAttribute("createProduct", "create product");
-			Vendor vendor = vendorService.get(vendorID);
-			vendor.getProducts().add(product);
-			product.setVendor(vendor);
-			System.out.println("saving product...................");
-			vendorService.addOrUpdateVendor(vendor);
-			System.out.println("product saved...................");
-		} catch (Exception e) {
-			System.out.println(e);
-		}
-		return "redirect:/vendor/" + vendorID + "/products";
-	}
+//	@RequestMapping(value="vendor/{vendorID}/createproducts",method=RequestMethod.POST)
+//	public String addProduct(@PathVariable Long vendorID,@Valid Product product, 
+//			BindingResult bindingResult, Model model, RedirectAttributes attr, HttpSession session) {
+//		System.out.println("addProduct is called");
+//		if(bindingResult.hasErrors()) {
+//			System.out.println("data binding unsuccessful");
+//			attr.addFlashAttribute("org.springframework.validation.BindingResult.product",bindingResult);
+//			attr.addFlashAttribute("product",product);
+//			attr.addFlashAttribute("createProduct", "create product");
+//			return "redirect:/vendor/" + vendorID + "/products";
+//		}
+//		try {		
+//			attr.addFlashAttribute("createProduct", "create product");
+//			Vendor vendor = vendorService.get(vendorID);
+//			vendor.getProducts().add(product);
+//			product.setVendor(vendor);
+//			System.out.println("saving product...................");
+//			vendorService.addOrUpdateVendor(vendor);
+//			System.out.println("product saved...................");
+//		} catch (Exception e) {
+//			System.out.println(e);
+//		}
+//		return "redirect:/vendor/" + vendorID + "/products";
+//	}
 	
 	@RequestMapping(value="vendor/{vendorID}/products",method=RequestMethod.GET)
 	public String listProduct(@PathVariable Long vendorID, Model model) {
@@ -139,18 +139,18 @@ public class ProductController {
 //		return "products";
 //	}
 	
-	@RequestMapping(value= {"vendor/{vendorID}/products/{vendorID}/{productID}"}, method=RequestMethod.GET)
-	public String deleteProduct(@PathVariable(name="vendorID") Long vendorID, 
-								@PathVariable(name="productID") Long productID, RedirectAttributes attr) {
-		System.out.println("deleteProduct is called");
-		try {
-			productService.delete(productID);
-		} catch (Exception e) {
-			attr.addFlashAttribute("error", "cannot delete due to the associated orders");
-			System.out.println(e);
-		}		
-		return "redirect:/vendor/" + vendorID + "/products";
-	}
+//	@RequestMapping(value= {"vendor/{vendorID}/products/{vendorID}/{productID}"}, method=RequestMethod.GET)
+//	public String deleteProduct(@PathVariable(name="vendorID") Long vendorID, 
+//								@PathVariable(name="productID") Long productID, RedirectAttributes attr) {
+//		System.out.println("deleteProduct is called");
+//		try {
+//			productService.delete(productID);
+//		} catch (Exception e) {
+//			attr.addFlashAttribute("error", "cannot delete due to the associated orders");
+//			System.out.println(e);
+//		}		
+//		return "redirect:/vendor/" + vendorID + "/products";
+//	}
 	
 	@RequestMapping(value= "products/{vendorID}/{productID}", method=RequestMethod.GET)
 	public String deleteProductOnProductPage(@PathVariable(name="vendorID") Long vendorID, 
@@ -183,6 +183,7 @@ public class ProductController {
 //		return "redirect:/products";
 //	}
 	
-
+	///////////////////////////////////////////////////////
+	
 
 }
