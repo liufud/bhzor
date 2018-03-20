@@ -11,6 +11,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.apache.http.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.jaas.AuthorityGranter;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -31,6 +32,7 @@ import com.fasterxml.jackson.annotation.JsonCreator.Mode;
 import ics.model.BillingInfo;
 import ics.model.Cart;
 import ics.model.Order;
+import ics.model.OrderedProd;
 import ics.model.Product;
 import ics.model.User;
 import ics.services.CartService;
@@ -48,61 +50,6 @@ public class OrderController {
 	private UserService userService;
 	@Autowired
 	private CartService	cartService;
-	
-	@RequestMapping(value="products/placeorder",method=RequestMethod.POST)
-	public String placeOrder(@Valid Product product, BindingResult bindingResult,
-							Model model, RedirectAttributes attr) {		
-		
-		if(bindingResult.hasErrors()) {
-			System.out.println("data binding unsuccessful");
-			attr.addFlashAttribute("org.springframework.validation.BindingResult.order",bindingResult);
-			attr.addFlashAttribute("error", "Indicate the quantity you want to order");
-			Long productID = product.getProductID();
-			return "redirect:" + productID + "/order";
-		}
-		
-		Order order = new Order();
-		Product productToBuy = productService.get(product.getProductID());
-		
-		Integer totalPrice = product.getInventoryLevel()*productToBuy.getCostForSale();
-		System.out.println("totalPrice is " + totalPrice + "...................");
-		Integer unitPrice = product.getCostForSale();
-		Integer quantity = product.getInventoryLevel();
-		
-		//System.out.println("getting user details............................");
-		UserDetails userDetails =
-				 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		//System.out.println("user details: " + userDetails.toString());
-		System.out.println("order placed by " + userDetails.getUsername() + "..........................");	
-		User user = userService.findUserByName(userDetails.getUsername());
-		//System.out.println(user + "......................");
-		
-		productToBuy.getOrders().add(order);
-		order.setProduct(productToBuy);
-		order.setProductName(productToBuy.getProductName());
-		order.setCreateByUser(user.getUsername());
-		order.setQuantity(quantity);
-		order.setUnitPrice(unitPrice);
-		order.setTotalPrice(totalPrice);
-		
-		System.out.println("order and product beans are completed ====================");
-		
-		Long productID = productToBuy.getProductID();
-		productService.buyProduct(quantity, productID);
-		System.out.println("finish buying.............................");
-		//System.out.println("productID " + productID + "........................................");
-/////////////////////////////////////////////////////////////////////////////////////////////	
-		//System.out.println(productService.get(productID));
-		//order.setProduct(productService.get(productID));		
-/////////////////////////////////////////////////////////////////////////////////////////////	
-		//System.out.println(order);
-		productService.addOrUpdateProduct(productToBuy);
-		//orderService.createOrder(order);
-		System.out.println("Order is placed...");	
-		model.addAttribute("product",productService.get(productID));
-		model.addAttribute("productList",productService.listProducts());
-		return "redirect:/products";
-	}
 	
 	@RequestMapping(value="products/{productID}/order",method=RequestMethod.GET)
 	public String orderBindLink(@PathVariable Long productID, HttpSession session,
@@ -239,7 +186,8 @@ public class OrderController {
 							@ModelAttribute("showAddressForm")String showAddressForm,
 							@ModelAttribute("thisAddress")String thisAddress,
 							@ModelAttribute("orderConfirmation")String orderConfirmation,
-							@ModelAttribute("shoppingCartQtyError")String shoppingCartQtyError) {
+							@ModelAttribute("shoppingCartQtyError")String shoppingCartQtyError,
+							@ModelAttribute("orderType")String orderType) {
 		model.addAttribute("showList", showList);
 		model.addAttribute("addToCartSucceeded", addToCartSucceeded);
 		if(!addToCartSucceeded.isEmpty()) {
@@ -286,7 +234,29 @@ public class OrderController {
 		if(!showList.isEmpty()) {
 			model.addAttribute("listProducts", (ArrayList<Product>) productService.listProducts());
 		}
+		
+		//List Unshipped Order and Unpaid Order
+		List<Product> listProductNames = (List<Product>) productService.listProducts();
+		model.addAttribute("productNames", listProductNames);
+		System.out.println("order type is: " + orderType);
+		if(orderType.equals("Unshipped Orders")) {
+			List<Order> unshipped = (List<Order>) orderService.listOrders("shipmentStatus","Pending Shipment");
+			model.addAttribute("viewUnshippedOrders", unshipped);
+		}else if(orderType.equals("Unpaid Orders")) {
+			List<Order> unpaid = (List<Order>) orderService.listOrders("paymentStatus","Pending Payment");
+			model.addAttribute("viewUnpaidOrders", unpaid);
+		}else if(orderType.equals("All Orders")) {
+			List<Order> all = (List<Order>) orderService.listOrders();
+			model.addAttribute("viewAllOrders", all);
+		}
+		
 		return "orders";
+	}
+	
+	@RequestMapping(value="orderType",method=RequestMethod.POST)
+	public String orderType(@RequestParam("orderTypeName")String orderTypeName,Model model) {
+		model.addAttribute("orderType", orderTypeName);
+		return "redirect:/orders";
 	}
 	
 	@ModelAttribute("productList")
@@ -372,9 +342,9 @@ public class OrderController {
 		if(session.getAttribute("cart") == null) {
 			System.out.println("Cart doesn't exist, create a new one");
 			Cart cart = new Cart();
-			List<Product> products = new ArrayList<Product>();			
+			List<OrderedProd> products = new ArrayList<OrderedProd>();			
 			Product productInDB = productService.get(productID);
-			Product product = new Product();
+			OrderedProd product = new OrderedProd();
 			product.setProductName(productInDB.getProductName());
 			product.setProductID(productInDB.getProductID());
 			product.setPrice(productInDB.getPrice());
@@ -391,17 +361,17 @@ public class OrderController {
 					return "redirect:/listProducts";
 				}else {
 					for (int i = 0; i < products.size(); i++) {
-						products.get(i).setQuantity(Integer.parseInt(quantity[0]));
+						products.get(i).setOrderedProductQty(Integer.parseInt(quantity[0]));
 					 }
 				}	
 			} catch (Exception e) {
 				System.out.println(e);
-				model.addAttribute("shoppingCartQtyError", "Quantity has to be integer");
+				model.addAttribute("shoppingCartQtyError", "Invalid quantity!");
 				return "redirect:/listProducts";
 			}
 					
 			cart.setProducts(products);
-			model.addAttribute("addToCartSucceeded", "You have added " + product.getQuantity() + " [" + product.getProductName() + "] to your shopping cart");
+			model.addAttribute("addToCartSucceeded", "You have added " + product.getOrderedProductQty() + " [" + product.getProductName() + "] to your shopping cart");
 			UserDetails userDetails =
 					 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			cart.setUser(userService.findUserByName(userDetails.getUsername()));			
@@ -412,7 +382,7 @@ public class OrderController {
 		}else {
 			System.out.println("Cart exists");
 			Cart cart = (Cart) session.getAttribute("cart");
-			List<Product> products = cart.getProducts();
+			List<OrderedProd> products = cart.getProducts();
 			Double cartTotal = (double) 0;
 			
 			//use method isExisting
@@ -422,7 +392,7 @@ public class OrderController {
 			if(index == -1) {
 				System.out.println("product doesn't exist in cart");
 				Product productInDB = productService.get(productID);
-				Product product = new Product();
+				OrderedProd product = new OrderedProd();
 				product.setProductName(productInDB.getProductName());
 				product.setProductID(productInDB.getProductID());
 				product.setPrice(productInDB.getPrice());
@@ -438,20 +408,20 @@ public class OrderController {
 						model.addAttribute("shoppingCartQtyError", "Invalid quantity!");
 						return "redirect:/listProducts";
 					}else {
-						product.setQuantity(Integer.parseInt(quantity[0]));
+						product.setOrderedProductQty(Integer.parseInt(quantity[0]));
 						products.add(product);
 					}	
 				} catch (Exception e) {
 					System.out.println(e);
-					model.addAttribute("shoppingCartQtyError", "Quantity has to be integer");
+					model.addAttribute("shoppingCartQtyError", "Invalid quantity!");
 					return "redirect:/listProducts";
 				}			
 				cart.setProducts(products);
 				cartTotal = cartTotal(products, cart);
-				model.addAttribute("addToCartSucceeded", "You have added " + product.getQuantity() + " [" + product.getProductName() + "] to your shopping cart");
+				model.addAttribute("addToCartSucceeded", "You have added " + product.getOrderedProductQty() + " [" + product.getProductName() + "] to your shopping cart");
 			}else {
 				System.out.println("product exists in cart");
-				for(Product p:products)System.out.println(p.getProductName());
+				for(OrderedProd p:products)System.out.println(p.getProductName());
 				System.out.println("updating product qty");
 				String[] quantityParam = request.getParameterValues("quantity");
 				
@@ -464,19 +434,19 @@ public class OrderController {
 						model.addAttribute("shoppingCartQtyError", "Invalid quantity!");
 						return "redirect:/listProducts";
 					}else {
-						Integer quantity = products.get(index).getQuantity()+Integer.parseInt(quantityParam[0]);
-						products.get(index).setQuantity(quantity);
+						Integer quantity = products.get(index).getOrderedProductQty()+Integer.parseInt(quantityParam[0]);
+						products.get(index).setOrderedProductQty(quantity);
 					}	
 				} catch (Exception e) {
 					System.out.println(e);
-					model.addAttribute("shoppingCartQtyError", "Quantity has to be integer");
+					model.addAttribute("shoppingCartQtyError", "Invalid quantity!");
 					return "redirect:/listProducts";
 				}	
 				System.out.println("product qty updated");
 				cart.setProducts(products);
 				cartTotal = cartTotal(products, cart);
-				Product product = products.get(index);
-				model.addAttribute("addToCartSucceeded", "You have added " + product.getQuantity() + " [" + product.getProductName() + "] to your shopping cart");
+				OrderedProd product = products.get(index);
+				model.addAttribute("addToCartSucceeded", "You have added " + product.getOrderedProductQty() + " [" + product.getProductName() + "] to your shopping cart");
 			}
 			
 			cart.setCartTotal(cartTotal);
@@ -490,7 +460,7 @@ public class OrderController {
 	 @SuppressWarnings("unchecked")
 	 private int isExisting(Long productID, HttpSession session) {
 		 Cart cart = (Cart) session.getAttribute("cart");
-		 List<Product> products = cart.getProducts();
+		 List<OrderedProd> products = cart.getProducts();
 	
 		  for (int i = 0; i < products.size(); i++)
 	
@@ -500,38 +470,54 @@ public class OrderController {
 		  return -1;
 	 }
 	 
-	 private Double cartTotal(List<Product> products, Cart cart) {
+	 private Double cartTotal(List<OrderedProd> products, Cart cart) {
 		Double cartTotal = (double) 0;
-		List<Product> p = cart.getProducts();
-		for(Product a:p) {
-			cartTotal+=a.getPrice()*a.getQuantity();
+		List<OrderedProd> p = cart.getProducts();
+		for(OrderedProd a:p) {
+			cartTotal+=a.getPrice()*a.getOrderedProductQty();
 		}
 		return cartTotal;
 	 }
 	 
 	@ModelAttribute("productsInCart")
-    public List<Product> productInCart(Model model, HttpSession session) {
+    public List<OrderedProd> productInCart(Model model, HttpSession session) {
 		Cart cart = (Cart) session.getAttribute("cart");
 		if(null != cart) {
-			List<Product> products = cart.getProducts();
+			List<OrderedProd> products = cart.getProducts();
 			return products;
 		}
 		return null;
     }
 	 
 	 @RequestMapping(value="myCart",method=RequestMethod.GET)
-	 public String myCart(Model model, HttpSession session) {
+	 public String myCart(Model model, HttpSession session,
+			 			@ModelAttribute("shoppingCartQtyError")String shoppingCartQtyError) {
 		 model.addAttribute("showMyCart", "showMyCart");
+		 model.addAttribute("shoppingCartQtyError", shoppingCartQtyError);
 		 return "redirect:/orders";
 	 }
 	 
 	 @RequestMapping(value="updateCart",method=RequestMethod.POST)
-	 public String updateCart(HttpServletRequest request, HttpSession session) {
+	 public String updateCart(HttpServletRequest request, HttpSession session, Model model) {
 		 Cart cart = (Cart) session.getAttribute("cart");
-		 List<Product> products = cart.getProducts();
+		 List<OrderedProd> products = cart.getProducts();
 		 String[] quantity = request.getParameterValues("quantity");
 		 for (int i = 0; i < products.size(); i++) {
-			products.get(i).setQuantity(Integer.parseInt(quantity[i]));
+			 try {
+					if(Integer.parseInt(quantity[i]) <= 0) {
+						model.addAttribute("shoppingCartQtyError", "Quantity has to be greater than zero!");
+						return "redirect:/myCart";
+					}else if(Integer.parseInt(quantity[i]) > 10000000) {
+						model.addAttribute("shoppingCartQtyError", "Invalid quantity!");
+						return "redirect:/myCart";
+					}else {
+						products.get(i).setOrderedProductQty(Integer.parseInt(quantity[i]));
+					}
+				} catch (Exception e) {
+					System.out.println(e);
+					model.addAttribute("shoppingCartQtyError", "Invalid quantity!");
+					return "redirect:/myCart";
+				}				
 		 }
 		 cart.setProducts(products);
 		 Double cartTotal = cartTotal(products, cart);
@@ -547,7 +533,7 @@ public class OrderController {
 			 						HttpServletRequest request,HttpSession session) {
 		 System.out.println("deleting product from cart");
 		 Cart cart = (Cart) session.getAttribute("cart");
-		 List<Product> products = cart.getProducts();
+		 List<OrderedProd> products = cart.getProducts();
 		 int index = 0;
 		 for(int i=0; i<products.size(); i++) {
 			 if(products.get(i).getProductID() == productID) {
@@ -614,22 +600,47 @@ public class OrderController {
 				return "orders";
 		 }
 		 Cart cart = (Cart) session.getAttribute("cart");		 
-		 List<Product> products = cart.getProducts();
-		 List<Product> productToBeSavedInOrder = new ArrayList<Product>();
+		 List<OrderedProd> products = cart.getProducts();
+		 List<OrderedProd> productToBeSavedInOrder = new ArrayList<OrderedProd>();
+		 List<Product> productList = (ArrayList<Product>) productService.listProducts();
 		 Order order = new Order();
-		 for(int i=0; i<products.size(); i++) {
-			 Product productInDB = productService.get(products.get(i).getProductID());
-			 Product product = new Product();
-			 System.out.println(products.get(i).getProductName() + " with qty" + productInDB.getQuantity());
-			 productInDB.setQuantity(productInDB.getQuantity() - products.get(i).getQuantity());
-			 product.setProductName(products.get(i).getProductName());
-			 product.setCost(products.get(i).getCost());
-			 product.setPrice(products.get(i).getPrice());
-			 product.setQuantity(products.get(i).getQuantity());
-			 
-			 productToBeSavedInOrder.add(product);
-			 productService.addOrUpdateProduct(productInDB);
-		 }		 
+		 for(int j=0; j<productList.size(); j++) {			 			 			 
+			 for(int i=0; i<products.size(); i++) {				 				 
+				 Product productInDB = productService.get(products.get(i).getProductID());
+				 if(productList.get(j).getProductName().equals(products.get(i).getProductName())) {
+					 System.out.println(products.get(i).getProductName() + " with qty " + productInDB.getQuantity());
+					 OrderedProd product = new OrderedProd();
+					 productInDB.setQuantity(productInDB.getQuantity() - products.get(i).getOrderedProductQty());
+					 product.setProductName(products.get(i).getProductName());
+					 product.setCost(products.get(i).getCost());
+					 product.setPrice(products.get(i).getPrice());
+					 product.setQuantity(productInDB.getQuantity());
+					 product.setOrderedProductQty(products.get(i).getOrderedProductQty());
+					 productToBeSavedInOrder.add(product);
+				 }else {
+					 OrderedProd product = new OrderedProd();
+					 product.setProductName(productList.get(j).getProductName());
+					 product.setCost(productList.get(j).getCost());
+					 product.setPrice(productList.get(j).getPrice());
+					 product.setQuantity(productInDB.getQuantity());
+					 product.setOrderedProductQty(0);
+					 productToBeSavedInOrder.add(product);
+				 }
+			 }			 
+		 }
+//		 for(int i=0; i<products.size(); i++) {
+//			 Product productInDB = productService.get(products.get(i).getProductID());
+//			 
+//			 OrderedProd product = new OrderedProd();
+//			 System.out.println(products.get(i).getProductName() + " with qty " + productInDB.getQuantity());
+//			 productInDB.setQuantity(productInDB.getQuantity() - products.get(i).getOrderedProductQty());
+//			 product.setProductName(products.get(i).getProductName());
+//			 product.setCost(products.get(i).getCost());
+//			 product.setPrice(products.get(i).getPrice());
+//			 product.setOrderedProductQty(products.get(i).getOrderedProductQty());
+//			 
+//			 productToBeSavedInOrder.add(product);
+//		 }
 		 order.setProducts(productToBeSavedInOrder);
 		 order.setTotalPrice(cart.getCartTotal());
 		 order.setPaymentMethod(paymentMethod);

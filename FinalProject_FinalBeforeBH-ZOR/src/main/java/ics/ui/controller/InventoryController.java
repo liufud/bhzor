@@ -22,6 +22,7 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import ics.model.Cart;
 import ics.model.Order;
+import ics.model.OrderedProd;
 import ics.model.Product;
 import ics.model.ReplenishmentOrder;
 import ics.model.Vendor;
@@ -76,7 +77,7 @@ public class InventoryController {
 		if(!orderSummary.isEmpty()) {
 			Cart cart = (Cart) session.getAttribute("cart");
 			model.addAttribute("cart", cart);
-			List<Product> products = cart.getProducts();
+			List<OrderedProd> products = cart.getProducts();
 			model.addAttribute("products", products);
 		}
 		if(!listProductsCheck.isEmpty()) {
@@ -111,7 +112,8 @@ public class InventoryController {
 		String productName = product.getProductName();
 		Product productInInventory = productService.getProductByName(productName);
 		if(productInInventory == null) {
-			try {		
+			try {
+				System.out.println("adding new product ----------");
 				productService.addOrUpdateProduct(product);
 				System.out.println("Product added succesfully!");
 				attr.addFlashAttribute("addProductSucceeded", "You have successfully added product " + product.getProductName() + "!");
@@ -119,6 +121,7 @@ public class InventoryController {
 				System.out.println(e);
 			}
 		}else {
+			System.out.println("product exists, updating product");
 			productInInventory.setCost(product.getCost());
 //			product.setOrders(productToBeUpdated.getOrders());
 			productInInventory.setPrice(product.getPrice());
@@ -126,7 +129,7 @@ public class InventoryController {
 			productService.addOrUpdateProduct(productInInventory);
 			attr.addFlashAttribute("updateProductSucceeded", "You have successfully updated product " + product.getProductName() + "!");
 		}
-		
+		System.out.println("product added");
 		return "redirect:/inventory";
 	}
 	
@@ -219,9 +222,9 @@ public class InventoryController {
 		if(session.getAttribute("cart") == null) {
 			System.out.println("Cart doesn't exist, create a new one");
 			Cart cart = new Cart();
-			List<Product> products = new ArrayList<Product>();			
+			List<OrderedProd> products = new ArrayList<OrderedProd>();			
 			Product productInDB = productService.get(productID);
-			Product product = new Product();
+			OrderedProd product = new OrderedProd();
 			product.setProductName(productInDB.getProductName());
 			product.setProductID(productInDB.getProductID());
 			product.setPrice(productInDB.getPrice());
@@ -238,17 +241,17 @@ public class InventoryController {
 					return "redirect:/orderReplenishment";
 				}else {
 					for (int i = 0; i < products.size(); i++) {
-						products.get(i).setQuantity(Integer.parseInt(quantity[0]));
+						products.get(i).setOrderedProductQty(Integer.parseInt(quantity[0]));
 					 }
 				}	
 			} catch (Exception e) {
 				System.out.println(e);
-				model.addAttribute("shoppingCartQtyError", "Quantity has to be integer");
+				model.addAttribute("shoppingCartQtyError", "Invalid quantity!");
 				return "redirect:/orderReplenishment";
 			}
 					
 			cart.setProducts(products);
-			model.addAttribute("addToCartSucceeded", "You have added " + product.getQuantity() + " [" + product.getProductName() + "] to your shopping cart");
+			model.addAttribute("addToCartSucceeded", "You have added " + product.getOrderedProductQty() + " [" + product.getProductName() + "] to your shopping cart");
 			UserDetails userDetails =
 					 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			cart.setUser(userService.findUserByName(userDetails.getUsername()));			
@@ -259,7 +262,7 @@ public class InventoryController {
 		}else {
 			System.out.println("Cart exists");
 			Cart cart = (Cart) session.getAttribute("cart");
-			List<Product> products = cart.getProducts();
+			List<OrderedProd> products = cart.getProducts();
 			Double cartTotal = (double) 0;
 			
 			//use method isExisting
@@ -269,7 +272,7 @@ public class InventoryController {
 			if(index == -1) {
 				System.out.println("product doesn't exist in cart");
 				Product productInDB = productService.get(productID);
-				Product product = new Product();
+				OrderedProd product = new OrderedProd();
 				product.setProductName(productInDB.getProductName());
 				product.setProductID(productInDB.getProductID());
 				product.setPrice(productInDB.getPrice());
@@ -285,20 +288,20 @@ public class InventoryController {
 						model.addAttribute("shoppingCartQtyError", "Invalid quantity!");
 						return "redirect:/orderReplenishment";
 					}else {
-						product.setQuantity(Integer.parseInt(quantity[0]));
+						product.setOrderedProductQty(Integer.parseInt(quantity[0]));
 						products.add(product);
 					}	
 				} catch (Exception e) {
 					System.out.println(e);
-					model.addAttribute("shoppingCartQtyError", "Quantity has to be integer");
+					model.addAttribute("shoppingCartQtyError", "Invalid Quantity!");
 					return "redirect:/orderReplenishment";
 				}			
 				cart.setProducts(products);
 				cartTotal = cartTotal(products, cart);
-				model.addAttribute("addToCartSucceeded", "You have added " + product.getQuantity() + " [" + product.getProductName() + "] to your shopping cart");
+				model.addAttribute("addToCartSucceeded", "You have added " + product.getOrderedProductQty() + " [" + product.getProductName() + "] to your shopping cart");
 			}else {
 				System.out.println("product exists in cart");
-				for(Product p:products)System.out.println(p.getProductName());
+				for(OrderedProd p:products)System.out.println(p.getProductName());
 				System.out.println("updating product qty");
 				String[] quantityParam = request.getParameterValues("num");
 				
@@ -311,19 +314,19 @@ public class InventoryController {
 						model.addAttribute("shoppingCartQtyError", "Invalid quantity!");
 						return "redirect:/orderReplenishment";
 					}else {
-						Integer quantity = products.get(index).getQuantity()+Integer.parseInt(quantityParam[0]);
-						products.get(index).setQuantity(quantity);
+						Integer quantity = products.get(index).getOrderedProductQty()+Integer.parseInt(quantityParam[0]);
+						products.get(index).setOrderedProductQty(quantity);
 					}	
 				} catch (Exception e) {
 					System.out.println(e);
-					model.addAttribute("shoppingCartQtyError", "Quantity has to be integer");
+					model.addAttribute("shoppingCartQtyError", "Invalid Quantity!");
 					return "redirect:/orderReplenishment";
 				}	
 				System.out.println("product qty updated");
 				cart.setProducts(products);
 				cartTotal = cartTotal(products, cart);
-				Product product = products.get(index);
-				model.addAttribute("addToCartSucceeded", "You have added " + product.getQuantity() + " [" + product.getProductName() + "] to your shopping cart");
+				OrderedProd product = products.get(index);
+				model.addAttribute("addToCartSucceeded", "You have added " + product.getOrderedProductQty() + " [" + product.getProductName() + "] to your shopping cart");
 			}
 			
 			cart.setCartTotal(cartTotal);
@@ -335,23 +338,41 @@ public class InventoryController {
 	}
 	
 	@RequestMapping(value="orderSummary",method=RequestMethod.GET)
-	public String orderSummary(Model model, HttpSession session) {
+	public String orderSummary(Model model, HttpSession session,
+							@ModelAttribute("shoppingCartQtyError")String shoppingCartQtyError) {
 		Cart cart = (Cart) session.getAttribute("cart");
 		if(cart == null) {
 			model.addAttribute("shoppingCartQtyError", "Order Quantity cannot be 0");
 			return "redirect:/orderReplenishment";
 		}
 		model.addAttribute("orderSummary", "orderSummary");
+		model.addAttribute("shoppingCartQtyError", shoppingCartQtyError);
 		return "redirect:/inventory";
 	}
 	
 	@RequestMapping(value="updateRpCart",method=RequestMethod.POST)
-	 public String updateCart(HttpServletRequest request, HttpSession session) {
+	 public String updateCart(HttpServletRequest request, HttpSession session, Model model) {
 		 Cart cart = (Cart) session.getAttribute("cart");
-		 List<Product> products = cart.getProducts();
+		 List<OrderedProd> products = cart.getProducts();
 		 String[] quantity = request.getParameterValues("quantity");
 		 for (int i = 0; i < products.size(); i++) {
-			products.get(i).setQuantity(Integer.parseInt(quantity[i]));
+			 try {
+					Integer.parseInt(quantity[i]);
+					if(Integer.parseInt(quantity[i]) <= 0) {
+						model.addAttribute("shoppingCartQtyError", "Quantity has to be greater than zero!");
+						return "redirect:/orderSummary";
+					}else if(Integer.parseInt(quantity[i]) > 10000000) {
+						model.addAttribute("shoppingCartQtyError", "Invalid quantity!");
+						return "redirect:/orderSummary";
+					}else {
+						products.get(i).setOrderedProductQty(Integer.parseInt(quantity[i]));
+					}	
+				} catch (Exception e) {
+					System.out.println(e);
+					model.addAttribute("shoppingCartQtyError", "Invalid Quantity!");
+					return "redirect:/orderSummary";
+				}
+			 
 		 }
 		 cart.setProducts(products);
 		 Double cartTotal = cartTotal(products, cart);
@@ -370,18 +391,44 @@ public class InventoryController {
 		rpOrder.setCreateByUser(cart.getUser());
 		rpOrder.setCreated_At(cart.getCreated_At());
 		rpOrder.setOrderStatus("Open");
-		List<Product> products = cart.getProducts();
-		List<Product> rpProducts = new ArrayList<Product>();
-		for(Product p:products) {
-			Product rpProduct = new Product();
-			Product productInDB = productService.getProductByName(p.getProductName());
-			rpProduct.setProductID(productInDB.getProductID());
-			rpProduct.setCost(productInDB.getCost());
-			rpProduct.setPrice(productInDB.getPrice());
-			rpProduct.setProductName(productInDB.getProductName());
-			rpProduct.setQuantity(productInDB.getQuantity());
-			rpProducts.add(rpProduct);
+		rpOrder.setTotalPrice(cart.getCartTotal());
+		List<OrderedProd> products = cart.getProducts();
+		List<OrderedProd> rpProducts = new ArrayList<OrderedProd>();
+		List<Product> productList = (ArrayList<Product>) productService.listProducts();
+		for(int i=0; i<productList.size(); i++) {
+			for(int j=0; j<products.size(); j++) {
+				if(productList.get(i).getProductName().equals(products.get(j).getProductName())) {
+					OrderedProd rpProduct = new OrderedProd();
+					Product productInDB = productService.getProductByName(products.get(i).getProductName());
+//					rpProduct.setProductID(productInDB.getProductID());
+					rpProduct.setCost(productInDB.getCost());
+					rpProduct.setPrice(productInDB.getPrice());
+					rpProduct.setProductName(productInDB.getProductName());
+					rpProduct.setQuantity(productInDB.getQuantity());
+					rpProduct.setOrderedProductQty(products.get(i).getOrderedProductQty());
+					rpProducts.add(rpProduct);
+				}else {
+					OrderedProd rpProduct = new OrderedProd();
+					rpProduct.setCost(productList.get(i).getCost());
+					rpProduct.setPrice(productList.get(i).getPrice());
+					rpProduct.setProductName(productList.get(i).getProductName());
+					rpProduct.setQuantity(productList.get(i).getQuantity());
+					rpProduct.setOrderedProductQty(0);
+					rpProducts.add(rpProduct);
+				}
+			}
 		}
+//		for(OrderedProd p:products) {
+//			OrderedProd rpProduct = new OrderedProd();
+//			Product productInDB = productService.getProductByName(p.getProductName());
+////			rpProduct.setProductID(productInDB.getProductID());
+//			rpProduct.setCost(productInDB.getCost());
+//			rpProduct.setPrice(productInDB.getPrice());
+//			rpProduct.setProductName(productInDB.getProductName());
+//			rpProduct.setQuantity(productInDB.getQuantity());
+//			rpProduct.setOrderedProductQty(p.getOrderedProductQty());
+//			rpProducts.add(rpProduct);
+//		}
 		System.out.println("adding products-------");
 		rpOrder.setProducts(rpProducts);
 		replenishmentOrderService.createOrder(rpOrder);
@@ -391,18 +438,18 @@ public class InventoryController {
 		return "redirect:/inventory";
 	}
 	
-	private Double cartTotal(List<Product> products, Cart cart) {
+	private Double cartTotal(List<OrderedProd> products, Cart cart) {
 		Double cartTotal = (double) 0;
-		List<Product> p = cart.getProducts();
-		for(Product a:p) {
-			cartTotal+=a.getCost()*a.getQuantity();
+		List<OrderedProd> p = cart.getProducts();
+		for(OrderedProd a:p) {
+			cartTotal+=a.getCost()*a.getOrderedProductQty();
 		}
 		return cartTotal;
 	 }
 	
 	private int isExisting(Long productID, HttpSession session) {
 		 Cart cart = (Cart) session.getAttribute("cart");
-		 List<Product> products = cart.getProducts();
+		 List<OrderedProd> products = cart.getProducts();
 	
 		  for (int i = 0; i < products.size(); i++)
 	

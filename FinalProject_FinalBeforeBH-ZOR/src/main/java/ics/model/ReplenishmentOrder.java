@@ -24,26 +24,28 @@ public class ReplenishmentOrder {
 	@GenericGenerator(name="increment", strategy = "increment")
 	private Long rpOrderID;	
 	
-	@ManyToMany(fetch=FetchType.EAGER)
+	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
 	@JoinTable(name="RPOrder_Product",joinColumns= {@JoinColumn(name="RPOrder_ID")},
-				inverseJoinColumns= {@JoinColumn(name="Product_ID")})
-	private List<Product> rpProducts = new ArrayList<Product>();
+				inverseJoinColumns= {@JoinColumn(name="productID")})
+	private List<OrderedProd> rpProducts = new ArrayList<OrderedProd>();
 	
 	@ManyToOne(fetch=FetchType.EAGER)
 	private User createByUser;
 	@UpdateTimestamp
 	private Date created_At;
 	private String orderStatus;
+	private Double totalPrice;
+	
 	public Long getRpOrderID() {
 		return rpOrderID;
 	}
 	public void setRpOrderID(Long rpOrderID) {
 		this.rpOrderID = rpOrderID;
 	}
-	public List<Product> getProducts() {
+	public List<OrderedProd> getProducts() {
 		return rpProducts;
 	}
-	public void setProducts(List<Product> products) {
+	public void setProducts(List<OrderedProd> products) {
 		this.rpProducts = products;
 	}
 	public User getCreateByUser() {
@@ -63,15 +65,23 @@ public class ReplenishmentOrder {
 	}
 	public void setOrderStatus(String orderStatus) {
 		this.orderStatus = orderStatus;
+	}	
+	public List<OrderedProd> getRpProducts() {
+		return rpProducts;
+	}
+	public void setRpProducts(List<OrderedProd> rpProducts) {
+		this.rpProducts = rpProducts;
+	}
+	public Double getTotalPrice() {
+		return totalPrice;
+	}
+	public void setTotalPrice(Double totalPrice) {
+		this.totalPrice = totalPrice;
 	}
 	@Override
 	public String toString() {
-		return "ReplenishmentOrder [rpOrderID=" + rpOrderID + ", products=" + rpProducts + ", createByUser="
-				+ createByUser + ", created_At=" + created_At + ", orderStatus=" + orderStatus + "]";
-	}
-	
-	
-	
-	
-	
+		return "ReplenishmentOrder [rpOrderID=" + rpOrderID + ", rpProducts=" + rpProducts + ", createByUser="
+				+ createByUser + ", created_At=" + created_At + ", orderStatus=" + orderStatus + ", totalPrice="
+				+ totalPrice + "]";
+	}	
 }

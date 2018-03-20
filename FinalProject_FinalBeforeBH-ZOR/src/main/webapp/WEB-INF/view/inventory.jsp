@@ -420,13 +420,13 @@
 		                                    <td>${product.productName}</td>
 		                                    <td class="text-center">$${product.cost}</td>
 		                                    <td class="text-center">
-		                                    	<input type="text" name="quantity" class="form-control text-center" value="${product.quantity}">
+		                                    	<input type="text" name="quantity" class="form-control text-center" value="${product.orderedProductQty}">
 		                                    </td>
 		                                    <td class="text-center">
 		                                    	<button type="submit" class="btn btn-info btn-sm"><i class="fa fa-refresh">Refresh</i></button>
 												<a href="${product.productID}/deleteProductInRpCart" class="btn btn-danger btn-sm active" role="button" aria-pressed="true"><i class="fa fa-trash-o">&nbspDelete&nbsp</i></a>	
 		                                    </td>		                                    	
-		                                    <td class="text-right">${product.cost * product.quantity}</td>
+		                                    <td class="text-right">${product.cost * product.orderedProductQty}</td>
 		                                </tr>				
 									</c:forEach>
 									</form:form>		                            
@@ -454,11 +454,14 @@
 		                                <form:form class="form-horizontal" role="form" action="placeReplenishmentOrder" method="post" id="payment-form">
 		                                <tr>
 		                                	<td class="emptyrow"><i class="fa fa-barcode iconbig"></i></td>
-		                                    <td class="emptyrow"></td>
+		                                    <td class="emptyrow">
+		                                    	<c:if test="${!empty shoppingCartQtyError}">
+													<p class="text-warning">Error: ${shoppingCartQtyError}</p>
+												</c:if>
+		                                    </td>
 		                                    <td class="emptyrow"></td>
 		                                    <td class="emptyrow text-center"></td>
-		                                    <td class="emptyrow text-right">
-		                                    		                                    
+		                                    <td class="emptyrow text-right">		                                    		                                    
 		                                    <button type="submit" class="btn btn-success btn-lg" style="width:100%;">Place Order
                                         	</button></td>
 		                                </tr>

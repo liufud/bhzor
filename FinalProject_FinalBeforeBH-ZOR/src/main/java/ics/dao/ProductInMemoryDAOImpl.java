@@ -7,6 +7,7 @@ import java.util.concurrent.ConcurrentHashMap;
 
 import org.springframework.stereotype.Repository;
 
+import ics.model.OrderedProd;
 import ics.model.Product;
 
 @Repository
@@ -44,6 +45,16 @@ public class ProductInMemoryDAOImpl implements ProductDAO {
 	}
 
 	public Product getProductByName(String productName) {
+		// TODO Auto-generated method stub
+		return null;
+	}
+
+	public void addOrUpdateOrderedProduct(OrderedProd product) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	public OrderedProd getOrderedProd(Long orderedProdID) {
 		// TODO Auto-generated method stub
 		return null;
 	}

@@ -54,7 +54,7 @@ public class ReplenishmentOrderHibernateDAOImpl implements ReplenishmentOrderDAO
 	@Transactional
 	public void delete(Long orderID) {
 		ReplenishmentOrder orderToDelete = new ReplenishmentOrder();
-		orderToDelete.setOrderID(orderID);
+		orderToDelete.setRpOrderID(orderID);
 		sessionFactory.getCurrentSession().delete(orderToDelete);
 	}
 

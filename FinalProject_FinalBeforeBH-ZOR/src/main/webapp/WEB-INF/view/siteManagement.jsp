@@ -95,8 +95,7 @@
 								  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 								    <a class="dropdown-item" href="allUsers">All Users</a>
 								    <a class="dropdown-item" href="addUser">Add User</a>
-								    <a class="dropdown-item" href="#">Edit/Remove User</a>
-								    <a class="dropdown-item" href="viewUserInfo">View User Info</a>
+								    <a class="dropdown-item" href="report/?type=xls">Export Data</a>
 								  </div>
 							     </div>
 							  </li>
@@ -115,12 +114,10 @@
 					<div class="btn-group-vertical">
 						<a class="btn btn-sm btn-secondary" href="allUsers" role="button">All Users</a>
 						<a class="btn btn-sm btn-secondary" href="addUser" role="button">Add User</a>
-						<a class="btn btn-sm btn-secondary" href="#" role="button">Edit/Remove User</a>
-						<a class="btn btn-sm btn-secondary" href="viewUserInfo" role="button">View User Info</a>
+						<a class="btn btn-sm btn-secondary" href="report/?type=xls" role="button">Export Data</a>
 					</div>
 				</div>
 				<div class="col-10 small">
-				
 				<!-- Add User -->
 				<c:if test="${!empty addUser}">
 				<form:form method="POST" modelAttribute="userForm" class="form-signin" action="siteManagement">

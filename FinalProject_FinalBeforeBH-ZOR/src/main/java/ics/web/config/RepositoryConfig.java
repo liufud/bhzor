@@ -41,7 +41,7 @@ public class RepositoryConfig {
 	        ds.setUrl("jdbc:mysql://localhost:3306/bhzorinventory");
 	        ds.setUsername("root");
 	        ds.setPassword("0326");    	        
-//	        ds.setUrl("jdbc:mysql://bhzorinventory.crnhc996pmes.us-east-2.rds.amazonaws.com:3306/inventorysys");
+//	        ds.setUrl("jdbc:mysql://bhzorinventory.crnhc996pmes.us-east-2.rds.amazonaws.com:3306/bhzorinventory");
 //	        ds.setUsername("root");
 //	        ds.setPassword("12345678");
 	        return ds;

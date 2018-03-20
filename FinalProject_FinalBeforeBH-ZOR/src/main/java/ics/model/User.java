@@ -72,6 +72,33 @@ public class User {
 	public User() {
 		
 	}
+	
+	public User(String username, Long userId, String password, String passwordConfirm, String email, String firstName,
+			String lastName, Long phoneNumber, String address, String city, String state, String zip, boolean enabled,
+			List<Role> roles, List<Order> orders, List<Order> rpOrders, Cart cart, Date created_at, String roleName) {
+		super();
+		this.username = username;
+		this.userId = userId;
+		this.password = password;
+		this.passwordConfirm = passwordConfirm;
+		this.email = email;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.phoneNumber = phoneNumber;
+		this.address = address;
+		this.city = city;
+		this.state = state;
+		this.zip = zip;
+		this.enabled = enabled;
+		this.roles = roles;
+		this.orders = orders;
+		this.rpOrders = rpOrders;
+		this.cart = cart;
+		this.created_at = created_at;
+		this.roleName = roleName;
+	}
+
+
 
 	public String getUsername() {
 		return username;

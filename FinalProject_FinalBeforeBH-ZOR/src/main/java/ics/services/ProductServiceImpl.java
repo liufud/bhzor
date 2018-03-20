@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import ics.dao.ProductDAO;
+import ics.model.OrderedProd;
 import ics.model.Product;
 
 @Service
@@ -38,6 +39,12 @@ public class ProductServiceImpl implements ProductService{
 	@Transactional
 	public Product getProductByName(String productName) {
 		return productDAO.getProductByName(productName);
+	}
+	public OrderedProd getOrderedProd(Long orderedProdID) {
+		return productDAO.getOrderedProd(orderedProdID);
+	}
+	public void addOrUpdateOrderedProduct(OrderedProd product) {
+		productDAO.addOrUpdateOrderedProduct(product);
 	}
 
 }
