@@ -177,7 +177,7 @@ public class OrderController {
 		return "redirect:/invoice";
 	}
 	@RequestMapping(value="orders",method=RequestMethod.GET)
-	public String showOrder(Model model, HttpSession session,
+	public String showOrder(Model model, HttpSession session, HttpServletRequest request,
 							@ModelAttribute("showList")String showList,
 							@ModelAttribute("addToCartSucceeded")String addToCartSucceeded,
 							@ModelAttribute("showMyCart")String showMyCart,
@@ -250,13 +250,17 @@ public class OrderController {
 			model.addAttribute("viewAllOrders", all);
 		}
 		
+		if(null!= request.getQueryString() && request.getQueryString().contains("selectOrderType")) {
+			model.addAttribute("selectOrderType", "selectOrderType");
+		}
+		
 		return "orders";
 	}
 	
 	@RequestMapping(value="orderType",method=RequestMethod.POST)
 	public String orderType(@RequestParam("orderTypeName")String orderTypeName,Model model) {
 		model.addAttribute("orderType", orderTypeName);
-		return "redirect:/orders";
+		return "redirect:/orders?selectOrderType=true";
 	}
 	
 	@ModelAttribute("productList")
@@ -600,47 +604,33 @@ public class OrderController {
 				return "orders";
 		 }
 		 Cart cart = (Cart) session.getAttribute("cart");		 
-		 List<OrderedProd> products = cart.getProducts();
+		 List<OrderedProd> productInCart = cart.getProducts();
 		 List<OrderedProd> productToBeSavedInOrder = new ArrayList<OrderedProd>();
 		 List<Product> productList = (ArrayList<Product>) productService.listProducts();
 		 Order order = new Order();
-		 for(int j=0; j<productList.size(); j++) {			 			 			 
-			 for(int i=0; i<products.size(); i++) {				 				 
-				 Product productInDB = productService.get(products.get(i).getProductID());
-				 if(productList.get(j).getProductName().equals(products.get(i).getProductName())) {
-					 System.out.println(products.get(i).getProductName() + " with qty " + productInDB.getQuantity());
-					 OrderedProd product = new OrderedProd();
-					 productInDB.setQuantity(productInDB.getQuantity() - products.get(i).getOrderedProductQty());
-					 product.setProductName(products.get(i).getProductName());
-					 product.setCost(products.get(i).getCost());
-					 product.setPrice(products.get(i).getPrice());
-					 product.setQuantity(productInDB.getQuantity());
-					 product.setOrderedProductQty(products.get(i).getOrderedProductQty());
-					 productToBeSavedInOrder.add(product);
-				 }else {
-					 OrderedProd product = new OrderedProd();
-					 product.setProductName(productList.get(j).getProductName());
-					 product.setCost(productList.get(j).getCost());
-					 product.setPrice(productList.get(j).getPrice());
-					 product.setQuantity(productInDB.getQuantity());
-					 product.setOrderedProductQty(0);
-					 productToBeSavedInOrder.add(product);
-				 }
-			 }			 
+		 for(int i=0; i<productList.size(); i++) {
+			 Product productInDB = productService.get(productList.get(i).getProductID());
+			 OrderedProd product = new OrderedProd();
+			 product.setProductName(productList.get(i).getProductName());
+			 product.setCost(productList.get(i).getCost());
+			 product.setPrice(productList.get(i).getPrice());
+			 product.setQuantity(productInDB.getQuantity());
+			 product.setOrderedProductQty(0);
+			 productToBeSavedInOrder.add(product);			 
 		 }
-//		 for(int i=0; i<products.size(); i++) {
-//			 Product productInDB = productService.get(products.get(i).getProductID());
-//			 
-//			 OrderedProd product = new OrderedProd();
-//			 System.out.println(products.get(i).getProductName() + " with qty " + productInDB.getQuantity());
-//			 productInDB.setQuantity(productInDB.getQuantity() - products.get(i).getOrderedProductQty());
-//			 product.setProductName(products.get(i).getProductName());
-//			 product.setCost(products.get(i).getCost());
-//			 product.setPrice(products.get(i).getPrice());
-//			 product.setOrderedProductQty(products.get(i).getOrderedProductQty());
-//			 
-//			 productToBeSavedInOrder.add(product);
-//		 }
+		 for(int i=0; i < productInCart.size(); i++) {
+			 for(int j=0; j < productToBeSavedInOrder.size(); j++) {
+				 if(productInCart.get(i).getProductName().equals(productToBeSavedInOrder.get(j).getProductName())) {
+					 Product productInDB = productService.get(productInCart.get(i).getProductID());
+					 productInDB.setQuantity(productInDB.getQuantity() - productInCart.get(i).getOrderedProductQty());
+					 productToBeSavedInOrder.get(j).setProductName(productInCart.get(i).getProductName());
+					 productToBeSavedInOrder.get(j).setCost(productInCart.get(i).getCost());
+					 productToBeSavedInOrder.get(j).setPrice(productInCart.get(i).getPrice());
+					 productToBeSavedInOrder.get(j).setQuantity(productInDB.getQuantity());
+					 productToBeSavedInOrder.get(j).setOrderedProductQty(productInCart.get(i).getOrderedProductQty());
+				 }
+			 }
+		 }
 		 order.setProducts(productToBeSavedInOrder);
 		 order.setTotalPrice(cart.getCartTotal());
 		 order.setPaymentMethod(paymentMethod);

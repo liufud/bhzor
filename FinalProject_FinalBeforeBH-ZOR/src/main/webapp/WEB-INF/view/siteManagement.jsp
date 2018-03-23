@@ -60,7 +60,7 @@
 							  </li>							
 							</sec:authorize>
 							  <li class="nav-item">
-							    <a class="nav-link" href="orders">Orders</a>
+							    <a class="nav-link" href="orders?selectOrderType=true">Orders</a>
 							    <!-- <div class="dropdown show">
 								  <a class="nav-link dropdown-toggle" href="orders" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								    Orders
@@ -74,7 +74,7 @@
 							    </div> -->
 							  </li>
 							  <li class="nav-item">
-							    <a class="nav-link" href="inventory">Inventory</a>
+							    <a class="nav-link" href="inventory?orderStatus=openOrder">Inventory</a>
 							    <!-- <div class="dropdown show">
 								  <a class="nav-link dropdown-toggle" href="inventory" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								    inventory
@@ -176,7 +176,7 @@
 			        
 			        <spring:bind path="email">
 			            <div class="form-group">
-			                <form:input type="text" path="email" class="form-control" placeholder="email@example.com"
+			                <form:input type="email" path="email" class="form-control" placeholder="email@example.com"
 			                            autofocus="true"></form:input>
 			                <form:errors path="email"></form:errors>
 			            </div>

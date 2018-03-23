@@ -4,9 +4,11 @@ import java.util.Collection;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
 
 import ics.dao.ReplenishmentOrderDAO;
 import ics.model.ReplenishmentOrder;
+
 
 public class ReplenishmentOrderServiceImpl implements ReplenishmentOrderService {
 	@Autowired
@@ -30,6 +32,10 @@ public class ReplenishmentOrderServiceImpl implements ReplenishmentOrderService 
 
 	public void delete(Long orderID) {
 		replenishmentOrderDAO.delete(orderID);
+	}
+
+	public Collection<ReplenishmentOrder> listOrders(String orderStatus) {
+		return replenishmentOrderDAO.listOrders(orderStatus);
 	}
 
 }

@@ -23,9 +23,12 @@ import ics.dao.OrderDAO;
 import ics.dao.OrderHibernateDAOImpl;
 import ics.dao.ProductDAO;
 import ics.dao.ProductHibernateDAOImpl;
+import ics.dao.ReceivedRpOrderDAO;
+import ics.dao.ReceivedRpOrderHibernateDAOImpl;
 import ics.dao.ReplenishmentOrderDAO;
 import ics.dao.VendorDAO;
 import ics.dao.VendorHibernateDAOImpl;
+import ics.model.ReceivedRpOrder;
 import ics.model.ReplenishmentOrder;
 
 @Configuration
@@ -33,7 +36,7 @@ import ics.model.ReplenishmentOrder;
 @ComponentScan("ics")
 public class RepositoryConfig {
 	  
-	@Bean()    
+		@Bean    
 	    public DataSource getDataSource()
 	    {
 	        DriverManagerDataSource ds = new DriverManagerDataSource();        
@@ -125,6 +128,11 @@ public class RepositoryConfig {
 		@Bean
 		public ReplenishmentOrderDAO ReplenishmentOrderHibernateDAOImpl(SessionFactory sessionFactory) {
 			return new ics.dao.ReplenishmentOrderHibernateDAOImpl(sessionFactory);
+		}
+		@Autowired
+		@Bean
+		public ReceivedRpOrderDAO ReceivedOrderHibernateDAOImpl(SessionFactory sessionFactory) {
+			return new ReceivedRpOrderHibernateDAOImpl(sessionFactory);
 		}
     
 }

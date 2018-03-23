@@ -4,6 +4,7 @@ import java.util.Collection;
 import java.util.List;
 
 import ics.model.Order;
+import ics.model.ReplenishmentOrder;
 
 public interface OrderDAO {
 	void createOrder(Order order);

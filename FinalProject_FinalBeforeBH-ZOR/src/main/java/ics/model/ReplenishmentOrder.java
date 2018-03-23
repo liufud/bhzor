@@ -25,8 +25,8 @@ public class ReplenishmentOrder {
 	private Long rpOrderID;	
 	
 	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
-	@JoinTable(name="RPOrder_Product",joinColumns= {@JoinColumn(name="RPOrder_ID")},
-				inverseJoinColumns= {@JoinColumn(name="productID")})
+	@JoinTable(name="RpOrder_Product",joinColumns= {@JoinColumn(name="RpOrder_ID")},
+				inverseJoinColumns= {@JoinColumn(name="orderedProductID")})
 	private List<OrderedProd> rpProducts = new ArrayList<OrderedProd>();
 	
 	@ManyToOne(fetch=FetchType.EAGER)
@@ -41,12 +41,6 @@ public class ReplenishmentOrder {
 	}
 	public void setRpOrderID(Long rpOrderID) {
 		this.rpOrderID = rpOrderID;
-	}
-	public List<OrderedProd> getProducts() {
-		return rpProducts;
-	}
-	public void setProducts(List<OrderedProd> products) {
-		this.rpProducts = products;
 	}
 	public User getCreateByUser() {
 		return createByUser;

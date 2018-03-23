@@ -61,20 +61,19 @@
 							  <li class="nav-item">
 							    <!-- <a class="nav-link active" href="orders">Orders</a> -->
 							    <div class="dropdown show">
-								  <a class="nav-link active dropdown-toggle" href="orders" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								  <a class="nav-link active dropdown-toggle" href="orders?selectOrderType=true" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								    Orders
 								  </a>								
 								  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 								    <a class="dropdown-item" href="#">Search Order</a>
 								    <a class="dropdown-item" href="listProducts">Shopping</a>
 								     <a class="dropdown-item" href="myCart">My Cart</a>
-								    <a class="dropdown-item" href="#">Order Replenishment</a>
 								    <a class="dropdown-item" href="#">Replace Damaged Product</a>
 								  </div>
 							    </div>
 							  </li>
 							  <li class="nav-item">
-							    <a class="nav-link" href="inventory">Inventory</a>
+							    <a class="nav-link" href="inventory?orderStatus=openOrder">Inventory</a>
 							  </li>
 							  <li class="nav-item">
 							    <a class="nav-link" href="siteManagement">Site Management</a>
@@ -105,13 +104,13 @@
 						<a class="btn btn-sm btn-secondary" href="#" role="button">Search Order</a>
 						<a class="btn btn-sm btn-secondary" href="listProducts" role="button">Shopping</a>
 						<a class="btn btn-sm btn-secondary" href="myCart" role="button">My Cart</a>
-						<a class="btn btn-sm btn-secondary" href="#" role="button">Order Replenishment</a>
 						<a class="btn btn-sm btn-secondary" href="#" role="button">Replace Damaged Product</a>
 					</div>
 				</div>
 				<div class="col-9">
 				
 				<!-- Unshipped Order and Unpaid Order information -->
+				<c:if test="${not empty selectOrderType}">
 				<table class="table">								
 					<thead>
 						<tr>
@@ -139,7 +138,7 @@
 						</tr>
 					</form:form>					
 					</tbody>
-				</table>
+				</table>		
 				
 				<c:if test="${not empty viewUnshippedOrders}">
 				<h4><b>Unshipped Orders</b></h4>
@@ -165,9 +164,7 @@
 							</c:forEach>
 							<td>${order.totalPrice}</td>
 							<td>								
-								<a href="#">Update</a><br/>
-								<a href="#">Delete</a><br/>
-								<a href="#">Order</a>
+								<a href="#">Mark as Received</a><br/>
 							</td>							
 						</tr>
 					</c:forEach>				
@@ -199,9 +196,7 @@
 							</c:forEach>
 							<td>${order.totalPrice}</td>
 							<td>								
-								<a href="#">Update</a><br/>
-								<a href="#">Delete</a><br/>
-								<a href="#">Order</a>
+								<a href="#">Mark as Received</a><br/>
 							</td>							
 						</tr>
 					</c:forEach>				
@@ -233,15 +228,14 @@
 							</c:forEach>
 							<td>${order.totalPrice}</td>
 							<td>								
-								<a href="#">Update</a><br/>
-								<a href="#">Delete</a><br/>
-								<a href="#">Order</a>
+								<a href="#">Mark as Received</a><br/>
 							</td>							
 						</tr>
 					</c:forEach>				
 					</tbody>
 				</table>
-				</c:if>		
+				</c:if>	
+				</c:if>	
 				
 				<!-- Product Catalog to Shopping Cart -->
 				<c:if test="${not empty showList}">							

@@ -25,10 +25,11 @@ import org.hibernate.annotations.PolymorphismType;
 @Entity
 //@DiscriminatorValue("orderedProd")
 @Table(name="orderedproduct")
-@Polymorphism(type = PolymorphismType.EXPLICIT)
+//@Polymorphism(type = PolymorphismType.EXPLICIT)
 public class OrderedProd extends Product {
 	
 	private Integer orderedProductQty;
+	private Integer unreceivedProductqty;
 	@ManyToOne
 	private Cart cart;
 	@ManyToMany(mappedBy="products",fetch=FetchType.EAGER)
@@ -60,6 +61,31 @@ public class OrderedProd extends Product {
 	public void setCart(Cart cart) {
 		this.cart = cart;
 	}
+
+	public Integer getUnreceivedProductqty() {
+		return unreceivedProductqty;
+	}
+
+	public void setUnreceivedProductqty(Integer unreceivedProductqty) {
+		this.unreceivedProductqty = unreceivedProductqty;
+	}
+
+	public List<Order> getOrders() {
+		return orders;
+	}
+
+	public void setOrders(List<Order> orders) {
+		this.orders = orders;
+	}
+
+	public List<ReplenishmentOrder> getRpOrders() {
+		return rpOrders;
+	}
+
+	public void setRpOrders(List<ReplenishmentOrder> rpOrders) {
+		this.rpOrders = rpOrders;
+	}
+	
 
 
 }

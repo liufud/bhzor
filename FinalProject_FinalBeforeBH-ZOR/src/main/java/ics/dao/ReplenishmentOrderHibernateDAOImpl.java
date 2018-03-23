@@ -6,6 +6,7 @@ import java.util.List;
 
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import ics.model.ReplenishmentOrder;
@@ -49,6 +50,15 @@ public class ReplenishmentOrderHibernateDAOImpl implements ReplenishmentOrderDAO
 		@SuppressWarnings("unchecked")
 		List<ReplenishmentOrder> listOrders = sessionFactory.getCurrentSession()
 				.createQuery("from ReplenishmentOrder").list();
+		return listOrders;
+	}
+	@Transactional
+	public Collection<ReplenishmentOrder> listOrders(String orderStatus) {
+		@SuppressWarnings("unchecked")
+		List<ReplenishmentOrder> listOrders = sessionFactory.getCurrentSession()
+				.createQuery("from ReplenishmentOrder where orderStatus=?")
+				.setParameter(0, orderStatus)
+				.list();
 		return listOrders;
 	}
 	@Transactional

@@ -16,6 +16,10 @@
 
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<!-- <script src="//webjars/1.17.0/dist/jquery.validate.min.js" type="text/javascript"></script>
+<script src="//webjars/1.17.0/dist/jquery.validate.js" type="text/javascript"></script> -->
+<!-- <script src="webjars/1.17.0/src/localization/messages_es.js" type="text/javascript"></script> -->
+<!-- <script src="js/form-validation.js"></script> -->
 <title>Inventory</title>
 </head>
 <body class="bg-light">
@@ -59,7 +63,7 @@
 							  </li>							
 							</sec:authorize>
 							  <li class="nav-item">
-							    <a class="nav-link" href="orders">Orders</a>
+							    <a class="nav-link" href="orders?selectOrderType=true">Orders</a>
 							    <!-- <div class="dropdown show">
 								  <a class="nav-link dropdown-toggle" href="orders" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								    Orders
@@ -75,7 +79,7 @@
 							  <li class="nav-item">
 							    <!-- <a class="nav-link" href="inventory">Inventory</a> -->
 							    <div class="dropdown show">
-								  <a class="nav-link active dropdown-toggle" href="inventory" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								  <a class="nav-link active dropdown-toggle" href="inventory?orderStatus=openOrder" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								    Inventory
 								  </a>								
 								  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -117,6 +121,110 @@
 					</div>
 				</div>
 				<div class="col-10">
+				
+				<!-- Received Rp Order Form -->				
+				<c:if test="${not empty rpOrderReceivedForm}">
+				<br/>
+				<form:form name="receivedOrderForm" modelAttribute="receivedRpOrder" action="receivedRpOrder" method="post" class="form-control">
+				<div class="row">
+					<div class="col"></div>
+					<div class="col-10">
+						  <div class="form-group row">
+							    <label for="lotID" class="col-sm-3 col-form-label">Lot ID</label>
+							    <div class="col-sm-7">
+							      <form:input name="lotID" id="lotID" type="number" path="lotID" class="form-control" autofocus="true"></form:input>
+			                      <form:errors path="lotID"></form:errors>
+							    </div>
+						  </div>
+						  <div class="form-group row">
+						  		<label for="productName" class="col-sm-3 col-form-label">Product</label>
+						  		<div class="col-sm-7">
+							      	<form:select name="productName" class="form-control" path="receivedRpProductName">
+					                   <%-- <form:option value = "NONE" label = "Select"/> --%>
+					                   <form:options items = "${rpProdNames}" />
+					                </form:select>
+							    </div>
+						  </div>	 					  
+						  <div class="form-group row">
+							    <label for="qtyReceived" class="col-sm-3 col-form-label">Quantity Received</label>
+							    <div class="col-sm-7">
+							      <form:input name="qtyReceived" id="qtyReceived" type="number" path="quantityReceived" class="form-control" autofocus="true"></form:input>
+			                      <form:errors path="quantityReceived"></form:errors>
+							    </div>
+						  </div>
+						  <div class="form-group row">
+							    <label for="qtyRejected" class="col-sm-3 col-form-label">Quantity Rejected</label>
+							    <div class="col-sm-7">
+							      <form:input name="qtyRejected" id="qtyRejected" type="number" path="quantityRejected" class="form-control" autofocus="true"></form:input>
+			                      <form:errors path="quantityRejected"></form:errors>
+							    </div>
+						  </div>
+						  <div class="form-group row">
+							    <label for="expDate" class="col-sm-3 col-form-label">Expiration Date</label>
+							    <div class="col-sm-7">
+							      <form:input name="expDate" id="expDate" type="text" path="expDate" class="form-control" autofocus="true"></form:input>
+			                      <form:errors path="expDate"></form:errors>
+							    </div>				    
+						  </div>
+						      <form:input name="rpOrderID" id="rpOrderID" type="hidden" path="rpOrderID" class="form-control" autofocus="true" value="${rpOrderID}"></form:input>					  
+
+					  		  <button class="btn btn-lg btn-primary btn-block text-center" type="submit">Submit</button>						  
+					</div>
+					<div class="col"></div>
+				</div>
+				</form:form>
+				</c:if>
+				<c:if test="${!empty receivedQtyError}">
+					<p class="text-warning">Error: ${receivedQtyError}</p>
+				</c:if>
+				<c:if test="${!empty saveReceivedQtyToAnotherLot}">
+					<div class="card">
+					  <div class="card-body">
+					    <h5 class="card-title text-info">Note:</h5>
+					    <p class="card-text">Do you want to save the rest of the quantity to another lot?</p>
+					    <a href="${saveReceivedQtyToAnotherLot}/receivedRpOrder" class="card-link btn btn-primary" role="button">Yes</a>
+					    <a href="inventory?orderStatus=openOrder" class="card-link btn btn-primary" role="button">No</a>
+					  </div>
+					</div>
+				</c:if>
+				<c:if test="${!empty rpOrderClosed}">
+					<p class="text-success">Replenish order # ${rpOrderClosed} is now closed</p>
+				</c:if>
+				
+				<!-- View Open Replenishment Order -->
+				<c:if test="${not empty openOrders}">
+				<h4><b>Open Replenishment Orders</b></h4>
+				<table class="table">								
+					<thead>
+						<tr>
+							<th scope="col">Order #</th>
+							<th scope="col">Date</th>
+							<c:forEach items="${productNames}" var="product">
+								<th scope="col">${product.productName}</th>
+								<th scope="col">Unreceived Quantity</th>
+							</c:forEach>
+							<th scope="col">Order Total</th>
+							<th scope="col">Action</th>
+						</tr>
+					</thead>					
+					<tbody>
+					<c:forEach items="${openOrders}" var="order">
+						<tr>
+							<th scope="row">${order.rpOrderID}</th>
+							<td>${order.created_At}</td>
+							<c:forEach items="${order.rpProducts}" var="product">
+								<td>${product.orderedProductQty}</td>
+								<td>${product.unreceivedProductqty}</td>
+							</c:forEach>
+							<td>${order.totalPrice}</td>
+							<td>								
+								<a href="${order.rpOrderID}/receivedRpOrder">Mark as Received</a>
+							</td>							
+						</tr>
+					</c:forEach>				
+					</tbody>
+				</table>
+				</c:if>	
 				
 				<!-- Add Product -->
 				<c:if test="${!empty addProductForm}">

@@ -36,7 +36,7 @@ public class Order {
 	private List<Product> products = new ArrayList<Product>();*/
 	
 	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
-	@JoinTable(name="Order_Product",joinColumns= {@JoinColumn(name="Order_ID")},
+	@JoinTable(name="OrderTable_Product",joinColumns= {@JoinColumn(name="Order_ID")},
 				inverseJoinColumns= {@JoinColumn(name="Product_ID")})
 	private List<OrderedProd> products = new ArrayList<OrderedProd>();
 	@NotNull
