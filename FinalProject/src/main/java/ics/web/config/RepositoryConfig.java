@@ -99,7 +99,7 @@ public class RepositoryConfig {
 	        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
 	       // properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLInnoDBDialect");
 	        properties.put("hibernate.show_sql", "true");
-	        properties.put("hibernate.hbm2ddl.auto", "create");
+	        properties.put("hibernate.hbm2ddl.auto", "update");
 	        
 	        return properties;
 	    }
