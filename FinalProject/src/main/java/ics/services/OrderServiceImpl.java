@@ -66,4 +66,9 @@ public class OrderServiceImpl implements OrderService {
 		orderDAO.createShippedOrder(order);
 	}
 
+
+	public Order getLatestOrder() {
+		return orderDAO.getLatestOrder();
+	}
+
 }

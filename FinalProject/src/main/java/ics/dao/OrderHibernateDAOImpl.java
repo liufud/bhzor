@@ -4,6 +4,8 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
+import javax.persistence.Query;
+
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -130,6 +132,14 @@ public class OrderHibernateDAOImpl implements OrderDAO {
 		} else {
 			return null;
 		}
+	}
+	@Transactional
+	public Order getLatestOrder() {
+		Order latestOrder = (Order) sessionFactory.getCurrentSession()
+											.createQuery("from Order order by orderID DESC")
+											.setMaxResults(1)
+											.uniqueResult();
+		return latestOrder;
 	}
 
 }

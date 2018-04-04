@@ -300,6 +300,9 @@ $(document).ready(function(){
 					</c:forEach>				
 					</tbody>
 				</table>
+				</c:if>
+				<c:if test="${!empty orderPaid}">
+					<p class="text-success">${orderPaid}</p>
 				</c:if>	
 				
 				<c:if test="${not empty viewUnpaidOrders}">
@@ -326,7 +329,7 @@ $(document).ready(function(){
 							</c:forEach>
 							<td>${order.totalPrice}</td>
 							<td>								
-								<a href="#">Mark as Received</a><br/>
+								<a href="${order.orderID}/orderPaid">Mark as Paid</a><br/>
 							</td>							
 						</tr>
 					</c:forEach>				
@@ -345,7 +348,6 @@ $(document).ready(function(){
 								<th scope="col">${product.productName}</th>
 							</c:forEach>
 							<th scope="col">Order Total</th>
-							<th scope="col">Action</th>
 						</tr>
 					</thead>					
 					<tbody>
@@ -356,10 +358,7 @@ $(document).ready(function(){
 							<c:forEach items="${order.products}" var="product">
 								<td>${product.orderedProductQty}</td>
 							</c:forEach>
-							<td>${order.totalPrice}</td>
-							<td>								
-								<a href="#">Mark as Received</a><br/>
-							</td>							
+							<td>${order.totalPrice}</td>							
 						</tr>
 					</c:forEach>				
 					</tbody>
@@ -490,7 +489,7 @@ $(document).ready(function(){
                     <a href="listProducts" class="btn btn-info" style="width: 100%;">Add More Products</a>
                     <hr/>
                     <div class="shopping_cart">
-                        <form:form modelAttribute="billingInfo" class="form-horizontal" role="form" action="placeOrder" method="post" id="payment-form">
+                        <form:form class="form-horizontal" role="form" action="placeOrder" method="post" id="payment-form">
                             <div class="panel-group" id="accordion">
                                 <div class="panel panel-default">
                                     <div class="panel-heading">
@@ -555,7 +554,7 @@ $(document).ready(function(){
 	                                      data-parent="#accordion"
 	                                      href="#collapseTwo"
 	                                      class=" btn btn-success">
-	                                      Continue to Billing Information»</a>
+	                                      Continue to Shipping & Billing Information»</a>
 	                                    </div>
                                     </h4>
                                 </div>
@@ -568,7 +567,14 @@ $(document).ready(function(){
                                 </div> -->
                                 <div id="collapseTwo" class="panel-collapse collapse">
                                  <div class="panel-body">                                          
-                                    <div class="input-group mb-3">
+                                      <div class="input-group mb-3"> 
+                                      <div class="input-group-prepend">
+											<c:if test="${!empty unselectedBoxError}">
+												<p class="text-warning">Error: ${unselectedBoxError}</p>
+											</c:if>
+                                      </div>
+                                      </div> 
+                                      <div class="input-group mb-3">                                    	                  
 									  <div class="input-group-prepend">
 									    <label class="input-group-text" for="saleType_select">Select the type of sale</label>
 										  <select class="custom-select" id="saleType_select" name="saleType">
@@ -623,8 +629,8 @@ $(document).ready(function(){
 									  <div id="customerSale" class="sale_type">
 									  	 <div class="input-group mb-3">
 									  		<div class="input-group-prepend">
-											  	<label class="input-group-text" for="customer_Sale">Select the customer of this sale</label>
-											  	<select class="custom-select" id="customer_Sale" name="_customerSale">
+											  	<label class="input-group-text" for="direct_Sale">Select the customer of this sale</label>
+											  	<select class="custom-select" id="direct_Sale" name="_directSale">
 											  		<option selected>Choose...</option>
 											  		<c:forEach var="customer" items="${allCustomers}">
 											  			<option value="${customer.firstName} ${customer.lastName}">${customer.firstName} ${customer.lastName}</option>
@@ -633,7 +639,7 @@ $(document).ready(function(){
 									  		</div>
 									  	</div>
 									  </div>									 
-                                    <div class="card" style="width: 25rem;">
+                                    <%-- <div class="card" style="width: 25rem;">
 									  <div class="card-body">
 									    <h5 class="card-title">${user.firstName} ${user.lastName}</h5>
 									    <h6 class="card-subtitle mb-2 text-muted">username: ${user.username}</h6>
@@ -648,11 +654,11 @@ $(document).ready(function(){
 										<a href="thisAddress" class="card-link">Use This Address</a>
 									    <a href="newAddress" class="card-link">Use Another Address</a>
 									  </div>
-									</div>
+									</div> --%>
 								</div>                                  
                                 </div>
                             </div>
-                            <c:if test="${not empty showAddressForm}"> 
+                            <%-- <c:if test="${not empty showAddressForm}"> 
                             		<h4 class="panel-title">
                                         <a data-toggle="collapse" data-parent="#accordion" href="#collapseTwo">Existing Billing Information</a>
                                     </h4> 
@@ -671,13 +677,13 @@ $(document).ready(function(){
                                                 </spring:bind>
                                                 </td>
                                                 
-                                                <%-- <spring:bind path="email">
+                                                <spring:bind path="email">
 										            <div class="form-group">
 										                <form:input type="text" path="email" class="form-control" placeholder="email@example.com"
 										                            autofocus="true"></form:input>
 										                <form:errors path="email"></form:errors>
 										            </div>
-										        </spring:bind> --%>
+										        </spring:bind>
                                             </tr>
                                             <tr>
                                                 <td style="width: 175px;">
@@ -740,7 +746,7 @@ $(document).ready(function(){
                                                 <td>
                                                 <spring:bind path="state">
 								                   	<form:select id="id_state" class="form-control" path = "state">
-									                   <%-- <form:option value = "NONE" label = "Select"/> --%>
+									                   <form:option value = "NONE" label = "Select"/>
 									                   <form:options items = "${stateName}" />
 									                </form:select>   
 								                </spring:bind>
@@ -791,13 +797,13 @@ $(document).ready(function(){
                                                 </spring:bind>
                                                 </td>
                                                 
-                                                <%-- <spring:bind path="email">
+                                                <spring:bind path="email">
 										            <div class="form-group">
 										                <form:input type="text" path="email" class="form-control" placeholder="email@example.com"
 										                            autofocus="true"></form:input>
 										                <form:errors path="email"></form:errors>
 										            </div>
-										        </spring:bind> --%>
+										        </spring:bind>
                                             </tr>
                                             <tr>
                                                 <td style="width: 175px;">
@@ -860,7 +866,7 @@ $(document).ready(function(){
                                                 <td>
                                                 <spring:bind path="state">
 								                   	<form:select id="id_state" class="form-control" path = "state">
-									                   <%-- <form:option value = "NONE" label = "Select"/> --%>
+									                   <form:option value = "NONE" label = "Select"/>
 									                   <form:options items = "${stateName}" />
 									                </form:select>   
 								                </spring:bind>
@@ -891,7 +897,7 @@ $(document).ready(function(){
 
                                         </table>
                                     </div>
-                                    </c:if>
+                                    </c:if> --%>
                             		
                             		
                           
@@ -1044,7 +1050,7 @@ $(document).ready(function(){
 					                        ${confirmedOrder.billingInfo.firstName} ${confirmedOrder.billingInfo.lastName}<br>
 					                        ${confirmedOrder.billingInfo.email}<br>
 					                        ${confirmedOrder.billingInfo.phone}<br>
-					    					${confirmedOrder.billingInfo.address}  ${confirmedOrder.billingInfo.unit_suite}<br>
+					    					${confirmedOrder.billingInfo.address}<br>
 					    					${confirmedOrder.billingInfo.city}, ${confirmedOrder.billingInfo.state} ${confirmedOrder.billingInfo.postalCode}
 					    				</address>					
 					    			</div>
@@ -1078,9 +1084,9 @@ $(document).ready(function(){
 					    							<c:forEach items="${confirmedOrder.products}" var="product">
 					    							<tr>
 					    								<td>${product.productName}</td>
-					            						<td class="text-center">${product.cost}</td>
-					            						<td class="text-center">${product.orderedProductQty}</td>
-					                                    <td class="text-right">${product.cost * product.orderedProductQty}</td>
+					            						<td class="text-center">${product.price}</td>
+					            						<td class="text-center">${product.unshippedProductqty}</td>
+					                                    <td class="text-right">${product.price * product.unshippedProductqty}</td>
 					    							</tr>
 					    							</c:forEach>
 					    							<tr>

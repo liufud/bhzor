@@ -35,7 +35,6 @@ import ics.model.Cart;
 import ics.model.Order;
 import ics.model.OrderedProd;
 import ics.model.Product;
-import ics.model.Receivedorder;
 import ics.model.ReplenishmentOrder;
 import ics.model.ShippedOrder;
 import ics.model.User;
@@ -196,7 +195,9 @@ public class OrderController {
 							@ModelAttribute("shippedOrderForm")String shippedOrderForm,
 							@ModelAttribute("shippedQtyError")String shippedQtyError,
 							@ModelAttribute("shipFromAnotherLot")String shipFromAnotherLot,
-							@ModelAttribute("orderShipped")String orderShipped) {
+							@ModelAttribute("orderShipped")String orderShipped,
+							@ModelAttribute("orderPaid")String orderPaid,
+							@ModelAttribute("unselectedBoxError")String unselectedBoxError) {
 		model.addAttribute("showList", showList);
 		model.addAttribute("addToCartSucceeded", addToCartSucceeded);
 		if(!addToCartSucceeded.isEmpty()) {
@@ -213,6 +214,8 @@ public class OrderController {
 		model.addAttribute("shippedQtyError", shippedQtyError);
 		model.addAttribute("shipFromAnotherLot", shipFromAnotherLot);
 		model.addAttribute("orderShipped", orderShipped);
+		model.addAttribute("orderPaid", orderPaid);
+		model.addAttribute("unselectedBoxError", unselectedBoxError);
 		if(!orderID.isEmpty()) {
 			model.addAttribute("shippedOrder", new ShippedOrder());
 			List<OrderedProd> orderedProds = orderService.getOrder(Long.valueOf(orderID)).getProducts();
@@ -225,9 +228,7 @@ public class OrderController {
 		}
 		if(!orderConfirmation.isEmpty()) {
 			model.addAttribute("orderConfirmation",orderConfirmation);
-			User userWhoPlacedOrder = userService.findUserByName(orderConfirmation);
-			List<Order> orderCreatedByThisUser = userWhoPlacedOrder.getOrderCreator();
-			Order confirmedOrder = orderCreatedByThisUser.get(orderCreatedByThisUser.size()-1);			
+			Order confirmedOrder = orderService.getLatestOrder();			
 			System.out.println("Confirmed order ID is " + confirmedOrder.getOrderID());
 			model.addAttribute("confirmedOrder", confirmedOrder);
 		}		
@@ -281,7 +282,16 @@ public class OrderController {
 		return "orders";
 	}
 	
-	
+	@RequestMapping(value="{orderID}/orderPaid", method=RequestMethod.GET)
+	public String orderPaid(@PathVariable Long orderID, Model model) {
+		Order order = orderService.getOrder(orderID);
+		order.setPaymentStatus("Payment Received");
+		order.setShipmentStatus("Pending Shipment");
+		orderService.createOrder(order);
+		model.addAttribute("orderPaid", "Order #" + order.getOrderID() + " has been paid!");
+		model.addAttribute("orderType", "Unpaid Orders");
+		return "redirect:/orders?selectOrderType=true"; 
+	}
 	
 	@RequestMapping(value="{orderID}/shippedOrder", method=RequestMethod.GET)
 	public String shippedOrderForm(@PathVariable String orderID, Model model,
@@ -788,14 +798,15 @@ public class OrderController {
 	 }
 	 
 	 @RequestMapping(value="placeOrder",method=RequestMethod.POST)
-	 public String placeOrder(@Valid@ModelAttribute("billingInfo") BillingInfo billingInfo,
-								BindingResult bindingResult,
+	 public String placeOrder(/*@Valid@ModelAttribute("billingInfo") BillingInfo billingInfo,*/
+								/*BindingResult bindingResult,*/
 								Model model,
 								HttpSession session, @RequestParam("paymentMethod")String paymentMethod,
-			 					@RequestParam(value = "paymentStatus", required = false)String paymentStatus) {
+			 					@RequestParam(value = "paymentStatus", required = false)String paymentStatus,
+			 					HttpServletRequest request) {
 		 System.out.println("Placing order");
-		 System.out.println(bindingResult);
-		 if(bindingResult.hasErrors()) {
+//		 System.out.println(bindingResult);
+		 /*if(bindingResult.hasErrors()) {
 				System.out.println("placeOrder data binding unsuccessful");
 				UserDetails userDetails =
 						 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
@@ -806,7 +817,9 @@ public class OrderController {
 				model.addAttribute("billingInfo", billingInfo);			
 				model.addAttribute("user", user);
 				return "orders";
-		 }
+		 }*/
+		 
+		 
 		 Cart cart = (Cart) session.getAttribute("cart");		 
 		 List<OrderedProd> productInCart = cart.getProducts();
 		 List<OrderedProd> productToBeSavedInOrder = new ArrayList<OrderedProd>();
@@ -848,27 +861,94 @@ public class OrderController {
 			 order.setShipmentStatus("Pending Payment");
 		 }
 		 
+		
+		 String orderType = request.getParameter("saleType");
+		 
+		 if(!validateSelectBox(orderType)) {
+			 System.out.println("Check select type of sale");
+			 model.addAttribute("unselectedBoxError", "There is an unselected box. Please select!");
+			 model.addAttribute("showCheckout", "showCheckout");
+			 return "redirect:/orders";
+		 }
+		 
 		 UserDetails userDetails =
 				 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		 User user = userService.findUserByName(userDetails.getUsername());
-		 if(user.getUsername() == "Manager") {
-			 String email = billingInfo.getEmail();
-			 User managerAssistedUser = userService.findUserByEmail(email);
-			 order.setCreateByUser(managerAssistedUser);
-//			 billingInfo.setEmail(managerAssistedUser.getEmail());
-//			 billingInfo.setFirstName(managerAssistedUser.getFirstName());
-//			 billingInfo.setLastName(managerAssistedUser.getLastName());
-//			 billingInfo.setAddress(managerAssistedUser.getAddress());
-//			 billingInfo.setCity(managerAssistedUser.getCity());
-//			 billingInfo.setState(managerAssistedUser.getState());
-//			 billingInfo.setPostalCode(managerAssistedUser.getZip());
-//			 billingInfo.setPhone(managerAssistedUser.getPhoneNumber());
-		 }else {
-			 order.setCreateByUser(user);			 
+		 
+		 //Vendor Sale
+		 String vendorName = request.getParameter("_vandorSale");
+		 String customerName = request.getParameter("_customers");		 
+		 if(orderType.equals("vendorSale") && validateSelectBox(vendorName) && validateSelectBox(customerName)) {
+			 User customer = userService.getUserByName(customerName);
+			 User vendor = userService.getUserByName(vendorName);
+			 order.setCreateByUser(vendor);
+			 order.setCreateForUser(customer);
+			 order.setOrderType("Vendor mediated sale");
+			 order.setBillingInfo(setBillingInfo(customer,order));
+			 model.addAttribute("orderConfirmation", customer.getUsername());
+			 vendor.getOrderCreator().add(order);
+			 customer.getOrderReceiver().add(order);
+		 }else if(orderType.equals("vendorSale") && (!validateSelectBox(vendorName) || !validateSelectBox(customerName))) {
+			 System.out.println("check vendor sale");
+			 model.addAttribute("unselectedBoxError", "There is an unselected box. Please select!");
+			 model.addAttribute("showCheckout", "showCheckout");
+			 return "redirect:/orders";
 		 }
-		 billingInfo.setOrder(order);
-		 user.getOrderCreator().add(order);
-		 order.setBillingInfo(billingInfo);
+		 
+		 //Distributor Sale
+		 String distributorName = request.getParameter("_distributorSale");		 
+		 if(orderType.equals("distributorSale") && validateSelectBox(distributorName)) {
+			 User distributor = userService.getUserByName(distributorName);
+			 order.setCreateByUser(user);
+			 order.setCreateForUser(distributor);
+			 order.setOrderType("Distributor sale");
+			 order.setBillingInfo(setBillingInfo(distributor,order));
+			 model.addAttribute("orderConfirmation", distributor.getUsername());
+			 user.getOrderCreator().add(order);
+			 distributor.getOrderReceiver().add(order);
+		 }else if(orderType.equals("distributorSale") && !validateSelectBox(distributorName)) {
+			 System.out.println("check distributor sale");
+			 model.addAttribute("unselectedBoxError", "There is an unselected box. Please select!");
+			 model.addAttribute("showCheckout", "showCheckout");
+			 return "redirect:/orders";
+		 }
+		 
+		 //Direct Sale
+		 String directCustomerName = request.getParameter("_directSale");		
+		 if(orderType.equals("directSale") && validateSelectBox(directCustomerName)) {
+			 User directCustomer = userService.getUserByName(directCustomerName);
+			 order.setCreateByUser(user);
+			 order.setCreateForUser(directCustomer);
+			 order.setOrderType("Direct sale");
+			 order.setBillingInfo(setBillingInfo(directCustomer,order));
+			 model.addAttribute("orderConfirmation", directCustomer.getUsername());
+			 user.getOrderCreator().add(order);
+			 directCustomer.getOrderCreator().add(order);
+		 }else if(orderType.equals("directSale") && !validateSelectBox(directCustomerName)) {
+			 System.out.println("check direck sale");
+			 model.addAttribute("unselectedBoxError", "There is an unselected box. Please select!");
+			 model.addAttribute("showCheckout", "showCheckout");
+			 return "redirect:/orders";
+		 }
+
+		 
+		 
+//		 if(user.getUsername() == "Manager") {
+//			 String email = billingInfo.getEmail();
+//			 User managerAssistedUser = userService.findUserByEmail(email);
+//			 order.setCreateByUser(managerAssistedUser);
+////			 billingInfo.setEmail(managerAssistedUser.getEmail());
+////			 billingInfo.setFirstName(managerAssistedUser.getFirstName());
+////			 billingInfo.setLastName(managerAssistedUser.getLastName());
+////			 billingInfo.setAddress(managerAssistedUser.getAddress());
+////			 billingInfo.setCity(managerAssistedUser.getCity());
+////			 billingInfo.setState(managerAssistedUser.getState());
+////			 billingInfo.setPostalCode(managerAssistedUser.getZip());
+////			 billingInfo.setPhone(managerAssistedUser.getPhoneNumber());
+//		 }else {
+//			 order.setCreateByUser(user);			 
+//		 }
+		 
 		 order.setOrderStatus("Open");
 		 System.out.println("Saving order into database");
 		 orderService.createOrder(order);
@@ -877,7 +957,6 @@ public class OrderController {
 //		 User userWhoPlacedOrder = userService.findUserByName(user.getUsername());
 //		 List<Order> orderCreatedByThisUser = userWhoPlacedOrder.getOrders();
 //		 Order confirmedOrder = orderCreatedByThisUser.get(orderCreatedByThisUser.size()-1);
-		 model.addAttribute("orderConfirmation", user.getUsername());
 		 System.out.println("Order has been placed");
 		 return "redirect:/orders";
 	 }
@@ -951,5 +1030,26 @@ public class OrderController {
 		   return stateNames;
 	    }
 	 
+	 private BillingInfo setBillingInfo(User user, Order order) {
+		 BillingInfo billingInfo = new BillingInfo();
+		 billingInfo.setAddress(user.getAddress());
+		 billingInfo.setCity(user.getCity());
+		 billingInfo.setEmail(user.getEmail());
+		 billingInfo.setFirstName(user.getFirstName());
+		 billingInfo.setLastName(user.getLastName());
+		 billingInfo.setPhone(user.getPhoneNumber());
+		 billingInfo.setPostalCode(user.getZip());
+		 billingInfo.setState(user.getState());
+		 billingInfo.setOrder(order);
+		 return billingInfo;
+	 }
+	 
+	 private boolean validateSelectBox(String nameInput) {
+		 boolean check = true;
+		 if(nameInput.equals("Choose...")) {
+			 check = false;
+		 }
+		 return check;
+	 }
 	 
 }

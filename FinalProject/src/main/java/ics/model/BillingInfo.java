@@ -24,7 +24,6 @@ public class BillingInfo {
 	private String lastName;
 	@NotEmpty(message="Please provide your address")
 	private String address;
-	private String unit_suite;
 	@NotEmpty(message="Please enter city")
 	private String city;
 	@NotEmpty(message="Please enter state")
@@ -65,12 +64,6 @@ public class BillingInfo {
 	}
 	public void setAddress(String address) {
 		this.address = address;
-	}
-	public String getUnit_suite() {
-		return unit_suite;
-	}
-	public void setUnit_suite(String unit_suite) {
-		this.unit_suite = unit_suite;
 	}
 	public String getCity() {
 		return city;
