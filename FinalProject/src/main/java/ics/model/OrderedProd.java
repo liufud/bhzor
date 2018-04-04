@@ -30,6 +30,7 @@ public class OrderedProd extends Product {
 	
 	private Integer orderedProductQty;
 	private Integer unreceivedProductqty;
+	private Integer unshippedProductqty;
 	@ManyToOne
 	private Cart cart;
 	@ManyToMany(mappedBy="products",fetch=FetchType.EAGER)
@@ -85,7 +86,12 @@ public class OrderedProd extends Product {
 	public void setRpOrders(List<ReplenishmentOrder> rpOrders) {
 		this.rpOrders = rpOrders;
 	}
-	
 
+	public Integer getUnshippedProductqty() {
+		return unshippedProductqty;
+	}
 
+	public void setUnshippedProductqty(Integer unshippedProductqty) {
+		this.unshippedProductqty = unshippedProductqty;
+	}
 }

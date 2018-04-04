@@ -1,5 +1,8 @@
 package ics.ui.controller;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
@@ -79,21 +82,25 @@ public class RegisterController {
 		attr.addFlashAttribute("passwordError", "Please enter the same password!");
 		return "redirect:/addUser";
 		}
-		if(user.getRoleName().isEmpty()) {
+		String roleName = request.getParameter("roleList");
+		if(!roleName.equals("Choose...")) {
 			Role role = new Role();
-			role.setRoleName("Customer");
+			role.setRoleName(roleName);
 			user.getRoles().add(role);
-			user.setRoleName("Customer");
 			user.setEnabled(true);
+			user.setRoleName(roleName);
 			role.setUser(user);
-		}
-		Role role = new Role();
-		role.setRoleName(user.getRoleName());
-		user.getRoles().add(role);
-		user.setEnabled(true);
-		role.setUser(user);
+		}		
+		String vendorName = (String) request.getParameter("_vandorName");
+		if(!vendorName.isEmpty() && !vendorName.equals("Choose...")) {
+			System.out.println("vendorName is: " + vendorName);
+			User vendor = userService.getUserByName(vendorName);
+			user.setVendor(vendor);
+			vendor.getCustomer().add(user);
+			userService.addUser(vendor);
+		}		
 		try {
-			userService.addUser(user);
+			userService.addUser(user);			
 			System.out.println("user registration successful");
 		} catch (Exception e) {
 			System.out.println(e);

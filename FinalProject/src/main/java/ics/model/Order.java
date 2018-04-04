@@ -43,6 +43,8 @@ public class Order {
 	private Double totalPrice;
 	@ManyToOne(fetch=FetchType.EAGER)
 	private User createByUser;
+	@ManyToOne(fetch=FetchType.EAGER)
+	private User createForUser;
 	@NotEmpty
 	private String paymentMethod;
 	@NotEmpty
@@ -51,12 +53,11 @@ public class Order {
 	private String paymentStatus;
 	@NotEmpty
 	private String shipmentStatus;
+	private String orderType;
 	@OneToOne(mappedBy = "order", cascade=CascadeType.ALL, orphanRemoval=true)
 	private BillingInfo billingInfo;
 	@UpdateTimestamp
 	private Date created_At;
-	
-	
 	public Long getOrderID() {
 		return orderID;
 	}
@@ -80,6 +81,12 @@ public class Order {
 	}
 	public void setCreateByUser(User createByUser) {
 		this.createByUser = createByUser;
+	}
+	public User getCreateForUser() {
+		return createForUser;
+	}
+	public void setCreateForUser(User createForUser) {
+		this.createForUser = createForUser;
 	}
 	public String getPaymentMethod() {
 		return paymentMethod;
@@ -105,17 +112,23 @@ public class Order {
 	public void setShipmentStatus(String shipmentStatus) {
 		this.shipmentStatus = shipmentStatus;
 	}
-	public Date getCreated_At() {
-		return created_At;
+	public String getOrderType() {
+		return orderType;
 	}
-	public void setCreated_At(Date created_At) {
-		this.created_At = created_At;
-	}	
+	public void setOrderType(String orderType) {
+		this.orderType = orderType;
+	}
 	public BillingInfo getBillingInfo() {
 		return billingInfo;
 	}
 	public void setBillingInfo(BillingInfo billingInfo) {
 		this.billingInfo = billingInfo;
+	}
+	public Date getCreated_At() {
+		return created_At;
+	}
+	public void setCreated_At(Date created_At) {
+		this.created_At = created_At;
 	}
 
 }

@@ -16,6 +16,8 @@ public interface UserDAO {
 	List<User> getAllCustomers();
 	List<User> getAllDistributors();
 	List<User> getAllAdministrators();
+	public User getUserByName(String userFirstLastName);
+	public List<User> getCustomerByVendor(Long VendorID);
 	Long totalUserNum();
 	List<User> list(Integer offset, Integer maxResults);
 }

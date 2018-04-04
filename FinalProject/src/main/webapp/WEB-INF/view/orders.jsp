@@ -1,3 +1,5 @@
+<%@page import="ics.dao.UserDAOImpl"%>
+<%@page import="ics.dao.UserDAO"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
@@ -14,6 +16,64 @@
 <meta name="viewport" content="initial-scale=1, maximum-scale=1">
 <link rel='stylesheet' href='webjars/bootstrap/4.0.0/css/bootstrap.css'>
 
+<style type="text/css">
+#paymentOptions {display:none;}
+#vendorSale {display:none;}
+#distributorSale {display:none;}
+#customerSale {display:none;}
+</style>
+<script type="text/javascript">
+
+function myFunction1() {
+	document.getElementById("vendorSale").style.display = "block";
+	document.getElementById("distributorSale").style.display = "none";
+	document.getElementById("customerSale").style.display = "none";
+}
+
+function myFunction2() {
+	document.getElementById("distributorSale").style.display = "block";
+	document.getElementById("vendorSale").style.display = "none";
+	document.getElementById("customerSale").style.display = "none";
+}
+
+function myFunction3() {
+	document.getElementById("customerSale").style.display = "block";
+	document.getElementById("distributorSale").style.display = "none";
+	document.getElementById("vendorSale").style.display = "none";
+}
+
+window.onload = function() {
+	  var c = document.getElementById('customCheck1');
+	  c.onclick = function() {
+	    if (c.checked == true) {document.getElementById('paymentOptions').style.display = 'block';}
+	    else {document.getElementById('paymentOptions').style.display = '';
+	    }
+	  }
+	}
+</script>
+<!-- webjars/jquery/3.2.1/dist/jquery.min.js -->
+<script type="text/javascript">
+$(document).ready(function(){
+
+	  //hides dropdown content
+	  $(".sale_type").hide();
+	  
+	  //unhides first option content
+	 // $("#option1").show();
+	  
+	  //listen to dropdown for change
+	  $("#saleType_select").change(function(){
+	    //rehide content on change
+	    $('.sale_type').hide();
+	    //unhides current item
+	    $('#'+$(this).val()).show();
+	  });
+	  
+	});
+	
+</script>
+
+<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script> -->
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 <title>Orders</title>
@@ -72,6 +132,7 @@
 								  </div>
 							    </div>
 							  </li>
+							  <sec:authorize access="hasAuthority('Manager')">
 							  <li class="nav-item">
 							    <a class="nav-link" href="inventory?orderStatus=openOrder">Inventory</a>
 							  </li>
@@ -88,6 +149,7 @@
 								  </div>
 							     </div> -->
 							  </li>
+							  </sec:authorize>
 						</ul>
 						Logged in as: <sec:authentication property="name"/> <sec:authentication property="authorities"/>
 					<br/>
@@ -148,6 +210,67 @@
 				</table>		
 				
 				<c:if test="${not empty viewUnshippedOrders}">
+				<c:if test="${not empty shippedOrderForm}">
+				<br/>
+				<form:form name="shippedOrderForm" modelAttribute="shippedOrder" action="shippedOrder" method="post" class="form-control">
+				<div class="row">
+					<div class="col"></div>
+					<div class="col-10">
+						  <div class="form-group row">
+							    <label for="lotID" class="col-sm-3 col-form-label">Lot ID</label>
+							    <div class="col-sm-7">
+							      <form:input name="lotID" id="lotID" type="number" path="lotID" class="form-control" autofocus="true"></form:input>
+			                      <form:errors path="lotID"></form:errors>
+							    </div>
+						  </div>
+						  <div class="form-group row">
+						  		<label for="productName" class="col-sm-3 col-form-label">Product</label>
+						  		<div class="col-sm-7">
+							      	<form:select name="productName" class="form-control" path="shippedProductName">
+					                   <%-- <form:option value = "NONE" label = "Select"/> --%>
+					                   <form:options items = "${orderedProdNames}" />
+					                </form:select>
+							    </div>
+						  </div>	 					  
+						  <div class="form-group row">
+							    <label for="qtyShipped" class="col-sm-3 col-form-label">Quantity Shipped</label>
+							    <div class="col-sm-7">
+							      <form:input name="qtyShipped" id="qtyReceived" type="number" path="qtyShipped" class="form-control" autofocus="true"></form:input>
+			                      <form:errors path="qtyShipped"></form:errors>
+							    </div>
+						  </div>
+						  <div class="form-group row">
+							    <label for="trackingNum" class="col-sm-3 col-form-label">Tracking Number</label>
+							    <div class="col-sm-7">
+							      <form:input name="trackingNum" id="expDate" type="text" path="trackingNumber" class="form-control" autofocus="true"></form:input>
+			                      <form:errors path="trackingNumber"></form:errors>
+							    </div>				    
+						  </div>
+						      <form:input name="orderID" id="orderID" type="hidden" path="orderID" class="form-control" autofocus="true" value="${orderID}"></form:input>					  
+
+					  		  <button class="btn btn-lg btn-primary btn-block text-center" type="submit">Submit</button>						  
+					</div>
+					<div class="col"></div>
+				</div>
+				</form:form>
+				</c:if>
+				<c:if test="${!empty shippedQtyError}">
+					<p class="text-warning">Error: ${shippedQtyError}</p>
+				</c:if>
+				<c:if test="${!empty shipFromAnotherLot}">
+					<div class="card">
+					  <div class="card-body">
+					    <h5 class="card-title text-info">Note:</h5>
+					    <p class="card-text">Do you want to ship the rest of the quantity from another lot?</p>
+					    <a href="${shipFromAnotherLot}/receivedRpOrder" class="card-link btn btn-primary" role="button">Yes</a>
+					    <a href="orders?selectOrderType=true" class="card-link btn btn-primary" role="button">No</a>
+					  </div>
+					</div>
+				</c:if>
+				<c:if test="${!empty orderShipped}">
+					<p class="text-success">Order # ${orderShipped} is now closed</p>
+				</c:if>
+				
 				<h4><b>Unshipped Orders</b></h4>
 				<table class="table">								
 					<thead>
@@ -167,11 +290,11 @@
 							<th scope="row">${order.orderID}</th>
 							<td>${order.created_At}</td>
 							<c:forEach items="${order.products}" var="product">
-								<td>${product.orderedProductQty}</td>
+								<td>${product.unshippedProductqty}</td>
 							</c:forEach>
 							<td>${order.totalPrice}</td>
 							<td>								
-								<a href="#">Mark as Received</a><br/>
+								<a href="${order.orderID}/shippedOrder">Mark as Shipped</a><br/>
 							</td>							
 						</tr>
 					</c:forEach>				
@@ -444,7 +567,72 @@
                                     </h4>
                                 </div> -->
                                 <div id="collapseTwo" class="panel-collapse collapse">
-                                 <div class="panel-body">  
+                                 <div class="panel-body">                                          
+                                    <div class="input-group mb-3">
+									  <div class="input-group-prepend">
+									    <label class="input-group-text" for="saleType_select">Select the type of sale</label>
+										  <select class="custom-select" id="saleType_select" name="saleType">
+										    <option selected>Choose...</option>
+										    <option id="vendorSaleActive" onclick="myFunction1()" value="vendorSale">Vendor Mediated Sale</option>
+										    <option id="distributorSaleActive" onclick="myFunction2()" value="distributorSale">Distributor Sale</option>
+										    <option id="directSaleActive" onclick="myFunction3()" value="directSale">Direct Sale</option>
+										  </select>									  
+									  </div>
+									  </div> 
+									  
+									  <div id="vendorSale" class="sale_type">
+									       <div class="input-group mb-3">
+									  		  <div class="input-group-prepend">
+											  	 <label class="input-group-text" for="vendor_Sale">Select the vendor of this sale</label>
+											  	 <select class="custom-select" id="vendor_Sale" name="_vandorSale">
+											  		<option selected>Choose...</option>
+											  		<c:forEach var="vandor" items="${allVendors}">
+											  			<option value="${vandor.firstName} ${vandor.lastName}">${vandor.firstName} ${vandor.lastName}</option>
+											  		</c:forEach>
+											  	 </select>
+											 </div>
+									  	  </div>
+									  			
+										  <div class="input-group mb-3">
+										  		<div class="input-group-prepend">							  	
+												  	<label class="input-group-text" for="customers">Select a customer of this vendor</label>
+												  	<select class="custom-select" id="customers" name="_customers">
+												  		<option selected>Choose...</option>
+												  		<c:forEach var="customer" items="${allCustomers}">
+												  			<option value="${customer.firstName} ${customer.lastName}">${customer.firstName} ${customer.lastName}</option>
+												  		</c:forEach>
+												  	</select>
+										  		</div>
+										  </div>
+									</div>
+									 
+									<div id="distributorSale" class="sale_type">
+									  <div class="input-group mb-3">
+									  	<div class="input-group-prepend">
+										  	<label class="input-group-text" for="distributor_Sale">Select the distributor of this sale</label>
+										  	<select class="custom-select" id="distributor_Sale" name="_distributorSale">
+										  		<option selected>Choose...</option>
+										  		<c:forEach var="distributor" items="${allDistributors}">
+										  			<option value="${distributor.firstName} ${distributor.lastName}">${distributor.firstName} ${distributor.lastName}</option>
+										  		</c:forEach>
+										  	</select>
+									  	</div>
+									  </div>
+									</div>
+									  
+									  <div id="customerSale" class="sale_type">
+									  	 <div class="input-group mb-3">
+									  		<div class="input-group-prepend">
+											  	<label class="input-group-text" for="customer_Sale">Select the customer of this sale</label>
+											  	<select class="custom-select" id="customer_Sale" name="_customerSale">
+											  		<option selected>Choose...</option>
+											  		<c:forEach var="customer" items="${allCustomers}">
+											  			<option value="${customer.firstName} ${customer.lastName}">${customer.firstName} ${customer.lastName}</option>
+											  		</c:forEach>
+											  	</select>
+									  		</div>
+									  	</div>
+									  </div>									 
                                     <div class="card" style="width: 25rem;">
 									  <div class="card-body">
 									    <h5 class="card-title">${user.firstName} ${user.lastName}</h5>
@@ -736,17 +924,18 @@
 											  <input type="checkbox" class="custom-control-input" id="customCheck1" name="paymentStatus">
 											  <label class="custom-control-label font-weight-bold" for="customCheck1">This order has been paid</label>
 											</div>
-                                            <legend>If this order has been paid, which method was it paid for?</legend>
-                                            <div class="input-group mb-3">
+                                            
+                                            <div id="paymentOptions" class="input-group mb-3">
 											  <div class="input-group-prepend">
-											    <label class="input-group-text" for="inputGroupSelect01">Options</label>
+											    <label class="input-group-text" for="inputGroupSelect01">Which method was this order paid for</label>
+												  <select class="custom-select" id="inputGroupSelect01" name="paymentMethod">
+												   <!-- <option selected>Choose...</option> -->
+												    <option value="Cash">Cash</option>
+												    <option value="Direct Deposit">Direct Deposit</option>
+												    <option value="Credit">Credit</option>
+												  </select>
 											  </div>
-											  <select class="custom-select" id="inputGroupSelect01" name="paymentMethod">
-											    <option selected>Choose...</option>
-											    <option value="Cash">Cash</option>
-											    <option value="Direct Deposit">Direct Deposit</option>
-											    <option value="Credit">Credit</option>
-											  </select>
+											  	
 											</div>     
                                             
                                             <!-- <div class="form-group">

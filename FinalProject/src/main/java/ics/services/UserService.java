@@ -16,6 +16,8 @@ public interface UserService {
 	List<User> getAllCustomers();
 	List<User> getAllDistributors();
 	List<User> getAllAdministrators();
+	User getUserByName(String userFirstLastName);
+	public List<User> getCustomerByVendor(Long VendorID);
 	public Long totalUserNum();
 	List<User> list(Integer offset, Integer maxResults);
 }

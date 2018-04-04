@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import ics.dao.OrderDAO;
 import ics.model.Order;
+import ics.model.ShippedOrder;
 
 @Service
 public class OrderServiceImpl implements OrderService {
@@ -43,6 +44,26 @@ public class OrderServiceImpl implements OrderService {
 
 	public Collection<Order> listOrders(String statusType, String status) {
 		return orderDAO.listOrders(statusType, status);
+	}
+
+
+	public List<ShippedOrder> getOrderByLot(Long orderID, Long lotID, String productName) {
+		return orderDAO.getShippedOrderByLot(orderID, lotID, productName);
+	}
+
+
+	public List<ShippedOrder> getShippedOrderByLot(Long orderID, Long lotID, String productName) {
+		return orderDAO.getShippedOrderByLot(orderID, lotID, productName);
+	}
+
+
+	public List<ShippedOrder> getShippedOrderByID(Long orderID, String productName) {
+		return orderDAO.getShippedOrderByID(orderID, productName);
+	}
+
+
+	public void createShippedOrder(ShippedOrder order) {
+		orderDAO.createShippedOrder(order);
 	}
 
 }

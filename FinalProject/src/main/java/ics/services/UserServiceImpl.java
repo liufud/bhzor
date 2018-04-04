@@ -63,5 +63,13 @@ public class UserServiceImpl implements UserService {
 		return userDAO.findUserByEmail(email);
 	}
 
+	public User getUserByName(String userFirstLastName) {
+		return userDAO.getUserByName(userFirstLastName);
+	}
+
+	public List<User> getCustomerByVendor(Long VendorID) {
+		return userDAO.getCustomerByVendor(VendorID);
+	}
+
 
 }

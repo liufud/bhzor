@@ -19,6 +19,7 @@ import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.validation.BindingResult;
+import org.springframework.validation.FieldError;
 import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -34,6 +35,9 @@ import ics.model.Cart;
 import ics.model.Order;
 import ics.model.OrderedProd;
 import ics.model.Product;
+import ics.model.Receivedorder;
+import ics.model.ReplenishmentOrder;
+import ics.model.ShippedOrder;
 import ics.model.User;
 import ics.services.CartService;
 import ics.services.OrderService;
@@ -158,7 +162,7 @@ public class OrderController {
 //		if (session != null) {
 //		    session.invalidate();
 //		}
-		Product product = productService.getProductByName(orderService.getOrder(order.getOrderID()).getProductName());
+		Product product = productService.getProductByName(orderService.getOrder(order.getOrderID()).getShippedProductName());
 		System.out.println("product gotten............................");
 		Integer newInventoryLvl = product.getInventoryLevel() - (newQty - oldQty);
 		product.setInventoryLevel(newInventoryLvl);
@@ -169,7 +173,7 @@ public class OrderController {
 		Order originalOrder = orderService.getOrder(order.getOrderID());
 		originalOrder.setQuantity(newQty);
 		originalOrder.setTotalPrice(totalPrice);
-		product.getOrders().add(originalOrder);
+		product.getOrderCreator().add(originalOrder);
 		originalOrder.setProduct(product);
 		productService.addOrUpdateProduct(product);
 		//orderService.createOrder(originalOrder);
@@ -187,7 +191,12 @@ public class OrderController {
 							@ModelAttribute("thisAddress")String thisAddress,
 							@ModelAttribute("orderConfirmation")String orderConfirmation,
 							@ModelAttribute("shoppingCartQtyError")String shoppingCartQtyError,
-							@ModelAttribute("orderType")String orderType) {
+							@ModelAttribute("orderType")String orderType,
+							@ModelAttribute("orderID")String orderID,
+							@ModelAttribute("shippedOrderForm")String shippedOrderForm,
+							@ModelAttribute("shippedQtyError")String shippedQtyError,
+							@ModelAttribute("shipFromAnotherLot")String shipFromAnotherLot,
+							@ModelAttribute("orderShipped")String orderShipped) {
 		model.addAttribute("showList", showList);
 		model.addAttribute("addToCartSucceeded", addToCartSucceeded);
 		if(!addToCartSucceeded.isEmpty()) {
@@ -199,10 +208,25 @@ public class OrderController {
 		model.addAttribute("showAddressForm", showAddressForm);	
 		model.addAttribute("thisAddress", thisAddress);
 		model.addAttribute("shoppingCartQtyError", shoppingCartQtyError);
+		model.addAttribute("orderID", orderID);
+		model.addAttribute("shippedOrderForm", shippedOrderForm);
+		model.addAttribute("shippedQtyError", shippedQtyError);
+		model.addAttribute("shipFromAnotherLot", shipFromAnotherLot);
+		model.addAttribute("orderShipped", orderShipped);
+		if(!orderID.isEmpty()) {
+			model.addAttribute("shippedOrder", new ShippedOrder());
+			List<OrderedProd> orderedProds = orderService.getOrder(Long.valueOf(orderID)).getProducts();
+			List<String> orderedProdNames = new ArrayList<String>();
+			for(OrderedProd o:orderedProds) orderedProdNames.add(o.getProductName());
+			model.addAttribute("orderedProdNames", orderedProdNames);
+			model.addAttribute("orderID", orderID);
+			List<Order> unshipped = (List<Order>) orderService.listOrders("shipmentStatus","Pending Shipment");
+			model.addAttribute("viewUnshippedOrders", unshipped);
+		}
 		if(!orderConfirmation.isEmpty()) {
 			model.addAttribute("orderConfirmation",orderConfirmation);
 			User userWhoPlacedOrder = userService.findUserByName(orderConfirmation);
-			List<Order> orderCreatedByThisUser = userWhoPlacedOrder.getOrders();
+			List<Order> orderCreatedByThisUser = userWhoPlacedOrder.getOrderCreator();
 			Order confirmedOrder = orderCreatedByThisUser.get(orderCreatedByThisUser.size()-1);			
 			System.out.println("Confirmed order ID is " + confirmedOrder.getOrderID());
 			model.addAttribute("confirmedOrder", confirmedOrder);
@@ -255,6 +279,186 @@ public class OrderController {
 		}
 		
 		return "orders";
+	}
+	
+	
+	
+	@RequestMapping(value="{orderID}/shippedOrder", method=RequestMethod.GET)
+	public String shippedOrderForm(@PathVariable String orderID, Model model,
+									@ModelAttribute("shippedQtyError")String shippedQtyError,
+									@ModelAttribute("shipFromAnotherLot")String shipFromAnotherLot) {
+		model.addAttribute("shippedOrderForm", "shippedOrderForm");
+		model.addAttribute("orderID", orderID);
+		model.addAttribute("shippedQtyError", shippedQtyError);
+		model.addAttribute("shipFromAnotherLot", shipFromAnotherLot);
+		return "redirect:/orders?selectOrderType=true";
+	}
+	
+	@RequestMapping(value="shippedOrder", method=RequestMethod.POST)
+	public String ShippedOrder(@Valid@ModelAttribute("shippedOrder")ShippedOrder shippedOrder,
+								BindingResult bindingResult, Model model) {
+		if(bindingResult.hasErrors()) {
+			System.out.println("data binding unsuccessful");			
+			for(FieldError e:bindingResult.getFieldErrors()) System.out.println(e);
+			model.addAttribute("org.springframework.validation.BindingResult.receivedorder",bindingResult);
+			model.addAttribute("shippedOrder", shippedOrder);
+			model.addAttribute("shippedOrderForm", "shippedOrderForm");
+			List<OrderedProd> orderedProds = orderService.getOrder(shippedOrder.getOrderID()).getProducts();
+			List<String> orderedProdNames = new ArrayList<String>();
+			for(OrderedProd o:orderedProds) orderedProdNames.add(o.getProductName());
+			model.addAttribute("orderedProdNames", orderedProdNames);
+			model.addAttribute("orderID", shippedOrder.getOrderID());
+			List<Order> unshipped = (List<Order>) orderService.listOrders("shipmentStatus","Pending Shipment");
+			model.addAttribute("viewUnshippedOrders", unshipped);
+			model.addAttribute("selectOrderType", "selectOrderType");
+			return "orders";
+		}
+		ShippedOrder shippedOrderToBeSaved = new ShippedOrder();
+		UserDetails userDetails =
+				 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		User user = userService.findUserByName(userDetails.getUsername());
+		System.out.println("User is " + user.getUsername());
+		shippedOrderToBeSaved.setShippedByUser(user);
+		shippedOrderToBeSaved.setOrderID(shippedOrder.getOrderID());
+		shippedOrderToBeSaved.setShippedProductName(shippedOrder.getShippedProductName());
+		shippedOrderToBeSaved.setLotID(shippedOrder.getLotID());
+		shippedOrderToBeSaved.setTrackingNumber(shippedOrder.getTrackingNumber());
+		
+		Order customerOrder = orderService.getOrder(shippedOrder.getOrderID());
+		//Checking the quantity received
+		List<OrderedProd> orderedProducts = customerOrder.getProducts();
+		List<ShippedOrder> shippedOrdersByLot = orderService.getShippedOrderByLot(shippedOrder.getOrderID() ,shippedOrder.getLotID(), shippedOrder.getShippedProductName());
+		for(OrderedProd o:orderedProducts) {
+			if(o.getProductName().equals(shippedOrder.getShippedProductName())) {
+				//if qty received is greater than quantity ordered, throw error
+				if(shippedOrder.getQtyShipped() > o.getOrderedProductQty()) {
+					System.out.println("received order qty greater than ordered qty, error!");
+					model.addAttribute("shippedQtyError", "Shipped quantity cannot be greater than ordered quantity!");
+					return "redirect:/" + customerOrder.getOrderID() + "/shippedOrder";
+				}
+				//if qty received is less than quantity ordered, ask user if he/she wants to save it to another lot
+				else if(shippedOrder.getQtyShipped() < o.getOrderedProductQty()) {
+					Collection<ShippedOrder> shippedOrders = orderService.getShippedOrderByID(shippedOrder.getOrderID(), shippedOrder.getShippedProductName());
+					Integer quantityShipped = new Integer(0);
+					if(null != shippedOrders) {
+						for(ShippedOrder sOrder:shippedOrders) quantityShipped+=sOrder.getQtyShipped();
+					}
+					System.out.println("Total qty shipped of product " + shippedOrder.getShippedProductName() + " so far is " + quantityShipped);
+					//check if the added quantity exceeds ordered quantity
+					if(quantityShipped + shippedOrder.getQtyShipped() > o.getOrderedProductQty()) {
+						model.addAttribute("shippedQtyError", "Shipped quantity cannot be greater than ordered quantity!");
+						return "redirect:/" + customerOrder.getOrderID() + "/shippedOrder";
+					}else if(quantityShipped + shippedOrder.getQtyShipped() < o.getOrderedProductQty()){
+						model.addAttribute("shipFromAnotherLot", customerOrder.getOrderID());
+						if(null != shippedOrdersByLot) {
+							System.out.println("shipped qty less than ordered qty -----------  shipped product exist in the lot");
+							shippedOrdersByLot.get(0).setQtyShipped((shippedOrdersByLot.get(0).getQtyShipped() + shippedOrder.getQtyShipped()));							
+							shipProducts(shippedOrder.getShippedProductName(), shippedOrder.getQtyShipped());
+							orderService.createShippedOrder(shippedOrdersByLot.get(0));
+						}else {
+							System.out.println("received qty less than ordered qty -----------  received product does NOT exist in the lot");
+							shippedOrderToBeSaved.setQtyShipped(shippedOrder.getQtyShipped());							
+							shipProducts(shippedOrder.getShippedProductName(), shippedOrder.getQtyShipped());
+							orderService.createShippedOrder(shippedOrderToBeSaved);
+						}
+						o.setUnshippedProductqty(o.getUnshippedProductqty()-shippedOrder.getQtyShipped());
+						customerOrder.setProducts(orderedProducts);
+						System.out.println("saving customer ordered products -----");
+						orderService.createOrder(customerOrder);
+						System.out.println("order saved ----");
+						
+						System.out.println("Shipped " + shippedOrder.getQtyShipped() + " of " + shippedOrder.getShippedProductName());
+						return "redirect:/" + customerOrder.getOrderID() + "/shippedOrder";
+					}else if(quantityShipped + shippedOrder.getQtyShipped() == o.getOrderedProductQty()){					
+						System.out.println("Shipped qty EQUAL to ordered qty -----------  received product exist in the lot");
+						if(null != shippedOrdersByLot) {
+							shippedOrdersByLot.get(0).setQtyShipped((shippedOrdersByLot.get(0).getQtyShipped() + shippedOrder.getQtyShipped()));
+							shipProducts(shippedOrder.getShippedProductName(), shippedOrder.getQtyShipped());
+							orderService.createShippedOrder(shippedOrdersByLot.get(0));
+						}else {
+							shippedOrderToBeSaved.setQtyShipped(shippedOrder.getQtyShipped());							
+							shipProducts(shippedOrder.getShippedProductName(), shippedOrder.getQtyShipped());
+							orderService.createShippedOrder(shippedOrderToBeSaved);
+						};
+						o.setUnshippedProductqty(o.getUnshippedProductqty()-shippedOrder.getQtyShipped());
+						customerOrder.setProducts(orderedProducts);
+						System.out.println("saving customer ordered products -----");
+						orderService.createOrder(customerOrder);
+						System.out.println("order saved ----");
+						
+						System.out.println("Shipped all the quantity for product [" + shippedOrder.getShippedProductName() + "]" );
+					}
+					
+					
+				}
+				//if qty received is equal to the ordered qty, close the replenishment order
+				else {
+					if(null != shippedOrdersByLot) {
+						shippedOrdersByLot.get(0).setQtyShipped((shippedOrdersByLot.get(0).getQtyShipped() + shippedOrder.getQtyShipped()));
+						shipProducts(shippedOrder.getShippedProductName(), shippedOrder.getQtyShipped());
+						orderService.createShippedOrder(shippedOrdersByLot.get(0));
+					}else {
+						shippedOrderToBeSaved.setQtyShipped(shippedOrder.getQtyShipped());							
+						shipProducts(shippedOrder.getShippedProductName(), shippedOrder.getQtyShipped());
+						orderService.createShippedOrder(shippedOrderToBeSaved);
+					}
+					o.setUnshippedProductqty(o.getUnshippedProductqty()-shippedOrder.getQtyShipped());
+					customerOrder.setProducts(orderedProducts);
+					System.out.println("saving customer ordered products -----");
+					orderService.createOrder(customerOrder);
+					System.out.println("order saved ----");
+					System.out.println("Received all the quantity for product [" + shippedOrder.getQtyShipped() + "]" );
+				}
+			}
+		}
+		List<OrderedProd> orderedProds = orderService.getOrder(customerOrder.getOrderID()).getProducts();
+		
+		System.out.println("checking if order is closed");
+		boolean closeOrder = true;
+		for(OrderedProd o:orderedProds) {
+			if(o.getUnshippedProductqty() > 0) {
+				System.out.println("unshipped qty is greater than zero, cannot close order");
+				closeOrder = false;
+			}
+		}
+		if(closeOrder  == true) {	
+			customerOrder.setOrderStatus("Closed");
+			customerOrder.setShipmentStatus("Shipped");
+			orderService.createOrder(customerOrder);
+			model.addAttribute("orderShipped", customerOrder.getOrderID().toString());
+			System.out.println("order closed");
+			model.addAttribute("orderType", "Unshipped Orders");
+		}
+		System.out.println("check complete");
+		
+		return "redirect:/orders?selectOrderType=true";
+	}
+	
+	private void shipProducts(String productName, Integer quantity) {
+		Product product = productService.getProductByName(productName);
+		product.setQuantity(product.getQuantity() - quantity);
+		productService.addOrUpdateProduct(product);
+	}
+	
+	@ModelAttribute("allVendors")
+	public List<User> getAllVendors(Model model) {
+		List<User> allVendors = userService.getUsersByRole("Vendor");
+		model.addAttribute("allVendors", allVendors);
+		return allVendors;
+	}
+	
+	@ModelAttribute("allDistributors")
+	public List<User> getAllDistributors(Model model){
+		List<User> allDistributors = userService.getUsersByRole("Distributor");
+		model.addAttribute("allDistributors", allDistributors);
+		return allDistributors;
+	}
+	
+	@ModelAttribute("allCustomers")
+	public List<User> getAllCustomers(Model model){
+		List<User> allCustomers = userService.getUsersByRole("Customer");
+		model.addAttribute("allCustomers", allCustomers);
+		return allCustomers;
 	}
 	
 	@RequestMapping(value="orderType",method=RequestMethod.POST)
@@ -616,18 +820,20 @@ public class OrderController {
 			 product.setPrice(productList.get(i).getPrice());
 			 product.setQuantity(productInDB.getQuantity());
 			 product.setOrderedProductQty(0);
+			 product.setUnshippedProductqty(0);
 			 productToBeSavedInOrder.add(product);			 
 		 }
 		 for(int i=0; i < productInCart.size(); i++) {
 			 for(int j=0; j < productToBeSavedInOrder.size(); j++) {
 				 if(productInCart.get(i).getProductName().equals(productToBeSavedInOrder.get(j).getProductName())) {
 					 Product productInDB = productService.get(productInCart.get(i).getProductID());
-					 productInDB.setQuantity(productInDB.getQuantity() - productInCart.get(i).getOrderedProductQty());
+//					 productInDB.setQuantity(productInDB.getQuantity() - productInCart.get(i).getOrderedProductQty());
 					 productToBeSavedInOrder.get(j).setProductName(productInCart.get(i).getProductName());
 					 productToBeSavedInOrder.get(j).setCost(productInCart.get(i).getCost());
 					 productToBeSavedInOrder.get(j).setPrice(productInCart.get(i).getPrice());
 					 productToBeSavedInOrder.get(j).setQuantity(productInDB.getQuantity());
 					 productToBeSavedInOrder.get(j).setOrderedProductQty(productInCart.get(i).getOrderedProductQty());
+					 productToBeSavedInOrder.get(j).setUnshippedProductqty(productInCart.get(i).getOrderedProductQty());
 				 }
 			 }
 		 }
@@ -661,7 +867,7 @@ public class OrderController {
 			 order.setCreateByUser(user);			 
 		 }
 		 billingInfo.setOrder(order);
-		 user.getOrders().add(order);
+		 user.getOrderCreator().add(order);
 		 order.setBillingInfo(billingInfo);
 		 order.setOrderStatus("Open");
 		 System.out.println("Saving order into database");

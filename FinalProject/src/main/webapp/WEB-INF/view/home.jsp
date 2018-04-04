@@ -48,12 +48,14 @@
 							  <li class="nav-item">
 							    <a class="nav-link" href="orders?selectOrderType=true">Orders</a>
 							  </li>
+							  <sec:authorize access="hasAuthority('Manager')">
 							  <li class="nav-item">
 							    <a class="nav-link" href="inventory?orderStatus=openOrder">Inventory</a>
 							  </li>
 							  <li class="nav-item">
 							    <a class="nav-link" href="siteManagement">Site Management</a>
 							  </li>
+							  </sec:authorize>
 						</ul>
 						Logged in as: <sec:authentication property="name"/> <sec:authentication property="authorities"/>
 					<br/>

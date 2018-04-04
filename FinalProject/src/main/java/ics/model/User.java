@@ -10,6 +10,7 @@ import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
@@ -60,7 +61,9 @@ public class User {
 	@OneToMany(fetch = FetchType.EAGER, mappedBy="user",cascade = {CascadeType.ALL})
 	private List<Role> roles = new ArrayList<Role>();
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="createByUser",cascade = {CascadeType.ALL})
-	private List<Order> orders = new ArrayList<Order>();
+	private List<Order> orderCreator = new ArrayList<Order>();
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="createForUser",cascade = {CascadeType.ALL})
+	private List<Order> orderReceiver = new ArrayList<Order>();
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="createByUser",cascade = {CascadeType.ALL})
 	private List<Order> rpOrders = new ArrayList<Order>();
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="createByUser",cascade = {CascadeType.ALL})
@@ -70,14 +73,20 @@ public class User {
 	@UpdateTimestamp
 	private Date created_at;
 	private String roleName;
+	@ManyToOne
+	private User vendor;
+	@OneToMany(mappedBy="vendor")
+	private List<User> customer;
 	
 	public User() {
 		
 	}
-	
+
 	public User(String username, Long userId, String password, String passwordConfirm, String email, String firstName,
 			String lastName, Long phoneNumber, String address, String city, String state, String zip, boolean enabled,
-			List<Role> roles, List<Order> orders, List<Order> rpOrders, Cart cart, Date created_at, String roleName) {
+			List<Role> roles, List<Order> orderCreator, List<Order> orderReceiver, List<Order> rpOrders,
+			List<ReceivedRpOrder> receivedRpOrders, Cart cart, Date created_at, String roleName, User vendor,
+			List<User> customer) {
 		super();
 		this.username = username;
 		this.userId = userId;
@@ -93,11 +102,15 @@ public class User {
 		this.zip = zip;
 		this.enabled = enabled;
 		this.roles = roles;
-		this.orders = orders;
+		this.orderCreator = orderCreator;
+		this.orderReceiver = orderReceiver;
 		this.rpOrders = rpOrders;
+		this.receivedRpOrders = receivedRpOrders;
 		this.cart = cart;
 		this.created_at = created_at;
 		this.roleName = roleName;
+		this.vendor = vendor;
+		this.customer = customer;
 	}
 
 
@@ -214,12 +227,20 @@ public class User {
 		this.roles = roles;
 	}
 
-	public List<Order> getOrders() {
-		return orders;
+	public List<Order> getOrderCreator() {
+		return orderCreator;
 	}
 
-	public void setOrders(List<Order> orders) {
-		this.orders = orders;
+	public void setOrderCreator(List<Order> orderCreator) {
+		this.orderCreator = orderCreator;
+	}
+
+	public List<Order> getOrderReceiver() {
+		return orderReceiver;
+	}
+
+	public void setOrderReceiver(List<Order> orderReceiver) {
+		this.orderReceiver = orderReceiver;
 	}
 
 	public List<Order> getRpOrders() {
@@ -228,6 +249,14 @@ public class User {
 
 	public void setRpOrders(List<Order> rpOrders) {
 		this.rpOrders = rpOrders;
+	}
+
+	public List<ReceivedRpOrder> getReceivedRpOrders() {
+		return receivedRpOrders;
+	}
+
+	public void setReceivedRpOrders(List<ReceivedRpOrder> receivedRpOrders) {
+		this.receivedRpOrders = receivedRpOrders;
 	}
 
 	public Cart getCart() {
@@ -253,13 +282,21 @@ public class User {
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
 	}
-	
-	public List<ReceivedRpOrder> getReceivedRpOrders() {
-		return receivedRpOrders;
+
+	public User getVendor() {
+		return vendor;
 	}
 
-	public void setReceivedRpOrders(List<ReceivedRpOrder> receivedRpOrders) {
-		this.receivedRpOrders = receivedRpOrders;
+	public void setVendor(User vendor) {
+		this.vendor = vendor;
+	}
+
+	public List<User> getCustomer() {
+		return customer;
+	}
+
+	public void setCustomer(List<User> customer) {
+		this.customer = customer;
 	}
 
 	@Override
@@ -267,9 +304,10 @@ public class User {
 		return "User [username=" + username + ", userId=" + userId + ", password=" + password + ", passwordConfirm="
 				+ passwordConfirm + ", email=" + email + ", firstName=" + firstName + ", lastName=" + lastName
 				+ ", phoneNumber=" + phoneNumber + ", address=" + address + ", city=" + city + ", state=" + state
-				+ ", zip=" + zip + ", enabled=" + enabled + ", roles=" + roles + ", orders=" + orders + ", rpOrders="
-				+ rpOrders + ", cart=" + cart + ", created_at=" + created_at + ", roleName=" + roleName + "]";
+				+ ", zip=" + zip + ", enabled=" + enabled + ", roles=" + roles + ", orderCreator=" + orderCreator
+				+ ", orderReceiver=" + orderReceiver + ", rpOrders=" + rpOrders + ", receivedRpOrders="
+				+ receivedRpOrders + ", cart=" + cart + ", created_at=" + created_at + ", roleName=" + roleName
+				+ "]";
 	}
-
-	
+		
 }

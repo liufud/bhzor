@@ -18,6 +18,11 @@
 <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
 <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
 <title>Site Management</title>
+<style>
+#cust {
+display:none;
+}
+</style>
 </head>
 <body class="bg-light">
 
@@ -163,16 +168,37 @@
 			            </div>
 			        </spring:bind>
 			        
-			        <spring:bind path="roleName">
-			            <div class="form-group">
+			        <%-- <spring:bind path="roleName">
+			            <div class="form-group" name="form" onclick="check()">
 			            <label>Select a role for this user&nbsp</label>
-			                <form:select path = "roleName">
-					                   <%-- <form:option value = "NONE" label = "Select"/> --%>
-					                   <form:options items = "${roleList}" />
+			                <form:select id="role" path = "roleName">
+					                   <form:option value = "NONE" label = "Select"/>
+					                   <form:options  value="${roleList}" items = "${roleList}" />
 					        </form:select>
 			                <form:errors path="roleName"></form:errors>
 			            </div>
-			        </spring:bind>	        
+			        </spring:bind> --%>
+			        
+			        
+			        <label>Select a role for this user&nbsp</label>
+		            <select id="role" name="roleList">
+		            	<option selected>Choose...</option>
+						<option onclick="check()" value="Customer">Customer</option>
+						<option onclick="check2()" value="Vendor">Vendor</option>
+						<option onclick="check2()" value="Distributor">Distributor</option>
+						<option onclick="check2()" value="Manager">Manager</option>
+				  	</select>	
+				  	
+			        
+			        <div id="cust">
+			        <label>Select a vendor for this customer&nbsp</label>
+		            <select id="vendorName" name="_vandorName">
+				  		<option selected>Choose...</option>
+				  		<c:forEach var="vendor" items="${allVendorsName}">
+				  			<option value="${vendor}">${vendor}</option>
+				  		</c:forEach>
+				  	</select>	
+				  	</div>        
 			        
 			        <spring:bind path="email">
 			            <div class="form-group">
@@ -206,13 +232,22 @@
 			            </div>
 			        </spring:bind>
 			        
-			        <spring:bind path="state">
+                  	<spring:bind path="state">
+	                  	<div class="form-group">
+		                   	<form:select id="id_state" class="form-control" path = "state">
+			                   <form:option value = "NONE" label = "State"/>
+			                   <form:options items = "${stateName}" />
+			                </form:select>
+			            </div>   
+	                </spring:bind>
+			        
+			     <%--    <spring:bind path="state">
 			            <div class="form-group">
 			                <form:input type="text" path="state" class="form-control" placeholder="State"
 			                            autofocus="true"></form:input>
 			                <form:errors path="state"></form:errors>
 			            </div>
-			        </spring:bind>
+			        </spring:bind> --%>
 			        
 			        <spring:bind path="zip">
 			            <div class="form-group">
@@ -630,5 +665,14 @@
 <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+<script>
+function check() {
+	document.getElementById("cust").style.display="block";
+}
+function check2() {
+		document.getElementById("cust").style.display="none";
+}
+
+</script>
 </body>
 </html>

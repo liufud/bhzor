@@ -10,6 +10,8 @@ import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
 import ics.model.Order;
+import ics.model.ReceivedRpOrder;
+import ics.model.ShippedOrder;
 
 @Repository
 public class OrderHibernateDAOImpl implements OrderDAO {
@@ -23,6 +25,10 @@ public class OrderHibernateDAOImpl implements OrderDAO {
 	
 	@Transactional
 	public void createOrder(Order order) {
+		sessionFactory.getCurrentSession().saveOrUpdate(order);
+	}
+	@Transactional
+	public void createShippedOrder(ShippedOrder order) {
 		sessionFactory.getCurrentSession().saveOrUpdate(order);
 	}
 	@Transactional
@@ -53,6 +59,37 @@ public class OrderHibernateDAOImpl implements OrderDAO {
 					.list();
 		}		
 		return listOrders;
+	}
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public List<ShippedOrder> getShippedOrderByLot(Long orderID, Long lotID, String productName) {
+		List<ShippedOrder> orders = new ArrayList<ShippedOrder>();
+		orders = sessionFactory.getCurrentSession()
+			.createQuery("from ShippedOrder where orderID=? and lotID=? and shippedProductName=?")
+			.setParameter(0, orderID)
+			.setParameter(1, lotID)
+			.setParameter(2, productName)
+			.list();
+		if (orders.size() > 0) {
+			return orders;
+		} else {
+			return null;
+		}
+	}
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public List<ShippedOrder> getShippedOrderByID(Long orderID, String productName) {
+		List<ShippedOrder> orders = new ArrayList<ShippedOrder>();
+		orders = sessionFactory.getCurrentSession()
+			.createQuery("from ShippedOrder where orderID=? and shippedProductName=?")
+			.setParameter(0, orderID)
+			.setParameter(1, productName)
+			.list();
+		if (orders.size() > 0) {
+			return orders;
+		} else {
+			return null;
+		}
 	}
 	@Transactional
 	public void delete(Long orderID) {

@@ -1,7 +1,9 @@
 package ics.ui.controller;
 
 import java.util.ArrayList;
+import java.util.LinkedHashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.validation.Valid;
 
@@ -65,6 +67,17 @@ public class SiteManagementController {
 //		model.addAttribute("offset", offset);
 		
 		return "siteManagement";
+	}
+	
+	@ModelAttribute("allVendorsName")
+	public List<String> getAllVendors(Model model) {
+		List<User> allVendors = userService.getUsersByRole("Vendor");
+		List<String> allVendorNames = new ArrayList<String>();
+		for(User u:allVendors) {
+			allVendorNames.add(u.getFirstName() + " " + u.getLastName());
+		}
+		model.addAttribute("allVendorNames", allVendorNames);
+		return allVendorNames;
 	}
 	
 	@ModelAttribute("roleList")
@@ -221,6 +234,63 @@ public class SiteManagementController {
 		oldUser.setUsername(newUser.getUsername());
 		oldUser.setZip(newUser.getZip());
 	}
+	
+	@ModelAttribute("stateName")
+    public Map<String,String> getStateName() {
+		Map<String,String> stateNames = new LinkedHashMap<String,String>();
+		stateNames.put("AK","Alaska");
+		stateNames.put("AL","Alabama");
+		stateNames.put("AZ","Arizona");
+		stateNames.put("AR","Arkansas");
+		stateNames.put("CA","California");
+		stateNames.put("CO","Colorado");
+		stateNames.put("CT","Connecticut");
+		stateNames.put("DE","Delaware");
+		stateNames.put("FL","Florida");
+		stateNames.put("GA","Georgia");
+		stateNames.put("HI","Hawaii");
+		stateNames.put("ID","Idaho");
+		stateNames.put("IL","Illinois");
+		stateNames.put("IN","Indiana");
+		stateNames.put("IA","Iowa");
+		stateNames.put("KS","Kansas");
+		stateNames.put("KY","Kentucky");
+		stateNames.put("LA","Louisiana");
+		stateNames.put("ME","Maine");
+		stateNames.put("MD","Maryland");
+		stateNames.put("MA","Massachusetts");
+		stateNames.put("MI","Michigan");
+		stateNames.put("MN","Minnesota");
+		stateNames.put("MS","Mississippi");
+		stateNames.put("MO","Missouri");
+		stateNames.put("MT","Montana");
+		stateNames.put("NE","Nebraska");
+		stateNames.put("NV","Nevada");
+		stateNames.put("NH","New");
+		stateNames.put("NJ","New");
+		stateNames.put("NM","New");
+		stateNames.put("NY","New");
+		stateNames.put("NC","North");
+		stateNames.put("ND","North");
+		stateNames.put("OH","Ohio");
+		stateNames.put("OK","Oklahoma");
+		stateNames.put("OR","Oregon");
+		stateNames.put("PA","Pennsylvania");
+		stateNames.put("RI","Rhode");
+		stateNames.put("SC","South");
+		stateNames.put("SD","South");
+		stateNames.put("TN","Tennessee");
+		stateNames.put("TX","Texas");
+		stateNames.put("UT","Utah");
+		stateNames.put("VT","Vermont");
+		stateNames.put("VA","Virginia");
+		stateNames.put("WA","Washington");
+		stateNames.put("DC","Washington");
+		stateNames.put("WV","West");
+		stateNames.put("WI","Wisconsin");
+		stateNames.put("WY","Wyoming");
+	   return stateNames;
+    }
 	
 	
 }

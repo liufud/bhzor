@@ -77,12 +77,36 @@ public class UserDAOImpl implements UserDAO {
 		return allAdministrators;
 	}
 	@SuppressWarnings("unchecked")
+	@Transactional
 	public List<User> getUsersByRole(String roleName) {
 		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(User.class);
 		List<User> users = (List<User>) criteria.add(Restrictions.eq("roleName", roleName)).list();
 		return users;
 	}
 	
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public User getUserByName(String userFirstLastName) {
+		System.out.println(userFirstLastName);
+		String firstName = userFirstLastName.split(" ")[0];
+		String lastName = userFirstLastName.split(" ")[1];
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(User.class);
+		List<User> users = (List<User>) criteria
+										.add(Restrictions.eq("firstName", firstName))
+										.add(Restrictions.eq("lastName", lastName))
+										.list();
+		return users.get(0);
+	}
+	
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public List<User> getCustomerByVendor(Long VendorID){
+		Criteria criteria = sessionFactory.getCurrentSession().createCriteria(User.class);
+		List<User> customers = (List<User>) criteria.add(Restrictions.eq("vendor_userId", VendorID)).list();
+		return customers;
+	}
+	
+	@Transactional
 	public Long totalUserNum() {
 		return (Long) sessionFactory.getCurrentSession().createCriteria(User.class).
 		setProjection(Projections.rowCount())
@@ -90,6 +114,7 @@ public class UserDAOImpl implements UserDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
+	@Transactional
 	public List<User> list(Integer offset, Integer maxResults) {
 		return sessionFactory.getCurrentSession()
 			    .createCriteria(User.class)
@@ -99,6 +124,7 @@ public class UserDAOImpl implements UserDAO {
 	}
 	
 	@SuppressWarnings("unchecked")
+	@Transactional
 	public User findUserByEmail(String email) {
 		List<User> users = new ArrayList<User>();
 
