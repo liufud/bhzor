@@ -17,6 +17,7 @@ import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -31,7 +32,7 @@ public class ShippedOrder {
 	@Min(value=0)
 	@Max(value=1000)
 	private Long lotID;
-	@UpdateTimestamp
+	@CreationTimestamp
 	private Date dateShipped;
 	@NotNull(message="Quantity shipped cannot be empty!")
 	@Min(value=0)

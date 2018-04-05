@@ -18,6 +18,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -56,8 +57,11 @@ public class Order {
 	private String orderType;
 	@OneToOne(mappedBy = "order", cascade=CascadeType.ALL, orphanRemoval=true)
 	private BillingInfo billingInfo;
-	@UpdateTimestamp
+	@CreationTimestamp
 	private Date created_At;
+	private String paid_At;
+	private String shipped_At;
+	
 	public Long getOrderID() {
 		return orderID;
 	}
@@ -129,6 +133,18 @@ public class Order {
 	}
 	public void setCreated_At(Date created_At) {
 		this.created_At = created_At;
+	}
+	public String getPaid_At() {
+		return paid_At;
+	}
+	public void setPaid_At(String paid_At) {
+		this.paid_At = paid_At;
+	}
+	public String getShipped_At() {
+		return shipped_At;
+	}
+	public void setShipped_At(String shipped_At) {
+		this.shipped_At = shipped_At;
 	}
 
 }

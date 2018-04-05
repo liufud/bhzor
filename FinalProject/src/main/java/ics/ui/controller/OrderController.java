@@ -1,8 +1,13 @@
 package ics.ui.controller;
 
 import java.security.Principal;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Date;
 import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
@@ -287,6 +292,9 @@ public class OrderController {
 		Order order = orderService.getOrder(orderID);
 		order.setPaymentStatus("Payment Received");
 		order.setShipmentStatus("Pending Shipment");
+		DateFormat dtf = new SimpleDateFormat(("yyyy-MM-dd HH:mm:ss"));
+		Date date = new Date();
+		order.setPaid_At(dtf.format(date));
 		orderService.createOrder(order);
 		model.addAttribute("orderPaid", "Order #" + order.getOrderID() + " has been paid!");
 		model.addAttribute("orderType", "Unpaid Orders");
@@ -434,6 +442,9 @@ public class OrderController {
 		if(closeOrder  == true) {	
 			customerOrder.setOrderStatus("Closed");
 			customerOrder.setShipmentStatus("Shipped");
+			DateFormat dtf = new SimpleDateFormat(("yyyy-MM-dd HH:mm:ss"));
+			Date date = new Date();
+			customerOrder.setShipped_At(dtf.format(date));
 			orderService.createOrder(customerOrder);
 			model.addAttribute("orderShipped", customerOrder.getOrderID().toString());
 			System.out.println("order closed");

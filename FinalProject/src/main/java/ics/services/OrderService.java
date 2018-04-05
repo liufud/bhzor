@@ -14,6 +14,7 @@ public interface OrderService {
 	List<Order> getOrderByUserId(Long userId);
 	List<Order> getOrderByUsername(String username);
 	public Collection<Order> listOrders();
+	public Collection<ShippedOrder> listShippedOrders();
 	Collection<Order> listOrders(String statusType, String status);
 	public List<ShippedOrder> getShippedOrderByLot(Long orderID, Long lotID, String productName);
 	public List<ShippedOrder> getShippedOrderByID(Long orderID, String productName);

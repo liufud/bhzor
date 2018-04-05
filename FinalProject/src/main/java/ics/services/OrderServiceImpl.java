@@ -71,4 +71,9 @@ public class OrderServiceImpl implements OrderService {
 		return orderDAO.getLatestOrder();
 	}
 
+
+	public Collection<ShippedOrder> listShippedOrders() {
+		return orderDAO.listShippedOrders();
+	}
+
 }

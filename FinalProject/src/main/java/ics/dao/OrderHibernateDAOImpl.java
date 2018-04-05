@@ -45,6 +45,13 @@ public class OrderHibernateDAOImpl implements OrderDAO {
 				.createQuery("from Order").list();
 		return listOrders;
 	}
+	@Transactional
+	public Collection<ShippedOrder> listShippedOrders() {
+		@SuppressWarnings("unchecked")
+		List<ShippedOrder> listShippedOrders = sessionFactory.getCurrentSession()
+				.createQuery("from ShippedOrder").list();
+		return listShippedOrders;
+	}
 	@SuppressWarnings("unchecked")
 	@Transactional
 	public Collection<Order> listOrders(String statusType, String status) {

@@ -14,6 +14,7 @@ import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 
@@ -31,7 +32,7 @@ public class ReplenishmentOrder {
 	
 	@ManyToOne(fetch=FetchType.EAGER)
 	private User createByUser;
-	@UpdateTimestamp
+	@CreationTimestamp
 	private Date created_At;
 	private String orderStatus;
 	private Double totalPrice;

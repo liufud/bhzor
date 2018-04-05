@@ -16,6 +16,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Email;
@@ -70,7 +71,7 @@ public class User {
 	private List<ReceivedRpOrder> receivedRpOrders = new ArrayList<ReceivedRpOrder>();
 	@OneToOne
 	private Cart cart;
-	@UpdateTimestamp
+	@CreationTimestamp
 	private Date created_at;
 	private String roleName;
 	@ManyToOne

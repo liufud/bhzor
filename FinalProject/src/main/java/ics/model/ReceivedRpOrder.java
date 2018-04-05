@@ -18,6 +18,7 @@ import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Pattern;
 
+import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.NotEmpty;
@@ -32,7 +33,7 @@ public class ReceivedRpOrder {
 	@Min(value=0)
 	@Max(value=1000)
 	private Long lotID;
-	@UpdateTimestamp
+	@CreationTimestamp
 	private Date dateReceived;
 	@NotNull(message="Quantity received cannot be empty!")
 	@Min(value=0)

@@ -16,6 +16,7 @@ public interface OrderDAO {
 	public List<ShippedOrder> getShippedOrderByID(Long orderID, String productName);
 	public Order getLatestOrder();
 	public Collection<Order> listOrders();
+	public Collection<ShippedOrder> listShippedOrders();
 	Collection<Order> listOrders(String statusType, String status);
 	public void delete(Long orderID);
 }
