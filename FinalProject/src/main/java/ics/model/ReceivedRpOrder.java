@@ -13,6 +13,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.JoinTable;
 import javax.persistence.ManyToMany;
 import javax.persistence.ManyToOne;
+import javax.persistence.Transient;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -29,26 +30,30 @@ public class ReceivedRpOrder {
 	@GeneratedValue(generator="increment")
 	@GenericGenerator(name="increment", strategy = "increment")
 	private Long receivedRpOrderID;	
-	@NotNull(message="Lot ID cannot be empty!")
+//	@NotNull(message="ID de Lote no puede estaer vacio!")
+//	@Min(value=0)
+//	private Long lotID;
+	@NotNull(message="# de estante no puede estaer vacio!")
 	@Min(value=0)
 	@Max(value=1000)
-	private Long lotID;
+	private Long shelfID;
 	@CreationTimestamp
 	private Date dateReceived;
-	@NotNull(message="Quantity received cannot be empty!")
+	@NotNull(message="¡La cantidad recibida no puede estar vacía!")
 	@Min(value=0)
 	@Max(value=10000000)
 	private Integer quantityReceived;
 	@Min(value=0)
 	@Max(value=100000)
 	private Integer quantityRejected;
-	@NotNull(message="Expiration Date cannot be empty!")
-	@Pattern(message="Invalid date format. Input has to be in format mm/dd/yy", regexp="^(\\d{1,2})\\/(\\d{1,2})\\/(\\d{2})$")
+	@NotNull(message="La fecha de caducidad no puede estar vacía!")
+	@Pattern(message="Formato de fecha inválido. La entrada tiene que estar en formato dd/mm/yy", regexp="^(\\d{1,2})\\/(\\d{1,2})\\/(\\d{2})$")
 	private String expDate;
 	@ManyToOne(fetch=FetchType.EAGER)
 	private User createByUser;
 	@NotEmpty
 	private String receivedRpProductName;
+	@Transient
 	private Double totalCost;
 	private Long rpOrderID;
 	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
@@ -61,12 +66,6 @@ public class ReceivedRpOrder {
 	}
 	public void setReceivedRpOrderID(Long receivedRpOrderID) {
 		this.receivedRpOrderID = receivedRpOrderID;
-	}
-	public Long getLotID() {
-		return lotID;
-	}
-	public void setLotID(Long lotID) {
-		this.lotID = lotID;
 	}
 	public Date getDateReceived() {
 		return dateReceived;
@@ -122,5 +121,16 @@ public class ReceivedRpOrder {
 	public void setReceivedProds(List<OrderedProd> receivedProds) {
 		this.receivedProds = receivedProds;
 	}
-		
+	public Long getShelfID() {
+		return shelfID;
+	}
+	public void setShelfID(Long shelfID) {
+		this.shelfID = shelfID;
+	}
+//	public Long getLotID() {
+//		return lotID;
+//	}
+//	public void setLotID(Long lotID) {
+//		this.lotID = lotID;
+//	}
 }

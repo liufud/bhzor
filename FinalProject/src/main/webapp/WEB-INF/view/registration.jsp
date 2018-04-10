@@ -20,10 +20,10 @@
 		</div>
 		<div class="col-6">
 			<form:form method="POST" modelAttribute="userForm" class="form-signin">
-		        <h2 class="form-signin-heading">Create your account</h2>
+		        <h2 class="form-signin-heading">Crea Tu Cuenta</h2>
 		        <spring:bind path="firstName">
 		            <div class="form-group">
-		                <form:input type="text" path="firstName" class="form-control" placeholder="First Name"
+		                <form:input type="text" path="firstName" class="form-control" placeholder="Nombre"
 		                            autofocus="true"></form:input>
 		                <form:errors path="firstName"></form:errors>
 		            </div>
@@ -31,7 +31,7 @@
 		        
 		        <spring:bind path="lastName">
 		            <div class="form-group">
-		                <form:input type="text" path="lastName" class="form-control" placeholder="Last Name"
+		                <form:input type="text" path="lastName" class="form-control" placeholder="Apellido"
 		                            autofocus="true"></form:input>
 		                <form:errors path="lastName"></form:errors>
 		            </div>
@@ -39,7 +39,7 @@
 		        
 		        <spring:bind path="username">
 		            <div class="form-group">
-		                <form:input type="text" path="username" class="form-control" placeholder="Username"
+		                <form:input type="text" path="username" class="form-control" placeholder="Usuarionombre"
 		                            autofocus="true"></form:input>
 		                <form:errors path="username"></form:errors>
 		            </div>
@@ -47,7 +47,7 @@
 		        
 		        <spring:bind path="password">
 		            <div class="form-group">
-		                <form:input type="password" path="password" class="form-control" placeholder="Password"></form:input>
+		                <form:input type="password" path="password" class="form-control" placeholder="Contraseña"></form:input>
 		                <form:errors path="password"></form:errors>
 		            </div>
 		        </spring:bind>	
@@ -56,7 +56,7 @@
 				</c:if>
 		        <spring:bind path="passwordConfirm">
 		            <div class="form-group">
-		                <form:input type="password" path="passwordConfirm" class="form-control" placeholder="Confirm Password"></form:input>
+		                <form:input type="password" path="passwordConfirm" class="form-control" placeholder="Confirmar Contraseña"></form:input>
 		                <form:errors path="passwordConfirm"></form:errors>
 		            </div>
 		        </spring:bind>	        
@@ -71,7 +71,7 @@
 		        
 				<spring:bind path="phoneNumber">
 		            <div class="form-group">
-		                <form:input type="text" path="phoneNumber" class="form-control" placeholder="Phone Number"
+		                <form:input type="text" path="phoneNumber" class="form-control" placeholder="Número de Teléfono"
 		                            autofocus="true"></form:input>
 		                <form:errors path="phoneNumber"></form:errors>
 		            </div>
@@ -79,7 +79,7 @@
 		        
 		        <spring:bind path="address">
 		            <div class="form-group">
-		                <form:input type="text" path="address" class="form-control" placeholder="Address"
+		                <form:input type="text" path="address" class="form-control" placeholder="Dirección"
 		                            autofocus="true"></form:input>
 		                <form:errors path="address"></form:errors>
 		            </div>
@@ -87,7 +87,7 @@
 		        
 		        <spring:bind path="city">
 		            <div class="form-group">
-		                <form:input type="text" path="city" class="form-control" placeholder="City"
+		                <form:input type="text" path="city" class="form-control" placeholder="Ciudad"
 		                            autofocus="true"></form:input>
 		                <form:errors path="city"></form:errors>
 		            </div>
@@ -95,7 +95,7 @@
 		        
 		        <spring:bind path="state">
 		            <div class="form-group">
-		                <form:input type="text" path="state" class="form-control" placeholder="State"
+		                <form:input type="text" path="state" class="form-control" placeholder="Estado"
 		                            autofocus="true"></form:input>
 		                <form:errors path="state"></form:errors>
 		            </div>
@@ -103,20 +103,20 @@
 		        
 		        <spring:bind path="zip">
 		            <div class="form-group">
-		                <form:input type="text" path="zip" class="form-control" placeholder="Zip Code"
+		                <form:input type="text" path="zip" class="form-control" placeholder="Còdigo Postal"
 		                            autofocus="true"></form:input>
 		                <form:errors path="zip"></form:errors>
 		            </div>
 		        </spring:bind>
 		
-		        <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+		        <button class="btn btn-lg btn-primary btn-block" type="submit">Confirmar</button>
 		    </form:form>
 		    <br/>
 		    <c:if test="${empty addUser}">
-		    	<a href="login">Go Back</a>
+		    	<a href="login">Regresa</a>
 		    </c:if>
 		    <c:if test="${!empty addUser}">
-		    	<a href="addUser/backTOsiteManagement">Go Back</a>
+		    	<a href="addUser/backTOsiteManagement">Regresa</a>
 		    </c:if>
 		</div>
 		<div class="col">

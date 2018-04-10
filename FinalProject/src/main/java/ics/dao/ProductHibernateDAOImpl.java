@@ -28,7 +28,7 @@ public class ProductHibernateDAOImpl implements ProductDAO {
 	public Collection<Product> listProducts() {
 		@SuppressWarnings("unchecked")
 		List<Product> listProduct = sessionFactory.getCurrentSession()
-				.createQuery("from Product as p where p.class = Product").list();
+				.createQuery("from Product as p where p.class = Product ORDER BY p.productID").list();
 		return listProduct;
 	}
 	

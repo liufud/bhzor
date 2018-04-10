@@ -12,7 +12,7 @@
 <%@ page isELIgnored="false"%>
 <html>
 <head>
-<title>Login</title>
+<title>Iniciar Sesion</title>
 </head>
 <body class="bg-light">
  <div class="container">
@@ -22,19 +22,19 @@
    		<div class="col-5">
 			   <br/><br/><br/><br/><br/><br/><br/><br/>
 			   <form action="perform_login" method='POST' class="form-signin">
-			   <h1 class="form-signin-heading">Login</h1>
+			   <h1 class="form-signin-heading">Iniciar Sesion</h1>
 			      	<font color="red">
 						<span>${sessionScope["SPRING_SECURITY_LAST_EXCEPTION"].message}</span>
 					</font>
 		         <div class="form-group">
-			            <input type='text' name='username' placeholder="username" autofocus="true" class="form-control">
+			            <input type='text' name='username' placeholder="usuarionombre" autofocus="true" class="form-control">
 			     </div>
 			     <div class="form-group">			
-			            <input type='password' name='password' placeholder="password" autofocus="true" class="form-control"/>
+			            <input type='password' name='password' placeholder="contraseña" autofocus="true" class="form-control"/>
 				 </div>
-			            <input type="submit" value="Login" autofocus="true" class="btn btn-primary"/>
+			            <input type="submit" value="Iniciar Sesion" autofocus="true" class="btn btn-primary"/>
 			  </form>
-			  <br/><a href="register">register</a>
+			  <br/><a href="register">Registrate</a>
     	</div>
     	<div class="col">
     	</div>

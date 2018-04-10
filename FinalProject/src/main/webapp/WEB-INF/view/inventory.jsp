@@ -31,24 +31,24 @@
 			<div class="row">
 				<div class="col"><img src="img/BH-ZOR_logo.png" height="70"></div>
 				<%-- <sec:authorize access="hasAuthority('Manager')"> --%>
-				<div class="col"><h1>Inventory Tracker</h1></div>
+				<div class="col-7"><h1>BH-ZOR: Base de Datos</h1></div>
 <%-- 				</sec:authorize>
 				<sec:authorize access="hasAuthority('Customer')">
 				<div class="col5"><h1>Welcome</h1></div>
 				</sec:authorize> --%>
-				<div class="col"></div>
+				<div class="col-1"></div>
 			</div>
 			<div class="row">
 				<div class="col"></div>
 				<div class="col-12">
 					<br/>	
 						<ul class="nav nav-tabs">
-							<sec:authorize access="hasAuthority('Manager')">
+							<%-- <sec:authorize access="hasAuthority('Manager')">
 							  <li class="nav-item">
-							    <a class="nav-link" href="dashboard">Dashboard</a>
+							    <a class="nav-link" href="dashboard">Panel de Control</a>
 							  </li>					  				
 							  <li class="nav-item">
-							   <a class="nav-link" href="sales">Sales</a>
+							   <a class="nav-link" href="sales">Ventas</a>
 							    <!-- <div class="dropdown show">
 								  <a class="nav-link dropdown-toggle" href="sales" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								    Sales
@@ -61,9 +61,9 @@
 								  </div>
 							    </div> -->						    
 							  </li>							
-							</sec:authorize>
+							</sec:authorize> --%>
 							  <li class="nav-item">
-							    <a class="nav-link" href="orders?selectOrderType=true">Orders</a>
+							    <a class="nav-link" href="orders?selectOrderType=true">Pedidos</a>
 							    <!-- <div class="dropdown show">
 								  <a class="nav-link dropdown-toggle" href="orders" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								    Orders
@@ -79,19 +79,19 @@
 							  <li class="nav-item">
 							    <!-- <a class="nav-link" href="inventory">Inventory</a> -->
 							    <div class="dropdown show">
-								  <a class="nav-link active dropdown-toggle" href="inventory?orderStatus=openOrder" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								    Inventory
+								  <a class="nav-link active" href="inventory?orderStatus=openOrder" role="button" id="dropdownMenuLink" aria-haspopup="true" aria-expanded="false">
+								    Inventario
 								  </a>								
-								  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+								  <!-- <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 								    <a class="dropdown-item" href="addProduct">Add Product</a>
 								    <a class="dropdown-item" href="editProduct">View Inventory</a>
 								    <a class="dropdown-item" href="orderReplenishment">Order Replenishment</a>
 								    <a class="dropdown-item" href="#">Historical Inventory</a>
-								  </div>
+								  </div> -->
 							     </div>	
 							  </li>
 							  <li class="nav-item">
-							    <a class="nav-link" href="siteManagement">Site Management</a>
+							    <a class="nav-link" href="siteManagement">Administración de la Pagina</a>
 							     <!-- <div class="dropdown show">
 								  <a class="nav-link dropdown-toggle" href="inventory" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								    Site Management
@@ -104,23 +104,23 @@
 							     </div> -->
 							  </li>
 						</ul>
-						Logged in as: <sec:authentication property="name"/> <sec:authentication property="authorities"/>
+						Conectado como: <sec:authentication property="name"/> <sec:authentication property="authorities"/>
 					<br/>
 				</div>
 				<div class="col"></div>
 			</div>					
 			
 			<div class="row">
-				<div class="col-2">
+				<div class="col-3">
 				<br/>
 					<div class="btn-group-vertical">
-						<a class="btn btn-sm btn-secondary" href="addProduct" role="button">Add Product</a>
-						<a class="btn btn-sm btn-secondary" href="editProduct" role="button">View Inventory</a>
-						<a class="btn btn-sm btn-secondary" href="orderReplenishment" role="button">Order Replenishment</a>
-						<a class="btn btn-sm btn-secondary" href="#" role="button">Historical Inventory</a>
+						<a class="btn btn-sm btn-secondary" href="inventory?orderStatus=openOrder" role="button">Abrir Pedidos de Reposicion</a>
+						<a class="btn btn-sm btn-secondary" href="addProduct" role="button">Agregar Productos</a>
+						<a class="btn btn-sm btn-secondary" href="editProduct" role="button">Ver inventario</a>
+						<a class="btn btn-sm btn-secondary" href="orderReplenishment" role="button">Orden de Reposición de Producto</a>
 					</div>
 				</div>
-				<div class="col-10">
+				<div class="col-9">
 				
 				<!-- Received Rp Order Form -->				
 				<c:if test="${not empty rpOrderReceivedForm}">
@@ -130,14 +130,14 @@
 					<div class="col"></div>
 					<div class="col-10">
 						  <div class="form-group row">
-							    <label for="lotID" class="col-sm-3 col-form-label">Lot ID</label>
+							    <label for="shelfID" class="col-sm-3 col-form-label"># de Estante</label>
 							    <div class="col-sm-7">
-							      <form:input name="lotID" id="lotID" type="number" path="lotID" class="form-control" autofocus="true"></form:input>
-			                      <form:errors path="lotID"></form:errors>
+							      <form:input name="shelfID" id="shelfID" type="number" path="shelfID" class="form-control" autofocus="true"></form:input>
+			                      <form:errors path="shelfID"></form:errors>
 							    </div>
 						  </div>
 						  <div class="form-group row">
-						  		<label for="productName" class="col-sm-3 col-form-label">Product</label>
+						  		<label for="productName" class="col-sm-3 col-form-label">Producto</label>
 						  		<div class="col-sm-7">
 							      	<form:select name="productName" class="form-control" path="receivedRpProductName">
 					                   <%-- <form:option value = "NONE" label = "Select"/> --%>
@@ -146,21 +146,21 @@
 							    </div>
 						  </div>	 					  
 						  <div class="form-group row">
-							    <label for="qtyReceived" class="col-sm-3 col-form-label">Quantity Received</label>
+							    <label for="qtyReceived" class="col-sm-3 col-form-label">Cantidad Recibida</label>
 							    <div class="col-sm-7">
 							      <form:input name="qtyReceived" id="qtyReceived" type="number" path="quantityReceived" class="form-control" autofocus="true"></form:input>
 			                      <form:errors path="quantityReceived"></form:errors>
 							    </div>
 						  </div>
-						  <div class="form-group row">
-							    <label for="qtyRejected" class="col-sm-3 col-form-label">Quantity Rejected</label>
+						  <%-- <div class="form-group row">
+							    <label for="qtyRejected" class="col-sm-3 col-form-label">Cantidad Rechazada</label>
 							    <div class="col-sm-7">
 							      <form:input name="qtyRejected" id="qtyRejected" type="number" path="quantityRejected" class="form-control" autofocus="true"></form:input>
 			                      <form:errors path="quantityRejected"></form:errors>
 							    </div>
-						  </div>
+						  </div> --%>
 						  <div class="form-group row">
-							    <label for="expDate" class="col-sm-3 col-form-label">Expiration Date</label>
+							    <label for="expDate" class="col-sm-3 col-form-label">Fecha de Expiracion</label>
 							    <div class="col-sm-7">
 							      <form:input name="expDate" id="expDate" type="text" path="expDate" class="form-control" autofocus="true"></form:input>
 			                      <form:errors path="expDate"></form:errors>
@@ -168,7 +168,7 @@
 						  </div>
 						      <form:input name="rpOrderID" id="rpOrderID" type="hidden" path="rpOrderID" class="form-control" autofocus="true" value="${rpOrderID}"></form:input>					  
 
-					  		  <button class="btn btn-lg btn-primary btn-block text-center" type="submit">Submit</button>						  
+					  		  <button class="btn btn-lg btn-primary btn-block text-center" type="submit">Confirmar</button>						  
 					</div>
 					<div class="col"></div>
 				</div>
@@ -180,30 +180,31 @@
 				<c:if test="${!empty saveReceivedQtyToAnotherLot}">
 					<div class="card">
 					  <div class="card-body">
-					    <h5 class="card-title text-info">Note:</h5>
-					    <p class="card-text">Do you want to save the rest of the quantity to another lot?</p>
-					    <a href="${saveReceivedQtyToAnotherLot}/receivedRpOrder" class="card-link btn btn-primary" role="button">Yes</a>
+					    <h5 class="card-title text-info">Nota:</h5>
+					    <p class="card-text">¿Desea guardar el resto de la cantidad en otro estante?</p>
+					    <a href="${saveReceivedQtyToAnotherLot}/receivedRpOrder" class="card-link btn btn-primary" role="button">Sí</a>
 					    <a href="inventory?orderStatus=openOrder" class="card-link btn btn-primary" role="button">No</a>
 					  </div>
 					</div>
 				</c:if>
 				<c:if test="${!empty rpOrderClosed}">
-					<p class="text-success">Replenish order # ${rpOrderClosed} is now closed</p>
+					<p class="text-success">#${rpOrderClosed} de Pedido de Reposicion está ahora cerrada</p>
 				</c:if>
 				
 				<!-- View Open Replenishment Order -->
 				<c:if test="${not empty openOrders}">
-				<h4><b>Open Replenishment Orders</b></h4>
+				<h4><b>Abrir Pedidos de Reposicion</b></h4>
 				<table class="table">								
 					<thead>
 						<tr>
-							<th scope="col">Order #</th>
-							<th scope="col">Date</th>
+							<th scope="col"># de Pedido</th>
+							<th scope="col">Fecha</th>
 							<c:forEach items="${productNames}" var="product">
-								<th scope="col">Unreceived ${product.productName}</th>
+								<th scope="col">No Recibido ${product.productName}</th>
 							</c:forEach>
-							<th scope="col">Order Total</th>
-							<th scope="col">Action</th>
+							<th scope="col">Creado Por</th>
+							<!-- <th scope="col">Total de Pedido</th> -->
+							<th scope="col">Accion</th>
 						</tr>
 					</thead>					
 					<tbody>
@@ -214,9 +215,10 @@
 							<c:forEach items="${order.rpProducts}" var="product">
 								<td>${product.unreceivedProductqty}</td>
 							</c:forEach>
-							<td>${order.totalPrice}</td>
+							<td>${order.createByUser.firstName} ${order.createByUser.lastName}</td>
+							<%-- <td>${order.totalPrice}</td> --%>
 							<td>								
-								<a href="${order.rpOrderID}/receivedRpOrder">Mark as Received</a>
+								<a href="${order.rpOrderID}/receivedRpOrder">Marcar como Recibido</a>
 							</td>							
 						</tr>
 					</c:forEach>				
@@ -228,7 +230,7 @@
 				<c:if test="${!empty addProductForm}">
 				<form:form modelAttribute="product" action="addProduct" method="post" class="form-control">
 	
-				<legend>Enter Product Details</legend>					
+				<legend>Ingresar Detalles del Producto</legend>					
 				<div class="row">
 					<div class="col"></div>
 					<div class="col-8">
@@ -237,7 +239,7 @@
 					</c:if>
 						<spring:bind path="productName">
 				            <div class="form-group">
-				            	Product Name*:
+				            	Nombre del Producto:
 				                <form:input type="text" path="productName" class="form-control"
 				                            autofocus="true"></form:input>
 				                <form:errors path="productName"></form:errors>
@@ -245,20 +247,44 @@
 				        </spring:bind>
 				        <spring:bind path="cost">
 				            <div class="form-group">
-				            	Cost from Factory*:
+				            	Costo de Fàbrica:
 				                <form:input type="text" path="cost" class="form-control"
 				                            autofocus="true"></form:input>
 				                <form:errors path="cost"></form:errors>
 				            </div>
 				        </spring:bind>
-				        <spring:bind path="price">
+				        <spring:bind path="quantityOnHand">
 				            <div class="form-group">
-				            	Price for Sale*:
-				                <form:input type="text" path="price" class="form-control"
+				            	Cantidad
+				                <form:input type="text" path="quantityOnHand" class="form-control"
 				                            autofocus="true"></form:input>
-				                <form:errors path="price"></form:errors>
+				                <form:errors path="quantityOnHand"></form:errors>
 				            </div>
 				        </spring:bind>
+				        <%-- <spring:bind path="distributorPrice">
+				            <div class="form-group">
+				            	Precio de Distribuidor:
+				                <form:input type="text" path="distributorPrice" class="form-control"
+				                            autofocus="true"></form:input>
+				                <form:errors path="distributorPrice"></form:errors>
+				            </div>
+				        </spring:bind>
+				        <spring:bind path="vendorPrice">
+				            <div class="form-group">
+				            	Precio de Venta:
+				                <form:input type="text" path="vendorPrice" class="form-control"
+				                            autofocus="true"></form:input>
+				                <form:errors path="vendorPrice"></form:errors>
+				            </div>
+				        </spring:bind>
+				        <spring:bind path="clientPrice">
+				            <div class="form-group">
+				            	Precio de Cliente:
+				                <form:input type="text" path="clientPrice" class="form-control"
+				                            autofocus="true"></form:input>
+				                <form:errors path="clientPrice"></form:errors>
+				            </div>
+				        </spring:bind> --%>
 				       	<spring:bind path="productID">
 				            <div class="form-group">
 				                <form:hidden path="productID" class="form-control"
@@ -266,7 +292,7 @@
 				                <form:errors path="productID"></form:errors>
 				            </div>
 				        </spring:bind>
-				        <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+				        <button class="btn btn-lg btn-primary btn-block" type="submit">Confirmar</button>
 					</div>
 					<div class="col"></div>		
 					</div>
@@ -274,7 +300,7 @@
 					</c:if>
 				<c:if test="${not empty addProductSucceeded}">
 					<div class="alert alert-success" role="alert">
-					  <h4 class="alert-heading">Success!</h4>
+					  <h4 class="alert-heading">Muy Bien!</h4>
 					  <p class="text-success">${addProductSucceeded}</p>
 					</div>
 				</c:if>
@@ -285,8 +311,8 @@
 					<table class="table">								
 					<thead>
 						<tr>
-							<th scope="col">Select A Product Type</th>
-							<th scope="col">Action</th>
+							<th scope="col">Selecciona Tipo de Producto</th>
+							<th scope="col">Acciòn</th>
 						</tr>
 					</thead>					
 					<tbody>
@@ -301,7 +327,7 @@
 				                </spring:bind> 
 							</th>
 							<td>
-			                	<button class="btn btn-primary" type="submit">Submit</button>
+			                	<button class="btn btn-primary" type="submit">Confirmar</button>
 			                	<!-- <a href="deleteProduct">Delete</a> -->
 			                </td>				
 							<%-- <sec:authorize access="hasAuthority('Manager')">							
@@ -315,14 +341,16 @@
 				<table class="table">								
 					<thead>
 						<tr>
-							<th scope="col">Product ID</th>
-							<th scope="col">Product Name</th>
+							<th scope="col">ID del Producto</th>
+							<th scope="col">Nombre del Producto</th>
 							<sec:authorize access="hasAuthority('Manager')">
-							<th scope="col">Cost</th>
+							<th scope="col">Costo</th>
 							</sec:authorize>
-							<th scope="col">Price</th>
-							<th scope="col">Quantity</th>
-							<th scope="col">Action</th>
+							<!-- <th scope="col">Distribuidor Precio</th>
+							<th scope="col">Vendedor Precio</th>
+							<th scope="col">Cliente Precio</th> -->
+							<th scope="col">Cantidad</th> 
+							<th scope="col">Acciòn</th>
 						</tr>
 					</thead>					
 					<tbody>
@@ -333,17 +361,16 @@
 							<sec:authorize access="hasAuthority('Manager')">
 							<td>${product.cost}</td>
 							</sec:authorize>
-							<td>${product.price}</td>
+							<%-- <td>${product.distributorPrice}</td>
+							<td>${product.vendorPrice}</td>
+							<td>${product.clientPrice}</td> --%>
 							<td>${product.quantity}</td>								
 							<sec:authorize access="hasAuthority('Manager')">
 							<%-- <td><a href="products/${product.productID}/updateProduct">Update</a></td> --%>
 							<td>								
-								<a href="${product.productID}/updateProduct">Update</a><br/>
-								<a href="${product.productID}/deleteProduct">Delete</a>
+								<a href="${product.productID}/updateProduct">Actualizar</a><br/>
+								<%-- <a href="${product.productID}/deleteProduct">Eliminar</a> --%>
 							</td>
-							</sec:authorize>
-							<sec:authorize access="hasAuthority('Customer')">
-							<td><a href="#">Order</a></td>
 							</sec:authorize>							
 						</tr>
 					</c:forEach>				
@@ -356,14 +383,14 @@
 				<table class="table">								
 					<thead>
 						<tr>
-							<th scope="col">Product ID</th>
-							<th scope="col">Product Name</th>
+							<th scope="col">ID del Producto</th>
+							<th scope="col">Nombre del Producto</th>
 							<sec:authorize access="hasAuthority('Manager')">
-							<th scope="col">Cost</th>
+							<th scope="col">Costo</th>
 							</sec:authorize>
-							<th scope="col">Price</th>
-							<th scope="col">Quantity</th>
-							<th scope="col">Action</th>
+							<th scope="col">Precio</th>
+							<th scope="col">Cantidad</th>
+							<th scope="col">Acciòn</th>
 						</tr>
 					</thead>					
 					<tbody>
@@ -378,8 +405,8 @@
 							<sec:authorize access="hasAuthority('Manager')">
 							<%-- <td><a href="products/${product.productID}/updateProduct">Update</a></td> --%>
 							<td>								
-								<a href="${productToBeEdited.productID}/updateProduct">Update</a><br/>
-								<a href="${productToBeEdited.productID}/deleteProduct">Delete</a>
+								<a href="${productToBeEdited.productID}/updateProduct">Actualizar</a><br/>
+								<%-- <a href="${productToBeEdited.productID}/deleteProduct">Eliminar</a> --%>
 							</td>
 							</sec:authorize>
 							<sec:authorize access="hasAuthority('Customer')">
@@ -391,7 +418,7 @@
 			</c:if>
 			<c:if test="${not empty deleteProductSucceeded}">
 				<div class="alert alert-danger" role="alert">
-				  <h4 class="alert-heading">Alert!</h4>
+				  <h4 class="alert-heading">¡Alerta!</h4>
 				  <p class="text-success">${deleteProductSucceeded}</p>
 				</div>
 			</c:if>
@@ -400,7 +427,7 @@
 			<c:if test="${!empty productToBeUpdated.productID}">
 				<form:form modelAttribute="productToBeUpdated" action="updateProduct" method="post" class="form-control">
 	
-				<legend>Update Product Details</legend>					
+				<legend>Actualizar Detalles del Producto</legend>					
 				<div class="row">
 					<div class="col"></div>
 					<div class="col-8">
@@ -409,7 +436,7 @@
 					</c:if>
 						<spring:bind path="productName">
 				            <div class="form-group">
-				            	Product Name*:
+				            	Nombre del Producto:
 				                <form:input type="text" path="productName" class="form-control"
 				                            autofocus="true"></form:input>
 				                <form:errors path="productName"></form:errors>
@@ -417,18 +444,34 @@
 				        </spring:bind>
 				        <spring:bind path="cost">
 				            <div class="form-group">
-				            	Cost from Factory*:
+				            	Sto de Fàbrica:
 				                <form:input type="text" path="cost" class="form-control"
 				                            autofocus="true"></form:input>
 				                <form:errors path="cost"></form:errors>
 				            </div>
 				        </spring:bind>
-				        <spring:bind path="price">
+				        <spring:bind path="distributorPrice">
 				            <div class="form-group">
-				            	Price for Sale*:
-				                <form:input type="text" path="price" class="form-control"
+				            	Precio de Distribuidor:
+				                <form:input type="text" path="distributorPrice" class="form-control"
 				                            autofocus="true"></form:input>
-				                <form:errors path="price"></form:errors>
+				                <form:errors path="distributorPrice"></form:errors>
+				            </div>
+				        </spring:bind>
+				        <spring:bind path="vendorPrice">
+				            <div class="form-group">
+				            	Precio de Venta:
+				                <form:input type="text" path="vendorPrice" class="form-control"
+				                            autofocus="true"></form:input>
+				                <form:errors path="vendorPrice"></form:errors>
+				            </div>
+				        </spring:bind>
+				        <spring:bind path="clientPrice">
+				            <div class="form-group">
+				            	Precio de Cliente:
+				                <form:input type="text" path="clientPrice" class="form-control"
+				                            autofocus="true"></form:input>
+				                <form:errors path="clientPrice"></form:errors>
 				            </div>
 				        </spring:bind>
 				       	<spring:bind path="productID">
@@ -438,7 +481,7 @@
 				                <form:errors path="productID"></form:errors>
 				            </div>
 				        </spring:bind>
-				        <button class="btn btn-lg btn-primary btn-block" type="submit">Submit</button>
+				        <button class="btn btn-lg btn-primary btn-block" type="submit">Confirmar</button>
 					</div>
 					<div class="col"></div>		
 					</div>
@@ -446,21 +489,21 @@
 					</c:if>
 				<c:if test="${not empty updateProductSucceeded}">
 					<div class="alert alert-success" role="alert">
-					  <h4 class="alert-heading">Success!</h4>
+					  <h4 class="alert-heading">Muy Bien!</h4>
 					  <p class="text-success">${updateProductSucceeded}</p>
 					</div>
 				</c:if>
 			
 			<!-- Order Replenishment -->
 			<c:if test="${not empty orderReplenishment}">							
-				<h4>Replenishment Order</h4>			        
+				<h4>Pedido de Reposiciòn</h4>			        
 		        <table class="table table-hover table-condensed">								
 				<thead>
 					<tr>
-						<th scope="col" style="width:25%">Product Name</th>
-						<th scope="col" style="width:25%">Quantity On Hand</th>
-						<th scope="col" style="width:25%">Order Quantity</th>
-						<th scope="col" style="width:25%">Action</th>
+						<th scope="col" style="width:25%">Nombre de Producto</th>
+						<th scope="col" style="width:25%">Cantidad Actual</th>
+						<th scope="col" style="width:25%">Cantidad de Pedido</th>
+						<th scope="col" style="width:25%">Acción</th>
 					</tr>
 				</thead>					
 				<tbody>
@@ -473,7 +516,7 @@
 							<input type="text" name="num" class="form-control text-center" value="0">
 						</td>
 						<td>
-							<button class="btn btn-primary" type="submit">Add to Order</button>
+							<button class="btn btn-primary" type="submit">Agregar a la orden </button>
 							<%-- <a href="${product.productID}/addToCart">Add to Cart</a> --%>					
 						</td>							
 					</tr>
@@ -492,7 +535,7 @@
 						</td>	
 						<td ></td>					
 						<td>
-							<a href="orderSummary" class="btn btn-warning">Order Summary</a>							
+							<a href="orderSummary" class="btn btn-warning">Resumen de la Pedido</a>							
 						</td>
 					</tr>
 				</tfoot>
@@ -505,17 +548,17 @@
 		        <div class="col-md-12">
 		            <div class="panel panel-default">
 		                <div class="panel-heading">
-		                    <h3 class="text-center"><strong>Order summary</strong></h3>
+		                    <h3 class="text-center"><strong>Resumen de la Pedido</strong></h3>
 		                </div>
 		                <div class="panel-body">
 		                    <div class="table-responsive">		                        		                        
 		                        <table class="table table-condensed">
 		                            <thead>
 		                                <tr>
-		                                    <td><strong>Product Name</strong></td>
-		                                    <td class="text-center"><strong>Product Cost</strong></td>
-		                                    <td class="text-center"><strong>Order Quantity</strong></td>
-		                                    <td class="text-center"><strong>Action</strong></td>
+		                                    <td><strong>Nombre de Producto</strong></td>
+		                                    <td class="text-center"><strong>Costo de Producto</strong></td>
+		                                    <td class="text-center"><strong>Cantidad de Pedido</strong></td>
+		                                    <td class="text-center"><strong>Acción</strong></td>
 		                                    <td class="text-right"><strong>Total</strong></td>
 		                                </tr>
 		                            </thead>
@@ -529,8 +572,8 @@
 		                                    	<input type="text" name="quantity" class="form-control text-center" value="${product.orderedProductQty}">
 		                                    </td>
 		                                    <td class="text-center">
-		                                    	<button type="submit" class="btn btn-info btn-sm"><i class="fa fa-refresh">Refresh</i></button>
-												<a href="${product.productID}/deleteProductInRpCart" class="btn btn-danger btn-sm active" role="button" aria-pressed="true"><i class="fa fa-trash-o">&nbspDelete&nbsp</i></a>	
+		                                    	<button type="submit" class="btn btn-info btn-sm"><i class="fa fa-refresh">Actualizar</i></button>
+												<a href="${product.productID}/deleteProductInRpCart" class="btn btn-danger btn-sm active" role="button" aria-pressed="true"><i class="fa fa-trash-o">&nbspEliminar&nbsp</i></a>	
 		                                    </td>		                                    	
 		                                    <td class="text-right">${product.cost * product.orderedProductQty}</td>
 		                                </tr>				
@@ -540,22 +583,22 @@
 		                                    <td class="highrow"></td>
 		                                    <td class="highrow"></td>
 		                                    <td class="highrow"></td>
-		                                    <td class="highrow text-center"><strong>Subtotal</strong></td>
-		                                    <td class="highrow text-right">$${cart.cartTotal}</td>
+		                                    <td class="highrow text-center"><strong>Total Parcial</strong></td>
+		                                    <td class="highrow text-right">$${cart.cartTotal/1.075}</td>
 		                                </tr>
 		                                <tr>
 		                                    <td class="emptyrow"></td>
 		                                    <td class="emptyrow"></td>
 		                                    <td class="emptyrow"></td>
-		                                    <td class="emptyrow text-center"><strong>Shipping</strong></td>
-		                                    <td class="emptyrow text-right">$20</td>
+		                                    <td class="emptyrow text-center"><strong>Impuesto</strong></td>
+		                                    <td class="emptyrow text-right">7.5%</td>
 		                                </tr>
 		                                <tr>
 		                                    <td class="emptyrow"><i class="fa fa-barcode iconbig"></i></td>
 		                                    <td class="emptyrow"></td>
 		                                    <td class="emptyrow"></td>
 		                                    <td class="emptyrow text-center"><strong>Total</strong></td>
-		                                    <td class="emptyrow text-right">$${cart.cartTotal + 20}</td>
+		                                    <td class="emptyrow text-right">$${cart.cartTotal}</td>
 		                                </tr>
 		                                <form:form class="form-horizontal" role="form" action="placeReplenishmentOrder" method="post" id="payment-form">
 		                                <tr>
@@ -568,7 +611,7 @@
 		                                    <td class="emptyrow"></td>
 		                                    <td class="emptyrow text-center"></td>
 		                                    <td class="emptyrow text-right">		                                    		                                    
-		                                    <button type="submit" class="btn btn-success btn-lg" style="width:100%;">Place Order
+		                                    <button type="submit" class="btn btn-success btn-lg" style="width:100%;">Hacer Pedido
                                         	</button></td>
 		                                </tr>
 		                                </form:form>
@@ -582,7 +625,7 @@
 		    </c:if>
 		    <c:if test="${not empty replenishmentOrderConfirmed}">
 				<div class="alert alert-success" role="alert">
-				  <h4 class="alert-heading">Success!</h4>
+				  <h4 class="alert-heading">Muy Bien!</h4>
 				  <p class="text-success">${replenishmentOrderConfirmed}</p>
 				</div>
 			</c:if>	
@@ -591,7 +634,7 @@
 				<div class="col"></div>
 			</div>
 			
-			<a href="<c:url value="/perform_logout" />">Logout</a>	
+			<a href="<c:url value="/perform_logout" />">Cerrar Sesión</a>	
 			</div>	
 			<div class="col"></div>
 		</div>

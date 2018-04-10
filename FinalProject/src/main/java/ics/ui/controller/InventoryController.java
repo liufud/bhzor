@@ -31,6 +31,7 @@ import ics.model.ReplenishmentOrder;
 import ics.model.User;
 import ics.model.Vendor;
 import ics.services.CartService;
+import ics.services.OrderService;
 import ics.services.ProductService;
 import ics.services.ReceivedRpOrderService;
 import ics.services.ReplenishmentOrderService;
@@ -48,6 +49,8 @@ public class InventoryController {
 	private ReplenishmentOrderService replenishmentOrderService;
 	@Autowired
 	private ReceivedRpOrderService receivedRpOrderService;
+	@Autowired
+	private OrderService orderService;
 	
 	@RequestMapping(value="inventory",method=RequestMethod.GET)
 	public String showInventory(Model model, HttpSession session, HttpServletRequest request,
@@ -149,17 +152,19 @@ public class InventoryController {
 			for(OrderedProd o:rpProds) rpProdNames.add(o.getProductName());
 			model.addAttribute("rpProdNames", rpProdNames);
 			model.addAttribute("rpOrderID", receivedRpOrder.getRpOrderID());
+			Collection<ReplenishmentOrder> openOrders = replenishmentOrderService.listOrders("open");
+			model.addAttribute("openOrders", openOrders);
 			return "inventory";
 		}
-		List<ReceivedRpOrder> receivedRpOrdersByLot = receivedRpOrderService.getOrderByLot(receivedRpOrder.getRpOrderID() ,receivedRpOrder.getLotID(), receivedRpOrder.getReceivedRpProductName());
+		List<ReceivedRpOrder> receivedRpOrdersByShelf = receivedRpOrderService.getOrderByShelf(receivedRpOrder.getRpOrderID() ,receivedRpOrder.getShelfID(), receivedRpOrder.getReceivedRpProductName());
 		ReceivedRpOrder receivedRpOrderToBeSaved = new ReceivedRpOrder();
 		UserDetails userDetails =
 				 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		User user = userService.findUserByName(userDetails.getUsername());
-		System.out.println("User is " + user.getUsername());
+//		if(null != user.getUsername()) System.out.println("User is " + user.getUsername());
 		receivedRpOrderToBeSaved.setCreateByUser(user);
 		receivedRpOrderToBeSaved.setExpDate(receivedRpOrder.getExpDate());
-		receivedRpOrderToBeSaved.setLotID(receivedRpOrder.getLotID());
+		receivedRpOrderToBeSaved.setShelfID(receivedRpOrder.getShelfID());
 		if(receivedRpOrder.getQuantityRejected() == null) {
 			receivedRpOrderToBeSaved.setQuantityRejected(0);
 		}else {
@@ -180,8 +185,8 @@ public class InventoryController {
 			if(o.getProductName().equals(receivedRpOrder.getReceivedRpProductName())) {
 				//if qty received is greater than quantity ordered, throw error
 				if(receivedRpOrder.getQuantityReceived() > o.getOrderedProductQty()) {
-					System.out.println("received order qty greater than ordered qty, error!");
-					model.addAttribute("receivedQtyError", "Received quantity cannot be greater than ordered quantity!");
+					System.out.println("Error! Cantidad de Orden Recibida es mayor a la cantidad de Order Pedida.");
+					model.addAttribute("receivedQtyError", "Error! Cantidad Recibida no puede ser mayor a la Cantidad Pedida!");
 					return "redirect:/" + rpOrder.getRpOrderID() + "/receivedRpOrder";
 				}
 				//if qty received is less than quantity ordered, ask user if he/she wants to save it to another lot
@@ -193,16 +198,16 @@ public class InventoryController {
 					}
 					//check if the added quantity exceeds ordered quantity
 					if(quantityReceived + receivedRpOrder.getQuantityReceived() > o.getOrderedProductQty()) {
-						model.addAttribute("receivedQtyError", "Received quantity cannot be greater than ordered quantity!");
+						model.addAttribute("receivedQtyError", "Error! Cantidad Recibida no puede ser mayor a la Cantidad Pedida!");
 						return "redirect:/" + rpOrder.getRpOrderID() + "/receivedRpOrder";
 					}else if(quantityReceived + receivedRpOrder.getQuantityReceived() < o.getOrderedProductQty()){
 						model.addAttribute("saveReceivedQtyToAnotherLot", rpOrder.getRpOrderID());
-						if(null != receivedRpOrdersByLot) {
+						if(null != receivedRpOrdersByShelf) {
 							System.out.println("received qty less than ordered qty -----------  received product exist in the lot");
-							receivedRpOrdersByLot.get(0).setQuantityReceived(receivedRpOrdersByLot.get(0).getQuantityReceived() + receivedRpOrder.getQuantityReceived());
+							receivedRpOrdersByShelf.get(0).setQuantityReceived(receivedRpOrdersByShelf.get(0).getQuantityReceived() + receivedRpOrder.getQuantityReceived());
 							receiveProducts(receivedRpOrder.getReceivedRpProductName(), receivedRpOrder.getQuantityReceived());
-							receivedRpOrdersByLot.get(0).setTotalCost(receivedRpOrdersByLot.get(0).getTotalCost() + receivedRpOrder.getQuantityReceived()*productCost);
-							receivedRpOrderService.createOrder(receivedRpOrdersByLot.get(0));
+							receivedRpOrdersByShelf.get(0).setTotalCost(receivedRpOrdersByShelf.get(0).getTotalCost() + receivedRpOrder.getQuantityReceived()*productCost);
+							receivedRpOrderService.createOrder(receivedRpOrdersByShelf.get(0));
 						}else {
 							System.out.println("received qty less than ordered qty -----------  received product does NOT exist in the lot");
 							receivedRpOrderToBeSaved.setQuantityReceived(receivedRpOrder.getQuantityReceived());							
@@ -219,11 +224,11 @@ public class InventoryController {
 						return "redirect:/" + rpOrder.getRpOrderID() + "/receivedRpOrder";
 					}else if(quantityReceived + receivedRpOrder.getQuantityReceived() == o.getOrderedProductQty()){					
 						System.out.println("received qty EQUAL to ordered qty -----------  received product exist in the lot");
-						if(null != receivedRpOrdersByLot) {
-							receivedRpOrdersByLot.get(0).setQuantityReceived(receivedRpOrdersByLot.get(0).getQuantityReceived() + receivedRpOrder.getQuantityReceived());
+						if(null != receivedRpOrdersByShelf) {
+							receivedRpOrdersByShelf.get(0).setQuantityReceived(receivedRpOrdersByShelf.get(0).getQuantityReceived() + receivedRpOrder.getQuantityReceived());
 							receiveProducts(receivedRpOrder.getReceivedRpProductName(), receivedRpOrder.getQuantityReceived());
-							receivedRpOrdersByLot.get(0).setTotalCost(receivedRpOrdersByLot.get(0).getTotalCost() + receivedRpOrder.getQuantityReceived()*productCost);
-							receivedRpOrderService.createOrder(receivedRpOrdersByLot.get(0));
+							receivedRpOrdersByShelf.get(0).setTotalCost(/*receivedRpOrdersByShelf.get(0).getTotalCost() + */receivedRpOrder.getQuantityReceived()*productCost);
+							receivedRpOrderService.createOrder(receivedRpOrdersByShelf.get(0));
 						}else {
 							receivedRpOrderToBeSaved.setQuantityReceived(receivedRpOrder.getQuantityReceived());							
 							receiveProducts(receivedRpOrder.getReceivedRpProductName(), receivedRpOrder.getQuantityReceived());
@@ -239,11 +244,20 @@ public class InventoryController {
 				}
 				//if qty received is equal to the ordered qty, close the replenishment order
 				else {
-					if(null != receivedRpOrdersByLot) {
-						receivedRpOrdersByLot.get(0).setQuantityReceived(receivedRpOrdersByLot.get(0).getQuantityReceived() + receivedRpOrder.getQuantityReceived());
+					Collection<ReceivedRpOrder> receivedRpOrders = receivedRpOrderService.getOrderByRpOrderID(receivedRpOrder.getRpOrderID(), receivedRpOrder.getReceivedRpProductName());
+					Integer quantityReceived = new Integer(0);
+					if(null != receivedRpOrders) {
+						for(ReceivedRpOrder recRpOrder:receivedRpOrders) quantityReceived+=recRpOrder.getQuantityReceived();
+					}
+					if(quantityReceived + receivedRpOrder.getQuantityReceived() > o.getOrderedProductQty()) {
+						model.addAttribute("receivedQtyError", "Error! Cantidad Recibida no puede ser mayor a la Cantidad Pedida!");
+						return "redirect:/" + rpOrder.getRpOrderID() + "/receivedRpOrder";
+					}
+					if(null != receivedRpOrdersByShelf) {
+						receivedRpOrdersByShelf.get(0).setQuantityReceived(receivedRpOrdersByShelf.get(0).getQuantityReceived() + receivedRpOrder.getQuantityReceived());
 						receiveProducts(receivedRpOrder.getReceivedRpProductName(), receivedRpOrder.getQuantityReceived());
-						receivedRpOrdersByLot.get(0).setTotalCost(receivedRpOrdersByLot.get(0).getTotalCost() + receivedRpOrder.getQuantityReceived()*productCost);
-						receivedRpOrderService.createOrder(receivedRpOrdersByLot.get(0));
+						receivedRpOrdersByShelf.get(0).setTotalCost(receivedRpOrdersByShelf.get(0).getTotalCost() + receivedRpOrder.getQuantityReceived()*productCost);
+						receivedRpOrderService.createOrder(receivedRpOrdersByShelf.get(0));
 					}else {
 						receivedRpOrderToBeSaved.setQuantityReceived(receivedRpOrder.getQuantityReceived());							
 						receiveProducts(receivedRpOrder.getReceivedRpProductName(), receivedRpOrder.getQuantityReceived());
@@ -279,7 +293,8 @@ public class InventoryController {
 	
 	private void receiveProducts(String productName, Integer quantity) {
 		Product product = productService.getProductByName(productName);
-		product.setQuantity(product.getQuantity() + quantity);
+		if(null != product.getQuantity()) product.setQuantity(product.getQuantity() + quantity);
+		else product.setQuantity(quantity);
 		productService.addOrUpdateProduct(product);
 	}
 	
@@ -307,9 +322,40 @@ public class InventoryController {
 		if(productInInventory == null) {
 			try {
 				System.out.println("adding new product ----------");
+				//when adding a new product, need to update the unshipped rporder list
+				List<ReplenishmentOrder> rpOrders = (List<ReplenishmentOrder>) replenishmentOrderService.listOrders();
+				List<Order> orders = (List<Order>) orderService.listOrders();
+				for(ReplenishmentOrder rp:rpOrders) {
+					List<OrderedProd> products = rp.getRpProducts();
+					OrderedProd newProd = new OrderedProd();
+					newProd.setClientPrice(product.getClientPrice());
+					newProd.setCost(product.getCost());
+					newProd.setDistributorPrice(product.getDistributorPrice());
+					newProd.setProductName(product.getProductName());
+					newProd.setOrderedProductQty(0);
+					newProd.setUnshippedProductqty(0);
+					newProd.setUnreceivedProductqty(0);
+					newProd.setVendorPrice(product.getVendorPrice());
+					products.add(newProd);
+					rp.setRpProducts(products);
+					replenishmentOrderService.createOrder(rp);
+				}
+				for(Order o:orders) {
+					List<OrderedProd> products = o.getProducts(); 
+					OrderedProd newProd = new OrderedProd();
+					newProd.setCost(product.getCost());
+					newProd.setOrderedProductQty(0);
+					newProd.setProductName(product.getProductName());
+					newProd.setQuantity(product.getQuantityOnHand());
+					newProd.setUnshippedProductqty(0);
+					newProd.setUnreceivedProductqty(0);
+					products.add(newProd);
+					o.setProducts(products);
+					orderService.createOrder(o);
+				}
 				productService.addOrUpdateProduct(product);
 				System.out.println("Product added succesfully!");
-				attr.addFlashAttribute("addProductSucceeded", "You have successfully added product " + product.getProductName() + "!");
+				attr.addFlashAttribute("addProductSucceeded", "Usted ha agregado producto exitosamente " + product.getProductName() + "!");
 			} catch (Exception e) {
 				System.out.println(e);
 			}
@@ -317,10 +363,12 @@ public class InventoryController {
 			System.out.println("product exists, updating product");
 			productInInventory.setCost(product.getCost());
 //			product.setOrders(productToBeUpdated.getOrders());
-			productInInventory.setPrice(product.getPrice());
+			productInInventory.setDistributorPrice(product.getDistributorPrice());
+			productInInventory.setVendorPrice(product.getVendorPrice());
+			productInInventory.setClientPrice(product.getClientPrice());
 			productInInventory.setProductName(product.getProductName());
 			productService.addOrUpdateProduct(productInInventory);
-			attr.addFlashAttribute("updateProductSucceeded", "You have successfully updated product " + product.getProductName() + "!");
+			attr.addFlashAttribute("updateProductSucceeded", "Has actualizado el producto exitosamente " + product.getProductName() + "!");
 		}
 		System.out.println("product added");
 		return "redirect:/inventory";
@@ -367,7 +415,7 @@ public class InventoryController {
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-		attr.addFlashAttribute("deleteProductSucceeded", "You have delete Product " + product.getProductName());
+		attr.addFlashAttribute("deleteProductSucceeded", "El Producto de Hierro ha sido cancelado " + product.getProductName());
 		return "redirect:/inventory";
 	}
 	
@@ -391,10 +439,12 @@ public class InventoryController {
 		Product product = productService.get(productToBeUpdated.getProductID());
 		product.setCost(productToBeUpdated.getCost());
 //		product.setOrders(productToBeUpdated.getOrders());
-		product.setPrice(productToBeUpdated.getPrice());
+		product.setDistributorPrice(productToBeUpdated.getDistributorPrice());
+		product.setVendorPrice(productToBeUpdated.getVendorPrice());
+		product.setClientPrice(productToBeUpdated.getClientPrice());
 		product.setProductName(productToBeUpdated.getProductName());
 		productService.addOrUpdateProduct(product);
-		attr.addFlashAttribute("updateProductSucceeded", "You have successfully updated product " + product.getProductName() + "!");
+		attr.addFlashAttribute("updateProductSucceeded", "Has actualizado el producto exitosamente " + product.getProductName() + "!");
 		return "redirect:/inventory";
 	}
 	
@@ -420,17 +470,19 @@ public class InventoryController {
 			OrderedProd product = new OrderedProd();
 			product.setProductName(productInDB.getProductName());
 			product.setProductID(productInDB.getProductID());
-			product.setPrice(productInDB.getPrice());
+			product.setDistributorPrice(productInDB.getDistributorPrice());
+			product.setVendorPrice(productInDB.getVendorPrice());
+			product.setClientPrice(productInDB.getClientPrice());
 			product.setCost(productInDB.getCost());
 			products.add(product);
 			String[] quantity = request.getParameterValues("num");
 			try {
 				Integer.parseInt(quantity[0]);
 				if(Integer.parseInt(quantity[0]) <= 0) {
-					model.addAttribute("shoppingCartQtyError", "Quantity has to be greater than zero!");
+					model.addAttribute("shoppingCartQtyError", "Cantidad de Orden no puede ser 0!");
 					return "redirect:/orderReplenishment";
 				}else if(Integer.parseInt(quantity[0]) > 10000000) {
-					model.addAttribute("shoppingCartQtyError", "Invalid quantity!");
+					model.addAttribute("shoppingCartQtyError", "Cantidad Invalida!");
 					return "redirect:/orderReplenishment";
 				}else {
 					for (int i = 0; i < products.size(); i++) {
@@ -439,12 +491,12 @@ public class InventoryController {
 				}	
 			} catch (Exception e) {
 				System.out.println(e);
-				model.addAttribute("shoppingCartQtyError", "Invalid quantity!");
+				model.addAttribute("shoppingCartQtyError", "Cantidad Invalida!");
 				return "redirect:/orderReplenishment";
 			}
 					
 			cart.setProducts(products);
-			model.addAttribute("addToCartSucceeded", "You have added " + product.getOrderedProductQty() + " [" + product.getProductName() + "] to your shopping cart");
+			model.addAttribute("addToCartSucceeded", "Ha Agregado " + product.getOrderedProductQty() + " [" + product.getProductName() + "] a su Pedido");
 			UserDetails userDetails =
 					 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			cart.setUser(userService.findUserByName(userDetails.getUsername()));			
@@ -468,17 +520,19 @@ public class InventoryController {
 				OrderedProd product = new OrderedProd();
 				product.setProductName(productInDB.getProductName());
 				product.setProductID(productInDB.getProductID());
-				product.setPrice(productInDB.getPrice());
+				product.setDistributorPrice(productInDB.getDistributorPrice());
+				product.setVendorPrice(productInDB.getVendorPrice());
+				product.setClientPrice(productInDB.getClientPrice());
 				product.setCost(productInDB.getCost());
 				String[] quantity = request.getParameterValues("num");
 				
 				try {
 					Integer.parseInt(quantity[0]);
 					if(Integer.parseInt(quantity[0]) <= 0) {
-						model.addAttribute("shoppingCartQtyError", "Quantity has to be greater than zero!");
+						model.addAttribute("shoppingCartQtyError", "Cantidad de Orden no puede ser 0!");
 						return "redirect:/orderReplenishment";
 					}else if(Integer.parseInt(quantity[0]) > 10000000) {
-						model.addAttribute("shoppingCartQtyError", "Invalid quantity!");
+						model.addAttribute("shoppingCartQtyError", "Cantidad Invalida!");
 						return "redirect:/orderReplenishment";
 					}else {
 						product.setOrderedProductQty(Integer.parseInt(quantity[0]));
@@ -486,12 +540,12 @@ public class InventoryController {
 					}	
 				} catch (Exception e) {
 					System.out.println(e);
-					model.addAttribute("shoppingCartQtyError", "Invalid Quantity!");
+					model.addAttribute("shoppingCartQtyError", "Cantidad Invalida!");
 					return "redirect:/orderReplenishment";
 				}			
 				cart.setProducts(products);
 				cartTotal = cartTotal(products, cart);
-				model.addAttribute("addToCartSucceeded", "You have added " + product.getOrderedProductQty() + " [" + product.getProductName() + "] to your shopping cart");
+				model.addAttribute("addToCartSucceeded", "Ha Agregado " + product.getOrderedProductQty() + " [" + product.getProductName() + "] a su Pedido");
 			}else {
 				System.out.println("product exists in cart");
 				for(OrderedProd p:products)System.out.println(p.getProductName());
@@ -501,10 +555,10 @@ public class InventoryController {
 				try {
 					Integer.parseInt(quantityParam[0]);
 					if(Integer.parseInt(quantityParam[0]) <= 0) {
-						model.addAttribute("shoppingCartQtyError", "Quantity has to be greater than zero!");
+						model.addAttribute("shoppingCartQtyError", "Cantidad de Orden no puede ser 0!");
 						return "redirect:/orderReplenishment";
 					}else if(Integer.parseInt(quantityParam[0]) > 10000000) {
-						model.addAttribute("shoppingCartQtyError", "Invalid quantity!");
+						model.addAttribute("shoppingCartQtyError", "Cantidad Invalida!");
 						return "redirect:/orderReplenishment";
 					}else {
 						Integer quantity = products.get(index).getOrderedProductQty()+Integer.parseInt(quantityParam[0]);
@@ -512,14 +566,14 @@ public class InventoryController {
 					}	
 				} catch (Exception e) {
 					System.out.println(e);
-					model.addAttribute("shoppingCartQtyError", "Invalid Quantity!");
+					model.addAttribute("shoppingCartQtyError", "Cantidad Invalida!");
 					return "redirect:/orderReplenishment";
 				}	
 				System.out.println("product qty updated");
 				cart.setProducts(products);
 				cartTotal = cartTotal(products, cart);
 				OrderedProd product = products.get(index);
-				model.addAttribute("addToCartSucceeded", "You have added " + product.getOrderedProductQty() + " [" + product.getProductName() + "] to your shopping cart");
+				model.addAttribute("addToCartSucceeded", "Ha Agregado " + product.getOrderedProductQty() + " [" + product.getProductName() + "] a su Pedido");
 			}
 			
 			cart.setCartTotal(cartTotal);
@@ -535,7 +589,7 @@ public class InventoryController {
 							@ModelAttribute("shoppingCartQtyError")String shoppingCartQtyError) {
 		Cart cart = (Cart) session.getAttribute("cart");
 		if(cart == null) {
-			model.addAttribute("shoppingCartQtyError", "Order Quantity cannot be 0");
+			model.addAttribute("shoppingCartQtyError", "Cantidad de Orden no puede ser 0!");
 			return "redirect:/orderReplenishment";
 		}
 		model.addAttribute("orderSummary", "orderSummary");
@@ -552,17 +606,17 @@ public class InventoryController {
 			 try {
 					Integer.parseInt(quantity[i]);
 					if(Integer.parseInt(quantity[i]) <= 0) {
-						model.addAttribute("shoppingCartQtyError", "Quantity has to be greater than zero!");
+						model.addAttribute("shoppingCartQtyError", "Cantidad de Orden no puede ser 0");
 						return "redirect:/orderSummary";
 					}else if(Integer.parseInt(quantity[i]) > 10000000) {
-						model.addAttribute("shoppingCartQtyError", "Invalid quantity!");
+						model.addAttribute("shoppingCartQtyError", "Cantidad Invalida!");
 						return "redirect:/orderSummary";
 					}else {
 						products.get(i).setOrderedProductQty(Integer.parseInt(quantity[i]));
 					}	
 				} catch (Exception e) {
 					System.out.println(e);
-					model.addAttribute("shoppingCartQtyError", "Invalid Quantity!");
+					model.addAttribute("shoppingCartQtyError", "Cantidad Invalida!");
 					return "redirect:/orderSummary";
 				}
 			 
@@ -591,7 +645,9 @@ public class InventoryController {
 		for(int i=0; i<productList.size(); i++) {
 			OrderedProd rpProduct = new OrderedProd();
 			rpProduct.setCost(productList.get(i).getCost());
-			rpProduct.setPrice(productList.get(i).getPrice());
+			rpProduct.setDistributorPrice(productList.get(i).getDistributorPrice());
+			rpProduct.setVendorPrice(productList.get(i).getVendorPrice());
+			rpProduct.setClientPrice(productList.get(i).getClientPrice());
 			rpProduct.setProductName(productList.get(i).getProductName());
 			rpProduct.setQuantity(productList.get(i).getQuantity());
 			rpProduct.setOrderedProductQty(0);
@@ -603,11 +659,14 @@ public class InventoryController {
 				if(productsInCart.get(i).getProductName().equals(rpProducts.get(j).getProductName())) {
 					Product productInDB = productService.getProductByName(productsInCart.get(i).getProductName());
 					rpProducts.get(j).setCost(productInDB.getCost());
-					rpProducts.get(j).setPrice(productInDB.getPrice());
+					rpProducts.get(j).setDistributorPrice(productInDB.getDistributorPrice());
+					rpProducts.get(j).setVendorPrice(productInDB.getVendorPrice());
+					rpProducts.get(j).setClientPrice(productInDB.getClientPrice());
 					rpProducts.get(j).setProductName(productInDB.getProductName());
 					rpProducts.get(j).setQuantity(productInDB.getQuantity());
 					rpProducts.get(j).setOrderedProductQty(productsInCart.get(i).getOrderedProductQty());
 					rpProducts.get(j).setUnreceivedProductqty(productsInCart.get(i).getOrderedProductQty());
+					rpProducts.get(j).getRpOrders().add(rpOrder);
 				}
 			}
 		}
@@ -616,7 +675,7 @@ public class InventoryController {
 		replenishmentOrderService.createOrder(rpOrder);
 		session.removeAttribute("cart");
 		System.out.println("Replenishment order has been place");
-		model.addAttribute("replenishmentOrderConfirmed", "You have placed an replenishment order!");
+		model.addAttribute("replenishmentOrderConfirmed", "A realizado una orden de reposicion de producto!");
 		return "redirect:/inventory";
 	}
 	
@@ -624,7 +683,7 @@ public class InventoryController {
 		Double cartTotal = (double) 0;
 		List<OrderedProd> p = cart.getProducts();
 		for(OrderedProd a:p) {
-			cartTotal+=a.getCost()*a.getOrderedProductQty();
+			cartTotal+=a.getCost()*a.getOrderedProductQty()*1.075;//7.5% tax
 		}
 		return cartTotal;
 	 }

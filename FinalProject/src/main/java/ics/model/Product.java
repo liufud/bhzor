@@ -36,12 +36,16 @@ public class Product {
 	@GenericGenerator(name="increment", strategy = "increment")
 //	@Column(name="PRODUCT_ID")
 	private Long productID;
-	@NotEmpty(message = "Product name not specified")
+	@NotEmpty(message = "Nombre de Producto no Especificado")
 	private String productName;
-	@NotNull(message="please enter cost from manufacturer")
+	@NotNull(message="Porfavor ponga el costo de Fabrica")
 	private Integer cost;
-	@NotNull(message="please enter price for sale")
-	private Integer price;
+//	@NotNull(message="Porfavor ponga el precio de Distribuidor")
+	private Integer distributorPrice;
+//	@NotNull(message="Porfavor ponga el precio de Vendedor")
+	private Integer vendorPrice;
+//	@NotNull(message="Porfavor ponga el precio de Cliente")
+	private Integer clientPrice;
 //	@NotNull(message="You must provide a quantity")
 	private Integer quantityOnHand;
 	
@@ -71,14 +75,6 @@ public class Product {
 	public void setCost(Integer cost) {
 		this.cost = cost;
 	}
-
-	public Integer getPrice() {
-		return price;
-	}
-
-	public void setPrice(Integer price) {
-		this.price = price;
-	}
 	
 	public Integer getQuantity() {
 		return quantityOnHand;
@@ -86,5 +82,38 @@ public class Product {
 
 	public void setQuantity(Integer quantity) {
 		this.quantityOnHand = quantity;
+	}
+
+	public Integer getDistributorPrice() {
+		return distributorPrice;
+	}
+
+	public void setDistributorPrice(Integer distributorPrice) {
+		this.distributorPrice = distributorPrice;
+	}
+
+	public Integer getVendorPrice() {
+		return vendorPrice;
+	}
+
+	public void setVendorPrice(Integer vendorPrice) {
+		this.vendorPrice = vendorPrice;
+	}
+
+	public Integer getClientPrice() {
+		return clientPrice;
+	}
+
+	public void setClientPrice(Integer clientPrice) {
+		this.clientPrice = clientPrice;
+	}
+
+	public Integer getQuantityOnHand() {
+		return quantityOnHand;
+	}
+
+	public void setQuantityOnHand(Integer quantityOnHand) {
+		this.quantityOnHand = quantityOnHand;
 	}		
+
 }

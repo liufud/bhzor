@@ -87,24 +87,24 @@ $(document).ready(function(){
 			<div class="row">
 				<div class="col"><img src="img/BH-ZOR_logo.png" height="70"></div>
 				<%-- <sec:authorize access="hasAuthority('Manager')"> --%>
-				<div class="col"><h1>Inventory Tracker</h1></div>
+				<div class="col-7"><h1>BH-ZOR: Base de Datos</h1></div>
 <%-- 				</sec:authorize>
 				<sec:authorize access="hasAuthority('Customer')">
 				<div class="col5"><h1>Welcome</h1></div>
 				</sec:authorize> --%>
-				<div class="col"></div>
+				<div class="col-1"></div>
 			</div>
 			<div class="row">
 				<div class="col"></div>
 				<div class="col-12">
 					<br/>	
 						<ul class="nav nav-tabs">
-							<sec:authorize access="hasAuthority('Manager')">
+							<%-- <sec:authorize access="hasAuthority('Manager')">
 							  <li class="nav-item">
-							    <a class="nav-link" href="dashboard">Dashboard</a>
+							    <a class="nav-link" href="dashboard">Panel de Control</a>
 							  </li>					  				
 							  <li class="nav-item">
-							    <a class="nav-link" href="sales">Sales</a>
+							    <a class="nav-link" href="sales">Ventas</a>
 							    <!-- <div class="dropdown show">
 								  <a class="nav-link dropdown-toggle" href="sales" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								    Sales
@@ -117,27 +117,27 @@ $(document).ready(function(){
 								  </div>
 							    </div> -->						    
 							  </li>							
-							</sec:authorize>
+							</sec:authorize> --%>
 							  <li class="nav-item">
 							    <!-- <a class="nav-link active" href="orders">Orders</a> -->
 							    <div class="dropdown show">
-								  <a class="nav-link active dropdown-toggle" href="orders?selectOrderType=true" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								    Orders
+								  <a class="nav-link active" href="orders?selectOrderType=true" role="button" id="dropdownMenuLink" aria-haspopup="true" aria-expanded="false">
+								    Pedidos
 								  </a>								
-								  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+								  <!-- <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 								    <a class="dropdown-item" href="#">Search Order</a>
 								    <a class="dropdown-item" href="listProducts">Shopping</a>
 								     <a class="dropdown-item" href="myCart">My Cart</a>
 								    <a class="dropdown-item" href="#">Replace Damaged Product</a>
-								  </div>
+								  </div> -->
 							    </div>
 							  </li>
 							  <sec:authorize access="hasAuthority('Manager')">
 							  <li class="nav-item">
-							    <a class="nav-link" href="inventory?orderStatus=openOrder">Inventory</a>
+							    <a class="nav-link" href="inventory?orderStatus=openOrder">Inventario</a>
 							  </li>
 							  <li class="nav-item">
-							    <a class="nav-link" href="siteManagement">Site Management</a>
+							    <a class="nav-link" href="siteManagement">Administración de la Pagina</a>
 							    <!-- <div class="dropdown show">
 								  <a class="nav-link dropdown-toggle" href="inventory" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								    Site Management
@@ -151,7 +151,7 @@ $(document).ready(function(){
 							  </li>
 							  </sec:authorize>
 						</ul>
-						Logged in as: <sec:authentication property="name"/> <sec:authentication property="authorities"/>
+						Conectado como: <sec:authentication property="name"/> <sec:authentication property="authorities"/>
 					<br/>
 				</div>
 				<div class="col"></div>
@@ -163,28 +163,29 @@ $(document).ready(function(){
 				<div class="col-3">
 				<br/>
 					<div class="btn-group-vertical">
-						<a class="btn btn-sm btn-secondary" href="#" role="button">Search Order</a>
-						<a class="btn btn-sm btn-secondary" href="listProducts" role="button">Shopping</a>
-						<a class="btn btn-sm btn-secondary" href="myCart" role="button">My Cart</a>
-						<a class="btn btn-sm btn-secondary" href="mailto:isaacrozen8@gmail.com?
-																subject=Report Damaged Product&
-																body=Please provide the following details:%0D%0A
-																1. Order ID %0D%0A
-																2. Description about the damaged products %0D%0A
-																3. Attach a picture of the damaged products to this email %0D%0A %0D%0A
+						<a class="btn btn-sm btn-secondary" href="orders?selectOrderType=true" role="button">Historial de Pedidos</a>	
+						<a class="btn btn-sm btn-secondary" href="listProducts" role="button">Hacer Pedido</a>
+						<a class="btn btn-sm btn-secondary" href="myCart" role="button">Mis Pedidos</a>
+						<a class="btn btn-sm btn-secondary" href="mailto:isaacrozen8@gmail.com,scrowavila@gmail.com,arturoavilabaeza@yahoo.com?
+																subject=Reportar Producto Dañado&
+																body=Porfavor ponga la siguiente informacion:%0D%0A
+																1. ID Pedido %0D%0A
+																2. Descripcion sobre el producto dañado %0D%0A
+																3. Adjunte una foto del producto dañado %0D%0A %0D%0A
 																Regards, %0D%0A
-																BHZOR Team" role="button">Replace Damaged Product</a>
+																BHZOR Team" role="button">Remplazar Producto Dañado</a>
 					</div>
 				</div>
 				<div class="col-9">
 				
 				<!-- Unshipped Order and Unpaid Order information -->
 				<c:if test="${not empty selectOrderType}">
+				<sec:authorize access="hasAuthority('Manager')">
 				<table class="table">								
 					<thead>
 						<tr>
-							<th scope="col">Select Orders Types</th>
-							<th scope="col">Action</th>
+							<th scope="col">Selecciona el tipo de Pedido</th>
+							<th scope="col">Accion</th>
 						</tr>
 					</thead>					
 					<tbody>
@@ -192,13 +193,14 @@ $(document).ready(function(){
 						<tr>
 							<th scope="row">
 								  <select class="custom-select custom-select-sm" name="orderTypeName">
-								    <option selected>All Orders</option>
-								    <option value="Unshipped Orders">Unshipped Orders</option>
-								    <option value="Unpaid Orders">Unpaid Orders</option>
+								    <option selected>Todos los Pedidos</option>
+								    <option value="Shipped Orders">Pedidos Enviados</option>
+								    <option value="Unshipped Orders">Pedidos no Enviados</option>
+								    <option value="Unpaid Orders">Pedidos no Pagados</option>
 								  </select> 
 							</th>
 							<td>
-			                	<button class="btn btn-primary" type="submit">Submit</button>
+			                	<button class="btn btn-primary" type="submit">Confirmar</button>
 			                	<!-- <a href="deleteProduct">Delete</a> -->
 			                </td>				
 							<%-- <sec:authorize access="hasAuthority('Manager')">							
@@ -207,8 +209,49 @@ $(document).ready(function(){
 						</tr>
 					</form:form>					
 					</tbody>
-				</table>		
+				</table>
+				</sec:authorize>		
 				
+				<h4><b>Mi Historial de Pedidos</b></h4>
+				<table class="table">								
+					<thead>
+						<tr>
+							<th scope="col"># de Pedido</th>
+							<th scope="col">Fecha de Creación</th>
+							<c:forEach items="${productNames}" var="product">
+								<th scope="col">${product.productName}</th>
+							</c:forEach>
+							<th scope="col">Creado Por</th>
+							<th scope="col">Creado Para</th>
+							<!-- <th scope="col">Total de Pedido</th> -->
+							<!-- <th scope="col">Acción</th> -->
+						</tr>
+					</thead>					
+					<tbody>
+					<c:forEach items="${myOrders}" var="order">
+						<tr>
+							<th scope="row">${order.orderID}</th>
+							<td>${order.created_At}</td>
+							<c:forEach items="${order.products}" var="product">
+								<td>${product.unshippedProductqty}</td>
+							</c:forEach>
+							<td>
+								${order.createByUser.firstName} ${order.createByUser.lastName}<br/>
+								(${order.createByUser.roleName})
+							</td>
+							<td>
+								${order.createForUser.firstName} ${order.createForUser.lastName}
+								(${order.createForUser.roleName})
+							</td>
+							<%-- <td>${order.totalPrice}</td> --%>
+							<%-- <td>								
+								<a href="${order.orderID}/shippedOrder">Marcar como Enviado</a><br/>
+							</td> --%>							
+						</tr>
+					</c:forEach>				
+					</tbody>
+				</table>
+
 				<c:if test="${not empty viewUnshippedOrders}">
 				<c:if test="${not empty shippedOrderForm}">
 				<br/>
@@ -217,14 +260,21 @@ $(document).ready(function(){
 					<div class="col"></div>
 					<div class="col-10">
 						  <div class="form-group row">
-							    <label for="lotID" class="col-sm-3 col-form-label">Lot ID</label>
+							    <label for="lotID" class="col-sm-3 col-form-label">ID de Lote</label>
 							    <div class="col-sm-7">
 							      <form:input name="lotID" id="lotID" type="number" path="lotID" class="form-control" autofocus="true"></form:input>
 			                      <form:errors path="lotID"></form:errors>
 							    </div>
 						  </div>
 						  <div class="form-group row">
-						  		<label for="productName" class="col-sm-3 col-form-label">Product</label>
+							    <label for="shelfID" class="col-sm-3 col-form-label"># de Estante</label>
+							    <div class="col-sm-7">
+							      <form:input name="shelfID" id="shelfID" type="number" path="shelfID" class="form-control" autofocus="true"></form:input>
+			                      <form:errors path="shelfID"></form:errors>
+							    </div>
+						  </div>
+						  <div class="form-group row">
+						  		<label for="productName" class="col-sm-3 col-form-label">Producto</label>
 						  		<div class="col-sm-7">
 							      	<form:select name="productName" class="form-control" path="shippedProductName">
 					                   <%-- <form:option value = "NONE" label = "Select"/> --%>
@@ -233,14 +283,14 @@ $(document).ready(function(){
 							    </div>
 						  </div>	 					  
 						  <div class="form-group row">
-							    <label for="qtyShipped" class="col-sm-3 col-form-label">Quantity Shipped</label>
+							    <label for="qtyShipped" class="col-sm-3 col-form-label">Cantidad Enviada</label>
 							    <div class="col-sm-7">
 							      <form:input name="qtyShipped" id="qtyReceived" type="number" path="qtyShipped" class="form-control" autofocus="true"></form:input>
 			                      <form:errors path="qtyShipped"></form:errors>
 							    </div>
 						  </div>
 						  <div class="form-group row">
-							    <label for="trackingNum" class="col-sm-3 col-form-label">Tracking Number</label>
+							    <label for="trackingNum" class="col-sm-3 col-form-label">Numero de Rastreo (Opcional si no tiene, dejar en blanco)</label>
 							    <div class="col-sm-7">
 							      <form:input name="trackingNum" id="expDate" type="text" path="trackingNumber" class="form-control" autofocus="true"></form:input>
 			                      <form:errors path="trackingNumber"></form:errors>
@@ -253,35 +303,35 @@ $(document).ready(function(){
 					<div class="col"></div>
 				</div>
 				</form:form>
-				</c:if>
+				</c:if>				
 				<c:if test="${!empty shippedQtyError}">
 					<p class="text-warning">Error: ${shippedQtyError}</p>
 				</c:if>
 				<c:if test="${!empty shipFromAnotherLot}">
 					<div class="card">
 					  <div class="card-body">
-					    <h5 class="card-title text-info">Note:</h5>
-					    <p class="card-text">Do you want to ship the rest of the quantity from another lot?</p>
-					    <a href="${shipFromAnotherLot}/receivedRpOrder" class="card-link btn btn-primary" role="button">Yes</a>
+					    <h5 class="card-title text-info">Nota:</h5>
+					    <p class="card-text">¿Desea enviar el resto de la cantidad desde otro estante?</p>
+					    <a href="${shipFromAnotherLot}/shippedOrder" class="card-link btn btn-primary" role="button">Yes</a>
 					    <a href="orders?selectOrderType=true" class="card-link btn btn-primary" role="button">No</a>
 					  </div>
 					</div>
 				</c:if>
-				<c:if test="${!empty orderShipped}">
-					<p class="text-success">Order # ${orderShipped} is now closed</p>
-				</c:if>
 				
-				<h4><b>Unshipped Orders</b></h4>
+				
+				<h4><b>Pedidos no Enviados</b></h4>
 				<table class="table">								
 					<thead>
 						<tr>
-							<th scope="col">Order #</th>
-							<th scope="col">Date</th>
+							<th scope="col"># de Pedido</th>
+							<th scope="col">Fecha de Creación</th>
 							<c:forEach items="${productNames}" var="product">
 								<th scope="col">${product.productName}</th>
 							</c:forEach>
-							<th scope="col">Order Total</th>
-							<th scope="col">Action</th>
+							<th scope="col">Creado Por</th>
+							<th scope="col">Creado Para</th>
+							<!-- <th scope="col">Total de Pedido</th> -->
+							<th scope="col">Acción</th>
 						</tr>
 					</thead>					
 					<tbody>
@@ -292,9 +342,17 @@ $(document).ready(function(){
 							<c:forEach items="${order.products}" var="product">
 								<td>${product.unshippedProductqty}</td>
 							</c:forEach>
-							<td>${order.totalPrice}</td>
+							<td>
+								${order.createByUser.firstName} ${order.createByUser.lastName}<br/>
+								(${order.createByUser.roleName})
+							</td>
+							<td>
+								${order.createForUser.firstName} ${order.createForUser.lastName}
+								(${order.createForUser.roleName})
+							</td>
+							<%-- <td>${order.totalPrice}</td> --%>
 							<td>								
-								<a href="${order.orderID}/shippedOrder">Mark as Shipped</a><br/>
+								<a href="${order.orderID}/shippedOrder">Marcar como Enviado</a><br/>
 							</td>							
 						</tr>
 					</c:forEach>				
@@ -304,33 +362,65 @@ $(document).ready(function(){
 				<c:if test="${!empty orderPaid}">
 					<p class="text-success">${orderPaid}</p>
 				</c:if>	
+				<c:if test="${!empty orderShipped}">
+					<p class="text-success">Order # ${orderShipped} is now closed</p>
+				</c:if>
 				
-				<c:if test="${not empty viewUnpaidOrders}">
-				<h4><b>Unpaid Orders</b></h4>
+				<c:if test="${not empty markAsPaid}">
+					<form name="markAsPaidForm" action="${markAsPaid}/orderPaid" method="post" class="form-control">
+						<label class="input-group-text" for="inputGroupSelect01">Que metodo de pago fue utlizado para este pedido</label>
+						  <select class="custom-select" id="inputGroupSelect01" name="paymentMethod">
+						   <!-- <option selected>Choose...</option> -->
+						    <option value="Cash">Cash</option>
+						    <option value="Direct Deposit">Deposito Directo</option>
+						    <option value="Credit">Credito</option>
+						  </select>
+						  <div class="row">
+						  		<div class="col"></div>
+						  		<div class="col">
+						  			<button class="btn btn-lg btn-primary text-center" type="submit">Submit</button>
+						  		</div>
+						  		<div class="col"></div>
+						  </div>						  
+					</form>
+				</c:if>
+				
+				<c:if test="${not empty viewShippedOrders}">
+				<h4><b>Pedidos Enviados</b></h4>
 				<table class="table">								
 					<thead>
 						<tr>
-							<th scope="col">Order #</th>
-							<th scope="col">Date</th>
+							<th scope="col"># de Pedido</th>
+							<th scope="col">Fecha de Creación</th>
 							<c:forEach items="${productNames}" var="product">
 								<th scope="col">${product.productName}</th>
 							</c:forEach>
-							<th scope="col">Order Total</th>
-							<th scope="col">Action</th>
+							<th scope="col">Creado Por</th>
+							<th scope="col">Creado Para</th>
+							<!-- <th scope="col">Total de Pedido</th> -->
+							<!-- <th scope="col">Acción</th> -->
 						</tr>
 					</thead>					
 					<tbody>
-					<c:forEach items="${viewUnpaidOrders}" var="order">
+					<c:forEach items="${viewShippedOrders}" var="order">
 						<tr>
 							<th scope="row">${order.orderID}</th>
 							<td>${order.created_At}</td>
 							<c:forEach items="${order.products}" var="product">
 								<td>${product.orderedProductQty}</td>
 							</c:forEach>
-							<td>${order.totalPrice}</td>
-							<td>								
-								<a href="${order.orderID}/orderPaid">Mark as Paid</a><br/>
-							</td>							
+							<td>
+								${order.createByUser.firstName} ${order.createByUser.lastName}
+								(${order.createByUser.roleName})
+							</td>
+							<td>
+								${order.createForUser.firstName} ${order.createForUser.lastName}
+								(${order.createForUser.roleName})
+							</td>
+							<%-- <td>${order.totalPrice}</td> --%>
+							<%-- <td>								
+								<a href="${order.orderID}/orderPaid">Marcar como Pagado</a><br/>
+							</td> --%>							
 						</tr>
 					</c:forEach>				
 					</tbody>
@@ -338,16 +428,19 @@ $(document).ready(function(){
 				</c:if>	
 				
 				<c:if test="${not empty viewAllOrders}">
-				<h4><b>All Orders</b></h4>
+				<h4><b>Todos los Pedidos</b></h4>
 				<table class="table">								
 					<thead>
 						<tr>
-							<th scope="col">Order #</th>
-							<th scope="col">Date</th>
+							<th scope="col"># de Pedido</th>
+							<th scope="col">Fecha de Creación</th>
 							<c:forEach items="${productNames}" var="product">
 								<th scope="col">${product.productName}</th>
 							</c:forEach>
-							<th scope="col">Order Total</th>
+							<th scope="col">Creado Por</th>
+							<th scope="col">Creado Para</th>
+							<th scope="col">Estado de Pedido</th>
+							<!-- <th scope="col">Total de Pedido</th> -->
 						</tr>
 					</thead>					
 					<tbody>
@@ -358,7 +451,16 @@ $(document).ready(function(){
 							<c:forEach items="${order.products}" var="product">
 								<td>${product.orderedProductQty}</td>
 							</c:forEach>
-							<td>${order.totalPrice}</td>							
+							<td>
+								${order.createByUser.firstName} ${order.createByUser.lastName}
+								(${order.createByUser.roleName})
+							</td>
+							<td>
+								${order.createForUser.firstName} ${order.createForUser.lastName}
+								(${order.createByUser.roleName})
+							</td>
+							<td>${order.orderStatus}</td>
+							<%-- <td>${order.totalPrice}</td>	 --%>						
 						</tr>
 					</c:forEach>				
 					</tbody>
@@ -368,14 +470,14 @@ $(document).ready(function(){
 				
 				<!-- Product Catalog to Shopping Cart -->
 				<c:if test="${not empty showList}">							
-				<h4>Add Products To Shopping Cart</h4>			        
+				<h4>Agregar Productos al Pedido</h4>			        
 			        <table class="table table-hover table-condensed">								
 					<thead>
 						<tr>
-							<th scope="col" style="width:25%">Product Name</th>
-							<th scope="col" style="width:25%">Price</th>
-							<th scope="col" style="width:25%">Quantity</th>
-							<th scope="col" style="width:25%">Action</th>
+							<th scope="col" style="width:25%">Nombre de Producto</th>
+							<!-- <th scope="col" style="width:25%">Precio</th> -->
+							<th scope="col" style="width:25%">Cantidad</th>
+							<th scope="col" style="width:25%">Acción</th>
 						</tr>
 					</thead>					
 					<tbody>
@@ -383,12 +485,12 @@ $(document).ready(function(){
 					<form:form method="POST" action="${product.productID}/addToCart">
 						<tr>
 							<th scope="row">${product.productName}</th>
-							<td>${product.price}</td>
+							<%-- <td>${product.price}</td> --%>
 							<td data-th="Quantity">
 								<input type="text" name="quantity" class="form-control text-center" value="0">
 							</td>
 							<td>
-								<button class="btn btn-primary" type="submit">Add to Cart</button>
+								<button class="btn btn-primary" type="submit">Agregar al Pedido</button>
 								<%-- <a href="${product.productID}/addToCart">Add to Cart</a> --%>					
 							</td>							
 						</tr>
@@ -405,10 +507,10 @@ $(document).ready(function(){
 								<p class="text-warning">Error: ${shoppingCartQtyError}</p>
 							</c:if>
 						</td>	
-						<td ></td>					
+						<!-- <td ></td> -->					
 						<td>
 							<c:if test="${!empty addToCartSucceeded}">
-							<a href="myCart" class="btn btn-warning">My Cart</a>
+							<a href="myCart" class="btn btn-warning">Mi Pedido</a>
 							</c:if>	
 						</td>
 					</tr>
@@ -427,10 +529,10 @@ $(document).ready(function(){
 				<table id="cart" class="table table-hover table-condensed">
     				<thead>
 						<tr>
-							<th style="width:50%">Product</th>
-							<th style="width:10%">Price</th>
-							<th style="width:8%">Quantity</th>
-							<th style="width:22%" class="text-center">Subtotal</th>
+							<th colspan="2" style="width:50%">Producto</th>
+							<!-- <th style="width:10%">Precio</th> -->
+							<th style="width:8%">Cantidad</th>
+							<!-- <th style="width:22%" class="text-center">Total Parcial</th> -->
 							<th style="width:10%"></th>
 						</tr>
 					</thead>
@@ -438,7 +540,7 @@ $(document).ready(function(){
 					<form:form method="POST" action="updateCart">
 					<c:forEach items="${productsInCart}" var="product">
 						<tr>
-							<td data-th="Product">
+							<td colspan="2" data-th="Product">
 								<div class="row">
 									<!-- <div class="col-sm-2 hidden-xs"><img src="http://placehold.it/100x100" alt="..." class="img-responsive"/></div> -->
 									<div class="col-sm-10">
@@ -447,14 +549,14 @@ $(document).ready(function(){
 									</div>
 								</div>
 							</td>
-							<td data-th="Price">${product.price}</td>
+							<%-- <td data-th="Price">${product.price}</td> --%>
 							<td data-th="Quantity">
 								<input type="text" name="quantity" class="form-control text-center" value="${product.orderedProductQty}">
 							</td>
-							<td data-th="Subtotal" class="text-center">${product.price*product.orderedProductQty}</td>
+							<%-- <td data-th="Subtotal" class="text-center">${product.price*product.orderedProductQty}</td> --%>
 							<td class="actions" data-th="">
-								<button type="submit" class="btn btn-info btn-sm"><i class="fa fa-refresh">Refresh</i></button><br/>
-								<a href="${product.productID}/deleteProductInCart" class="btn btn-danger btn-sm active" role="button" aria-pressed="true"><i class="fa fa-trash-o">&nbspDelete&nbsp</i></a>								
+								<button type="submit" class="btn btn-info btn-sm"><i class="fa fa-refresh">Actualizar</i></button><br/>
+								<a href="${product.productID}/deleteProductInCart" class="btn btn-danger btn-sm active" role="button" aria-pressed="true"><i class="fa fa-trash-o">&nbspEliminar&nbsp</i></a>								
 							</td>
 						</tr>
 					</c:forEach>
@@ -465,15 +567,15 @@ $(document).ready(function(){
 							<td class="text-center"><strong>Total 1.99</strong></td>
 						</tr> -->
 						<tr>
-							<td><a href="listProducts" class="btn btn-warning"><i class="fa fa-angle-left"></i> Continue Shopping</a></td>
+							<td><a href="listProducts" class="btn btn-warning"><i class="fa fa-angle-left"></i> Continua haciendo pedidos</a></td>
 							<td colspan="2">
 								<c:if test="${!empty shoppingCartQtyError}">
 									<p class="text-warning">Error: ${shoppingCartQtyError}</p>
 								</c:if>
 							</td>
-							<td class="hidden-xs text-center"><strong>Total $${cartTotal}</strong></td>
+							<!-- <td class="hidden-xs text-center"><strong>Total $${cartTotal}</strong></td> -->
 							<c:if test="${not empty productsInCart}">
-							<td><a href="checkout" class="btn btn-success btn-block">Checkout <i class="fa fa-angle-right"></i></a></td>
+							<td><a href="checkout" class="btn btn-success btn-block">Confirmar Pedido <i class="fa fa-angle-right"></i></a></td>
 							</c:if>
 						</tr>
 					</tfoot>
@@ -483,10 +585,10 @@ $(document).ready(function(){
 				<!-- Checkout -->
 				<c:if test="${not empty showCheckout}">
 				<h2 style="text-align: center;">
-                        Review Your Order & Complete Checkout
+                        Revision del Pedido y Complete la Compra
                     </h2>
                     <hr/>
-                    <a href="listProducts" class="btn btn-info" style="width: 100%;">Add More Products</a>
+                    <a href="listProducts" class="btn btn-info" style="width: 100%;">Agrega Mas Productos</a>
                     <hr/>
                     <div class="shopping_cart">
                         <form:form class="form-horizontal" role="form" action="placeOrder" method="post" id="payment-form">
@@ -503,8 +605,7 @@ $(document).ready(function(){
                                           data-parent="#accordion"
                                           href="#collapseOne"
                                           class="btn btn-success"
-                                          onclick="$(this).fadeOut(); $('#payInfo').fadeIn();">Review
-                                                Your Order»</a>
+                                          onclick="$(this).fadeOut(); $('#payInfo').fadeIn();">Revisa tu Pedido»</a>
                                         </div><br/>
                                     </div>
                                     <div id="collapseOne" class="panel-collapse collapse in">
@@ -527,18 +628,18 @@ $(document).ready(function(){
                                                                 <p>Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet.</p>
                                                             </td>
                                                             <td>
-                                                                <b>$${product.price*product.quantity}</b>
+	                                                            <div class="col-md-3">
+				                                                    <div style="text-align: center;">
+				                                                        <h3>Cantidad</h3>
+				                                                        <h3><span style="color:green;text-align:center;">${product.orderedProductQty}</span></h3>
+				                                                    </div>
+				                                                </div>                                                            
                                                             </td>
                                                         </tr>
                                                     </table>
                                                     </c:forEach>
                                                 </div>
-                                                <div class="col-md-3">
-                                                    <div style="text-align: center;">
-                                                        <h3>Order Total</h3>
-                                                        <h3><span style="color:green;">$${cartTotal}</span></h3>
-                                                    </div>
-                                                </div>
+                                                
                                             </div>
                                         </div>
                                     </div>
@@ -554,7 +655,7 @@ $(document).ready(function(){
 	                                      data-parent="#accordion"
 	                                      href="#collapseTwo"
 	                                      class=" btn btn-success">
-	                                      Continue to Shipping & Billing Information»</a>
+	                                      Continua a la información de Envío y Pago »</a>
 	                                    </div>
                                     </h4>
                                 </div>
@@ -574,22 +675,22 @@ $(document).ready(function(){
 											</c:if>
                                       </div>
                                       </div> 
-                                      <div class="input-group mb-3">                                    	                  
+                                      <%-- <sec:authorize access="hasAuthority('Manager')"> --%>
+                                      <div class="input-group mb-3">  					  
 									  <div class="input-group-prepend">
-									    <label class="input-group-text" for="saleType_select">Select the type of sale</label>
+									    <label class="input-group-text" for="saleType_select">Selecciona el tipo de Venta</label>
 										  <select class="custom-select" id="saleType_select" name="saleType">
 										    <option selected>Choose...</option>
-										    <option id="vendorSaleActive" onclick="myFunction1()" value="vendorSale">Vendor Mediated Sale</option>
-										    <option id="distributorSaleActive" onclick="myFunction2()" value="distributorSale">Distributor Sale</option>
-										    <option id="directSaleActive" onclick="myFunction3()" value="directSale">Direct Sale</option>
+										    <option id="vendorSaleActive" onclick="myFunction1()" value="vendorSale">Venta por Vendedor</option>
+										    <option id="distributorSaleActive" onclick="myFunction2()" value="distributorSale">Venta por Distribuidor</option>
+										    <option id="directSaleActive" onclick="myFunction3()" value="directSale">Venta directa a Cliente</option>
 										  </select>									  
 									  </div>
-									  </div> 
-									  
+									  </div>
 									  <div id="vendorSale" class="sale_type">
 									       <div class="input-group mb-3">
 									  		  <div class="input-group-prepend">
-											  	 <label class="input-group-text" for="vendor_Sale">Select the vendor of this sale</label>
+											  	 <label class="input-group-text" for="vendor_Sale">Selecciona el Vendedor de esta Venta</label>
 											  	 <select class="custom-select" id="vendor_Sale" name="_vandorSale">
 											  		<option selected>Choose...</option>
 											  		<c:forEach var="vandor" items="${allVendors}">
@@ -601,7 +702,7 @@ $(document).ready(function(){
 									  			
 										  <div class="input-group mb-3">
 										  		<div class="input-group-prepend">							  	
-												  	<label class="input-group-text" for="customers">Select a customer of this vendor</label>
+												  	<label class="input-group-text" for="customers">Selecciona un Cliente para este Vendedor</label>
 												  	<select class="custom-select" id="customers" name="_customers">
 												  		<option selected>Choose...</option>
 												  		<c:forEach var="customer" items="${allCustomers}">
@@ -611,25 +712,23 @@ $(document).ready(function(){
 										  		</div>
 										  </div>
 									</div>
-									 
 									<div id="distributorSale" class="sale_type">
 									  <div class="input-group mb-3">
 									  	<div class="input-group-prepend">
-										  	<label class="input-group-text" for="distributor_Sale">Select the distributor of this sale</label>
+										  	<label class="input-group-text" for="distributor_Sale">Selecciona al Distribuidor de esta Venta</label>
 										  	<select class="custom-select" id="distributor_Sale" name="_distributorSale">
 										  		<option selected>Choose...</option>
-										  		<c:forEach var="distributor" items="${allDistributors}">
-										  			<option value="${distributor.firstName} ${distributor.lastName}">${distributor.firstName} ${distributor.lastName}</option>
+										  		<c:forEach var="distribuitor" items="${allDistributors}">
+										  			<option value="${distribuitor.firstName} ${distribuitor.lastName}">${distribuitor.firstName} ${distribuitor.lastName}</option>
 										  		</c:forEach>
 										  	</select>
 									  	</div>
 									  </div>
 									</div>
-									  
 									  <div id="customerSale" class="sale_type">
 									  	 <div class="input-group mb-3">
 									  		<div class="input-group-prepend">
-											  	<label class="input-group-text" for="direct_Sale">Select the customer of this sale</label>
+											  	<label class="input-group-text" for="direct_Sale">Selecciona  al Cliente de esta Venta</label>
 											  	<select class="custom-select" id="direct_Sale" name="_directSale">
 											  		<option selected>Choose...</option>
 											  		<c:forEach var="customer" items="${allCustomers}">
@@ -638,7 +737,8 @@ $(document).ready(function(){
 											  	</select>
 									  		</div>
 									  	</div>
-									  </div>									 
+									  </div>
+									<%--   </sec:authorize>	 --%>								 
                                     <%-- <div class="card" style="width: 25rem;">
 									  <div class="card-body">
 									    <h5 class="card-title">${user.firstName} ${user.lastName}</h5>
@@ -900,7 +1000,7 @@ $(document).ready(function(){
                                     </c:if> --%>
                             		
                             		
-                          
+                          	<sec:authorize access="hasAuthority('Manager')">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
@@ -914,11 +1014,12 @@ $(document).ready(function(){
                                     </h4>
                                 </div>
                             </div>
+                            </sec:authorize>
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
                                         <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
-                                            <b>Payment Information</b>
+                                            <b>Informacion de Pago</b>
                                         </a>
                                     </h4>
                                 </div>
@@ -926,23 +1027,24 @@ $(document).ready(function(){
                                     <div class="panel-body">
                                         <span class='payment-errors'></span>
                                         <fieldset>
+                                        <sec:authorize access="hasAuthority('Manager')">
                                             <div class="custom-control custom-checkbox">
 											  <input type="checkbox" class="custom-control-input" id="customCheck1" name="paymentStatus">
-											  <label class="custom-control-label font-weight-bold" for="customCheck1">This order has been paid</label>
+											  <label class="custom-control-label font-weight-bold" for="customCheck1">Este Pedido fue pagado</label>
 											</div>
-                                            
+                                       </sec:authorize>     
                                             <div id="paymentOptions" class="input-group mb-3">
 											  <div class="input-group-prepend">
-											    <label class="input-group-text" for="inputGroupSelect01">Which method was this order paid for</label>
+											    <label class="input-group-text" for="inputGroupSelect01">Que metodo de pago fue utlizado para este pedido</label>
 												  <select class="custom-select" id="inputGroupSelect01" name="paymentMethod">
 												   <!-- <option selected>Choose...</option> -->
 												    <option value="Cash">Cash</option>
-												    <option value="Direct Deposit">Direct Deposit</option>
-												    <option value="Credit">Credit</option>
+												    <option value="Direct Deposit">Deposito Directo</option>
+												    <option value="Credit">Credito</option>
 												  </select>
-											  </div>
-											  	
-											</div>     
+											  </div>										  	
+											</div> 
+										 
                                             
                                             <!-- <div class="form-group">
                                                 <label class="col-sm-3 control-label" for="card-holder-name">Name on
@@ -1016,8 +1118,9 @@ $(document).ready(function(){
                                                     <div class="col-sm-offset-3 col-sm-9">
                                                     </div>
                                                 </div>
+                                          
                                         </fieldset>
-                                        <button type="submit" class="btn btn-success btn-lg" style="width:100%;">Place Order
+                                        <button type="submit" class="btn btn-success btn-lg" style="width:100%;">Realizar Pedido
                                         </button>
                                         <br/>
                                         <div style="text-align: left;"><br/>
@@ -1035,8 +1138,8 @@ $(document).ready(function(){
 					<c:if test="${not empty orderConfirmation}">
                			<div class="alert alert-success" role="alert">
 							<center>  
-								<h4 class="alert-heading">Success - your order is confirmed!</h4>
-								<h5 class="text-success">Order number: #${confirmedOrder.orderID}</h5>
+								<h4 class="alert-heading">Pedido Confirmado!</h4>
+								<h5 class="text-success">Numero de Pedido: #${confirmedOrder.orderID}</h5>
 								<hr />
 							</center>  
 						</div>
@@ -1046,7 +1149,7 @@ $(document).ready(function(){
 					    		<div class="row">
 					    			<div class="col-xs-6">
 					        			<address>
-					    				<strong>Shipping Address:</strong><br>
+					    				<strong>Direccion de Envio:</strong><br>
 					                        ${confirmedOrder.billingInfo.firstName} ${confirmedOrder.billingInfo.lastName}<br>
 					                        ${confirmedOrder.billingInfo.email}<br>
 					                        ${confirmedOrder.billingInfo.phone}<br>
@@ -1064,18 +1167,18 @@ $(document).ready(function(){
 					    	<div class="col-md-12">
 					    		<div class="panel panel-default">
 					    			<div class="panel-heading">
-					    				<center><p><span class="glyphicon glyphicon glyphicon-question-sign" aria-hidden="true"></span> 
-					                    All Monthly and Quarterly subscription plans renew automatically on the 15th of the month.</p> </center>
+					    				<%-- <center><p><span class="glyphicon glyphicon glyphicon-question-sign" aria-hidden="true"></span> 
+					                    All Monthly and Quarterly subscription plans renew automatically on the 15th of the month.</p> </center> --%>
 					    			</div>
 					    			<div class="panel-body">
 					    				<div class="table-responsive">
 					    					<table class="table table-condensed">
 					    						<thead>
 					                                <tr>
-					        							<td><strong>Product Name</strong></td>
-					        							<td class="text-right"><strong>Product Unit Price</strong></td>
-					            						<td class="text-right"><strong>Product Quantity</strong></td>
-					            						<td class="text-right"><strong>Price</strong></td>
+					        							<td><strong>Nombre de Producto</strong></td>
+					        							<!-- <td class="text-right"><strong>Unidad de Precio de Producto</strong></td> -->
+					            						<td class="text-center"><strong>Cantidad de Producto</strong></td>
+					            						<!-- <td class="text-right"><strong>Precio</strong></td> -->
 					                                    
 					                                </tr>
 					    						</thead>
@@ -1084,12 +1187,12 @@ $(document).ready(function(){
 					    							<c:forEach items="${confirmedOrder.products}" var="product">
 					    							<tr>
 					    								<td>${product.productName}</td>
-					            						<td class="text-center">${product.price}</td>
+					            						<%-- <td class="text-center">${product.price}</td> --%>
 					            						<td class="text-center">${product.unshippedProductqty}</td>
-					                                    <td class="text-right">${product.price * product.unshippedProductqty}</td>
+					                                    <%-- <td class="text-right">${product.price * product.unshippedProductqty}</td> --%>
 					    							</tr>
 					    							</c:forEach>
-					    							<tr>
+					    							<!-- <tr>
 					    								<td class="thick-line"></td>
 					    								<td class="thick-line"></td>
 					    								<td class="thick-line text-right"><strong>VAT - 12%</strong></td>
@@ -1098,7 +1201,7 @@ $(document).ready(function(){
 					    							<tr>
 					    								<td class="no-line"></td>
 					    								<td class="no-line"></td>
-					    								<td class="no-line text-right"><strong>Shipping</strong></td>
+					    								<td class="no-line text-right"><strong>Costo de Envio</strong></td>
 					    								<td class="no-line text-right">incl.</td>
 					    							</tr>
 					    							<tr>
@@ -1106,7 +1209,7 @@ $(document).ready(function(){
 					    								<td class="no-line"></td>
 					    								<td class="no-line text-right"><strong>Total</strong></td>
 					    								<td class="no-line text-right"><strong>$${confirmedOrder.totalPrice}</strong></td>
-					    							</tr>					    							
+					    							</tr> -->					    							
 					    						</tbody>
 					    					</table>
 					    				</div>
@@ -1119,7 +1222,7 @@ $(document).ready(function(){
 				</div>
 				<div class="col"></div>
 			</div>			
-			<a href="<c:url value="/perform_logout" />">Logout</a>	
+			<a href="<c:url value="/perform_logout" />">Cerrar Sesión</a>	
 			<div class="col"></div>
 		</div>
 	</div>

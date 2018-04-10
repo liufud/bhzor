@@ -44,11 +44,12 @@ public class SiteManagementController {
 									@ModelAttribute("roleTobeUpdated")Role roleTobeUpdated,
 									@ModelAttribute("updateRoleSucceeded")String updateRoleSucceeded,
 									@ModelAttribute("userInfoToBeUpdated")User userInfoToBeUpdated,
-									@ModelAttribute("passwordError")String passwordError
+									@ModelAttribute("passwordError")String passwordError,
+									@ModelAttribute("userForm")User user
 									/*@ModelAttribute("count")String count,
 									@ModelAttribute("offset")String offset*/) {		
 		model.addAttribute("user", new User());
-		model.addAttribute("userForm", new User());
+		model.addAttribute("userForm", user);
 		model.addAttribute("role", new Role());
 		model.addAttribute("allUsers", allUsers);
 		model.addAttribute("userSelected", userSelected);
@@ -83,10 +84,10 @@ public class SiteManagementController {
 	@ModelAttribute("roleList")
     public List<String> getroleList() {
        List<String> roleList = new ArrayList<String>();
-       roleList.add("Customer");
-       roleList.add("Vendor");
-       roleList.add("Distributor");
-       roleList.add("Manager");
+       roleList.add("Cliente");
+       roleList.add("Vendedor");
+       roleList.add("Distribuidor");
+       roleList.add("Administrador");
        return roleList;
     }
 	
@@ -132,7 +133,7 @@ public class SiteManagementController {
 		user.setRoleName(role.getRoleName());
 		roleService.updateRole(oldRole);
 		userService.editUser(user);
-		attr.addFlashAttribute("updateRoleSucceeded", "Role of " + user.getUsername() + " has successfully been updated to " + role.getRoleName());
+		attr.addFlashAttribute("updateRoleSucceeded", "El papel del " + user.getUsername() + " se ha actualizado con éxito a " + role.getRoleName());
 		System.out.println("Role updated..........");
 		return "redirect:/allUsers";
 	}
@@ -171,14 +172,16 @@ public class SiteManagementController {
 		User oldUser = userService.findUser(user.getUserId());
 		updateUser(oldUser, user);
 		userService.editUser(oldUser);
-		attr.addFlashAttribute("userUpdateSucceeded", "You have successfully updated user" + oldUser.getUsername() + "!");
+		attr.addFlashAttribute("userUpdateSucceeded", "Usted ha actualizado exitosamente usuario " + oldUser.getUsername() + "!");
 		return "redirect:/siteManagement";
 	}
 	
 	@RequestMapping(value="addUser",method=RequestMethod.GET)
 	public String addUser(RedirectAttributes attr,
-							@ModelAttribute("passwordError")String passwordError) {	
+							@ModelAttribute("passwordError")String passwordError,
+							Model model) {	
 		attr.addFlashAttribute("addUser", "addUser");
+		model.addAttribute("userForm", new User());
 		attr.addFlashAttribute("passwordError", passwordError);
 		return "redirect:/siteManagement";
 	}

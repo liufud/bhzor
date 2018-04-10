@@ -40,28 +40,28 @@ public class ExcelUserListReportView extends AbstractXlsView{
 		List<ShippedOrder> shippedOrderList = (List<ShippedOrder>) list.get(4);
 		List<ReceivedRpOrder> receivedRpOrderList = (List<ReceivedRpOrder>) list.get(5);
 		
-		Sheet userSheet = (Sheet) workbook.createSheet("User List");
-		Sheet productSheet = (Sheet) workbook.createSheet("Product List");
-		Sheet orderSheet = (Sheet) workbook.createSheet("Customer Order List");
-		Sheet shippedOrderSheet = (Sheet) workbook.createSheet("Shipped Order List");
-		Sheet rpOrderSheet = (Sheet) workbook.createSheet("Replenishment Order List");		
-		Sheet receivedRpOrderSheet = (Sheet) workbook.createSheet("Received Replenishment Order List");
+		Sheet userSheet = (Sheet) workbook.createSheet("Usuarios");
+		Sheet productSheet = (Sheet) workbook.createSheet("Productos");
+		Sheet orderSheet = (Sheet) workbook.createSheet("Ordenes de Clientes");
+		Sheet shippedOrderSheet = (Sheet) workbook.createSheet("Ordenes Enviadas");
+		Sheet rpOrderSheet = (Sheet) workbook.createSheet("Reposicion de Producto");		
+		Sheet receivedRpOrderSheet = (Sheet) workbook.createSheet("Reposicion de Producto Recibida");
 		
 		//User
 		//header row
 		Row userHeader = userSheet.createRow(0);
 		userHeader.createCell(0).setCellValue("ID");
-		userHeader.createCell(1).setCellValue("USERNAME");
-		userHeader.createCell(2).setCellValue("FIRST NAME");
-		userHeader.createCell(3).setCellValue("LAST NAME");
+		userHeader.createCell(1).setCellValue("Nombre de Usuario");
+		userHeader.createCell(2).setCellValue("Nombre");
+		userHeader.createCell(3).setCellValue("Apellido");
 		userHeader.createCell(4).setCellValue("EMAIL");
-		userHeader.createCell(5).setCellValue("PHONE NUMBER");
-		userHeader.createCell(6).setCellValue("ADDRESS");
-		userHeader.createCell(7).setCellValue("CITY");
-		userHeader.createCell(8).setCellValue("STATE");
-		userHeader.createCell(9).setCellValue("ZIP");
-		userHeader.createCell(10).setCellValue("ROLE");
-		userHeader.createCell(11).setCellValue("VENDOR");
+		userHeader.createCell(5).setCellValue("Telefono");
+		userHeader.createCell(6).setCellValue("Direccion");
+		userHeader.createCell(7).setCellValue("Ciudad");
+		userHeader.createCell(8).setCellValue("Estado");
+		userHeader.createCell(9).setCellValue("Codigo Postal");
+		userHeader.createCell(10).setCellValue("Tipo");
+		userHeader.createCell(11).setCellValue("Vendedor");
 		
 		int rowNum = 1;
 		
@@ -84,10 +84,10 @@ public class ExcelUserListReportView extends AbstractXlsView{
 		//Product
 		Row productHeader = productSheet.createRow(0);
 		productHeader.createCell(0).setCellValue("ID");
-		productHeader.createCell(1).setCellValue("Product Name");
-		productHeader.createCell(2).setCellValue("Cost from Factory");
-		productHeader.createCell(3).setCellValue("Price for Sale");
-		productHeader.createCell(4).setCellValue("Quantity");
+		productHeader.createCell(1).setCellValue("Nombre de Producto");
+		productHeader.createCell(2).setCellValue("Costo de Fabrica");
+		productHeader.createCell(3).setCellValue("Precio de venta");
+		productHeader.createCell(4).setCellValue("Cantidad");
 		
 		int prodRowNum = 1;
 		
@@ -107,17 +107,17 @@ public class ExcelUserListReportView extends AbstractXlsView{
 		for(int i=0; i<prodNum; i++) {
 			orderHeader.createCell(i+1).setCellValue(productList.get(i).getProductName());
 		}
-		orderHeader.createCell(prodNum+1).setCellValue("Order Total");
-		orderHeader.createCell(prodNum+2).setCellValue("Created By");
-		orderHeader.createCell(prodNum+3).setCellValue("Created For");
-		orderHeader.createCell(prodNum+4).setCellValue("Payment Method");
-		orderHeader.createCell(prodNum+5).setCellValue("Order Status");
-		orderHeader.createCell(prodNum+6).setCellValue("Payment Status");
-		orderHeader.createCell(prodNum+7).setCellValue("Shipment Status");
-		orderHeader.createCell(prodNum+8).setCellValue("Created At");
-		orderHeader.createCell(prodNum+9).setCellValue("Paid At");
-		orderHeader.createCell(prodNum+10).setCellValue("Shipped At");
-		orderHeader.createCell(prodNum+11).setCellValue("Order Type");
+		orderHeader.createCell(prodNum+1).setCellValue("Total de Pedido");
+		orderHeader.createCell(prodNum+2).setCellValue("Creado Por");
+		orderHeader.createCell(prodNum+3).setCellValue("Creado Para");
+		orderHeader.createCell(prodNum+4).setCellValue("Metodo de Paga");
+		orderHeader.createCell(prodNum+5).setCellValue("Estado de la Pedido");
+		orderHeader.createCell(prodNum+6).setCellValue("Estado de la Paga");
+		orderHeader.createCell(prodNum+7).setCellValue("Estado del Envio");
+		orderHeader.createCell(prodNum+8).setCellValue("Dia creado");
+		orderHeader.createCell(prodNum+9).setCellValue("Tiempo pagado");
+		orderHeader.createCell(prodNum+10).setCellValue("Tiempo enviado");
+		orderHeader.createCell(prodNum+11).setCellValue("Tipo de Pedido");
 		
 		int orderRowNum = 1;
 		
@@ -151,13 +151,13 @@ public class ExcelUserListReportView extends AbstractXlsView{
 		//Shipped Order
 		Row shippedOrderHeader = shippedOrderSheet.createRow(0);
 		shippedOrderHeader.createCell(0).setCellValue("ID");
-		shippedOrderHeader.createCell(1).setCellValue("Date Shipped");
-		shippedOrderHeader.createCell(2).setCellValue("Lot #");
-		shippedOrderHeader.createCell(3).setCellValue("Order ID");
-		shippedOrderHeader.createCell(4).setCellValue("Quantity Shipped");
-		shippedOrderHeader.createCell(5).setCellValue("Product Name");
-		shippedOrderHeader.createCell(6).setCellValue("Tracking #");
-		shippedOrderHeader.createCell(7).setCellValue("Shipped By User");
+		shippedOrderHeader.createCell(1).setCellValue("Fecha Enviada");
+		shippedOrderHeader.createCell(2).setCellValue("# de Lote");
+		shippedOrderHeader.createCell(3).setCellValue("ID de Orden");
+		shippedOrderHeader.createCell(4).setCellValue("Cantidad Enviada");
+		shippedOrderHeader.createCell(5).setCellValue("Nombre de Producto");
+		shippedOrderHeader.createCell(6).setCellValue("# de Rastreo");
+		shippedOrderHeader.createCell(7).setCellValue("Enviado por usuario");
 		
 		int rowNumber = 1;
 		
@@ -179,10 +179,10 @@ public class ExcelUserListReportView extends AbstractXlsView{
 		for(int i=0; i<prodNum; i++) {
 			rporderHeader.createCell(i+1).setCellValue(productList.get(i).getProductName());
 		}
-		rporderHeader.createCell(prodNum+1).setCellValue("Created At");
-		rporderHeader.createCell(prodNum+2).setCellValue("Created By");
-		rporderHeader.createCell(prodNum+3).setCellValue("Order Staus");
-		rporderHeader.createCell(prodNum+4).setCellValue("Order Total");
+		rporderHeader.createCell(prodNum+1).setCellValue("Fecha Creada");
+		rporderHeader.createCell(prodNum+2).setCellValue("Creado Por");
+		rporderHeader.createCell(prodNum+3).setCellValue("Estado de Orden");
+		rporderHeader.createCell(prodNum+4).setCellValue("Total de Orden");
 		
 		int rpOrderRowNum = 1;
 		
@@ -230,15 +230,15 @@ public class ExcelUserListReportView extends AbstractXlsView{
 		//Received Replenishment Order List
 		Row receivedRpOrderHeader = receivedRpOrderSheet.createRow(0);
 		receivedRpOrderHeader.createCell(0).setCellValue("ID");
-		receivedRpOrderHeader.createCell(1).setCellValue("Date Received");
-		receivedRpOrderHeader.createCell(2).setCellValue("Expiration Date");
-		receivedRpOrderHeader.createCell(3).setCellValue("Lot #");
-		receivedRpOrderHeader.createCell(4).setCellValue("Quantity Received");
-		receivedRpOrderHeader.createCell(5).setCellValue("Quantity Rejected");
-		receivedRpOrderHeader.createCell(6).setCellValue("Product Name");
-		receivedRpOrderHeader.createCell(7).setCellValue("Replenishment OrderID");
-		receivedRpOrderHeader.createCell(8).setCellValue("Total Cost");
-		receivedRpOrderHeader.createCell(9).setCellValue("Received By");
+		receivedRpOrderHeader.createCell(1).setCellValue("Fecha Recibida");
+		receivedRpOrderHeader.createCell(2).setCellValue("Fecha de Expiracion");
+		receivedRpOrderHeader.createCell(3).setCellValue("# de Lote");
+		receivedRpOrderHeader.createCell(4).setCellValue("Cantidad Recibida");
+		receivedRpOrderHeader.createCell(5).setCellValue("Cantidad Rechazada");
+		receivedRpOrderHeader.createCell(6).setCellValue("Nombre de Producto");
+		receivedRpOrderHeader.createCell(7).setCellValue("ID de Pedido de Reposicion");
+		receivedRpOrderHeader.createCell(8).setCellValue("Costo Total");
+		receivedRpOrderHeader.createCell(9).setCellValue("Recibido  Por");
 		
 		int receivedRowNumber = 1;
 		

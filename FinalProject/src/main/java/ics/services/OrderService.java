@@ -16,8 +16,9 @@ public interface OrderService {
 	public Collection<Order> listOrders();
 	public Collection<ShippedOrder> listShippedOrders();
 	Collection<Order> listOrders(String statusType, String status);
-	public List<ShippedOrder> getShippedOrderByLot(Long orderID, Long lotID, String productName);
+	public List<ShippedOrder> getShippedOrderByShelf(Long orderID, Long shelfID, String productName);
 	public List<ShippedOrder> getShippedOrderByID(Long orderID, String productName);
+	public List<Order> getShippedOrdersByStatus(String orderStatus);
 	public Order getLatestOrder();
 	public void delete(Long orderID);
 }

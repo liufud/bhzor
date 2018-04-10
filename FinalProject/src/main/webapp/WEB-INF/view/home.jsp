@@ -25,12 +25,12 @@
 			<div class="row">
 				<div class="col"><img src="img/BH-ZOR_logo.png" height="70"></div>
 				<%-- <sec:authorize access="hasAuthority('Manager')"> --%>
-				<div class="col"><h1>Inventory Tracker</h1></div>
+				<div class="col-7"><h1>BH-ZOR: Base de Datos</h1></div>
 <%-- 				</sec:authorize>
 				<sec:authorize access="hasAuthority('Customer')">
 				<div class="col5"><h1>Welcome</h1></div>
 				</sec:authorize> --%>
-				<div class="col"></div>
+				<div class="col-1"></div>
 			</div>
 			<div class="row">
 				<div class="col"></div>
@@ -38,26 +38,26 @@
 					<br/>	
 						<ul class="nav nav-tabs">
 							<sec:authorize access="hasAuthority('Manager')">
-							  <li class="nav-item">
-							    <a class="nav-link" href="dashboard">Dashboard</a>
+							 <!--  <li class="nav-item">
+							    <a class="nav-link" href="dashboard">Panel de Control</a>
 							  </li>					  				
 							  <li class="nav-item">
-							    <a class="nav-link" href="sales">Sales</a>
-							  </li>
+							    <a class="nav-link" href="sales">Ventas</a>
+							  </li> -->
 							</sec:authorize>
 							  <li class="nav-item">
-							    <a class="nav-link" href="orders?selectOrderType=true">Orders</a>
+							    <a class="nav-link" href="orders?selectOrderType=true">Pedidos</a>
 							  </li>
 							  <sec:authorize access="hasAuthority('Manager')">
 							  <li class="nav-item">
-							    <a class="nav-link" href="inventory?orderStatus=openOrder">Inventory</a>
+							    <a class="nav-link" href="inventory?orderStatus=openOrder">Inventario</a>
 							  </li>
 							  <li class="nav-item">
-							    <a class="nav-link" href="siteManagement">Site Management</a>
+							    <a class="nav-link" href="siteManagement">Administración de la Pagina</a>
 							  </li>
 							  </sec:authorize>
 						</ul>
-						Logged in as: <sec:authentication property="name"/> <sec:authentication property="authorities"/>
+						Conectado como: <sec:authentication property="name"/> <sec:authentication property="authorities"/>
 					<br/>
 				</div>
 				<div class="col"></div>
@@ -65,9 +65,13 @@
 		  <main role="main">
 	        <div class="jumbotron">
 	          <div class="col-sm-8 mx-auto text-dark">
-	            <h1 class="mx-auto">Welcome</h1>
-	            <p>This web application is a multi-role based inventory control system that not only helps managers to manage their inventory, but also provides a platform for the customers to place orders for different products</p>	           
-	            <sec:authorize access="hasAuthority('Customer')">
+	            <h1 class="mx-auto">Bienvenido</h1>
+	            <p>Esta aplicación web es un control de inventario multi-usuario. No solo ayuda a administradores en manejar el inventario y poner órdenes de producto, también permite a diferentes usuarios (clientes, vendedores o distribuidores) en hacer pedidos para diferentes productos. </p>	           
+	            <p>
+	              <a class="btn btn-primary" href="orders?selectOrderType=true" role="button">Entrar &raquo;</a>
+	            </p>
+	            
+	            <%-- <sec:authorize access="hasAuthority('Customer')">
 	            <p>
 	              <a class="btn btn-primary" href="products" role="button">Get Started &raquo;</a>
 	            </p>
@@ -76,12 +80,12 @@
 	            <p>
 	              <a class="btn btn-primary" href="users" role="button">Get Started &raquo;</a>
 	            </p>
-	            </sec:authorize>
+	            </sec:authorize> --%>
 	          </div>
 	        </div>
 	      </main>
 			
-			<a href="<c:url value="/perform_logout" />">Logout</a>	
+			<a href="<c:url value="/perform_logout" />">Cerrar Sesión</a>	
 			</div>	
 			<div class="col"></div>
 		</div>

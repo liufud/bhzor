@@ -46,14 +46,9 @@ public class OrderServiceImpl implements OrderService {
 		return orderDAO.listOrders(statusType, status);
 	}
 
-
-	public List<ShippedOrder> getOrderByLot(Long orderID, Long lotID, String productName) {
-		return orderDAO.getShippedOrderByLot(orderID, lotID, productName);
-	}
-
-
-	public List<ShippedOrder> getShippedOrderByLot(Long orderID, Long lotID, String productName) {
-		return orderDAO.getShippedOrderByLot(orderID, lotID, productName);
+	
+	public List<ShippedOrder> getShippedOrderByShelf(Long orderID, Long shelfID, String productName) {
+		return orderDAO.getShippedOrderByShelf(orderID, shelfID, productName);
 	}
 
 
@@ -74,6 +69,11 @@ public class OrderServiceImpl implements OrderService {
 
 	public Collection<ShippedOrder> listShippedOrders() {
 		return orderDAO.listShippedOrders();
+	}
+
+
+	public List<Order> getShippedOrdersByStatus(String orderStatus) {
+		return orderDAO.getShippedOrdersByStatus(orderStatus);
 	}
 
 }

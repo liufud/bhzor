@@ -29,7 +29,7 @@ public class User {
 	
 	@Column(name = "username", unique = true,
 	nullable = false, length = 45)
-	@NotEmpty(message="username cannot be empty")
+	@NotEmpty(message="Nombre de usuario no puede estar vacio")
 	private String username;
 	@Id
 	@GeneratedValue(generator="increment")
@@ -39,23 +39,23 @@ public class User {
 	nullable = false, length = 60)
 	@Size(min=6,max=15,message="Your password must be betwen 6 and 15 characters")
 	private String password;
-	@Size(min=6,max=15,message="Please confirm your password")
+	@Size(min=6,max=15,message="Porfavor confirma tu contraseña")
 	private String passwordConfirm;
-	@NotEmpty(message="Please provide your email")
+	@NotEmpty(message="Porfavor ponga su email")
 	@Email
 	private String email;
-	@NotEmpty(message="Enter your first name")
+	@NotEmpty(message="Escriba su Nombre")
 	private String firstName;
-	@NotEmpty(message="Enter your last name")
+	@NotEmpty(message="Escriba su Apellido")
 	private String lastName;
 	private Long phoneNumber;
-	@NotEmpty(message="Please provide your address")
+	@NotEmpty(message="Porfavor ponga su Direccion")
 	private String address;
-	@NotEmpty(message="Please enter city")
+	@NotEmpty(message="Ponga la Ciudad")
 	private String city;
-	@NotEmpty(message="Please enter state")
+	@NotEmpty(message="Ponga el Estado")
 	private String state;
-	@NotEmpty(message="Please enter zip code")
+	@NotEmpty(message="Ponga el Codigo Postal")
 	private String zip;
 	@Column(name = "enabled", nullable = false)
 	private boolean enabled;

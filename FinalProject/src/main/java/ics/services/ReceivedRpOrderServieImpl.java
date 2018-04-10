@@ -43,8 +43,8 @@ public class ReceivedRpOrderServieImpl implements ReceivedRpOrderService {
 		return receivedRpOrderDAO.listOrders(rpOrderID, productName);
 	}
 
-	public List<ReceivedRpOrder> getOrderByLot(Long rpOrderID, Long lotID, String productName) {
-		return receivedRpOrderDAO.getOrderByLot(rpOrderID ,lotID, productName);
+	public List<ReceivedRpOrder> getOrderByShelf(Long rpOrderID, Long shelfID, String productName) {
+		return receivedRpOrderDAO.getOrderByShelf(rpOrderID, shelfID, productName);
 	}
 
 	public List<ReceivedRpOrder> getOrderByRpOrderID(Long rpOrderID, String productName) {

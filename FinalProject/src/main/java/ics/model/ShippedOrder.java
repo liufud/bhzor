@@ -27,14 +27,18 @@ public class ShippedOrder {
 	@Id
 	@GeneratedValue(generator="increment")
 	@GenericGenerator(name="increment", strategy = "increment")
-	private Long shipmentID;	
-	@NotNull(message="Lot ID cannot be empty!")
+	private Long shipmentID;
+	@NotNull(message="ID de lote no puede estaer vacio!")
+	@Min(value=0)
+	@Max(value=999999999*100000)
+	private Long lotID;
+	@NotNull(message="# de estante no puede estaer vacio!")
 	@Min(value=0)
 	@Max(value=1000)
-	private Long lotID;
+	private Long shelfID;
 	@CreationTimestamp
 	private Date dateShipped;
-	@NotNull(message="Quantity shipped cannot be empty!")
+	@NotNull(message="Cantidad Enviada no puede estar vacio!")
 	@Min(value=0)
 	@Max(value=100000)
 	private Integer qtyShipped;
@@ -42,7 +46,7 @@ public class ShippedOrder {
 	private User shippedByUser;
 	@NotEmpty
 	private String shippedProductName;
-	@NotEmpty(message="Tracking numbber cannot be empty!")
+//	@NotEmpty(message="Numero de Rastreo no puede estar vacio!")
 	private String trackingNumber;
 	private Long orderID;
 	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
@@ -55,11 +59,11 @@ public class ShippedOrder {
 	public void setShipmentID(Long shipmentID) {
 		this.shipmentID = shipmentID;
 	}
-	public Long getLotID() {
-		return lotID;
+	public Long getShelfID() {
+		return shelfID;
 	}
-	public void setLotID(Long lotID) {
-		this.lotID = lotID;
+	public void setShelfID(Long lotID) {
+		this.shelfID = lotID;
 	}
 	public Date getDateShipped() {
 		return dateShipped;
@@ -103,5 +107,12 @@ public class ShippedOrder {
 	public void setShippedProds(List<OrderedProd> shippedProds) {
 		this.shippedProds = shippedProds;
 	}
+	public Long getLotID() {
+		return lotID;
+	}
+	public void setLotID(Long lotID) {
+		this.lotID = lotID;
+	}
+	
 
 }

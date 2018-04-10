@@ -44,12 +44,12 @@ public class ReceivedRpOrderHibernateDAOImpl implements ReceivedRpOrderDAO {
 	}
 	@SuppressWarnings("unchecked")
 	@Transactional
-	public List<ReceivedRpOrder> getOrderByLot(Long rpOrderID, Long lotID, String productName) {
+	public List<ReceivedRpOrder> getOrderByShelf(Long rpOrderID, Long shelfID, String productName) {
 		List<ReceivedRpOrder> orders = new ArrayList<ReceivedRpOrder>();
 		orders = sessionFactory.getCurrentSession()
-			.createQuery("from ReceivedRpOrder where rpOrderID=? and lotID=? and receivedRpProductName=?")
+			.createQuery("from ReceivedRpOrder where rpOrderID=? and shelfID=? and receivedRpProductName=?")
 			.setParameter(0, rpOrderID)
-			.setParameter(1, lotID)
+			.setParameter(1, shelfID)
 			.setParameter(2, productName)
 			.list();
 		if (orders.size() > 0) {

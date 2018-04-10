@@ -71,13 +71,27 @@ public class OrderHibernateDAOImpl implements OrderDAO {
 	}
 	@SuppressWarnings("unchecked")
 	@Transactional
-	public List<ShippedOrder> getShippedOrderByLot(Long orderID, Long lotID, String productName) {
+	public List<ShippedOrder> getShippedOrderByShelf(Long orderID, Long shelfID, String productName) {
 		List<ShippedOrder> orders = new ArrayList<ShippedOrder>();
 		orders = sessionFactory.getCurrentSession()
-			.createQuery("from ShippedOrder where orderID=? and lotID=? and shippedProductName=?")
+			.createQuery("from ShippedOrder where orderID=? and shelfID=? and shippedProductName=?")
 			.setParameter(0, orderID)
-			.setParameter(1, lotID)
+			.setParameter(1, shelfID)
 			.setParameter(2, productName)
+			.list();
+		if (orders.size() > 0) {
+			return orders;
+		} else {
+			return null;
+		}
+	}
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public List<Order> getShippedOrdersByStatus(String orderStatus) {
+		List<Order> orders = new ArrayList<Order>();
+		orders = sessionFactory.getCurrentSession()
+			.createQuery("from Order where orderStatus=?")
+			.setParameter(0, orderStatus)
 			.list();
 		if (orders.size() > 0) {
 			return orders;
@@ -109,10 +123,9 @@ public class OrderHibernateDAOImpl implements OrderDAO {
 	@SuppressWarnings("unchecked")
 	@Transactional
 	public List<Order> getOrderByUserId(Long userId) {
-		List<Order> orders = new ArrayList<Order>();
-
+		List<Order> orders = new ArrayList<Order>();		
 		orders = sessionFactory.getCurrentSession()
-			.createQuery("from Order where createByUser=?")
+			.createQuery("from Order where createByUser_userId=?")
 			.setParameter(0, userId)
 			.list();
 		//System.out.println("check if order size is greater than 0 ============");

@@ -80,7 +80,9 @@ public class RegisterController {
 		}else if(!user.getPassword().equals(user.getPasswordConfirm())) {
 		System.out.println("passwords don't match");
 		attr.addFlashAttribute("passwordError", "Please enter the same password!");
-		return "redirect:/addUser";
+		attr.addFlashAttribute("userForm", user);
+		attr.addFlashAttribute("addUser", "addUser");
+		return "redirect:/siteManagement";
 		}
 		String roleName = request.getParameter("roleList");
 		if(!roleName.equals("Choose...")) {
@@ -105,7 +107,7 @@ public class RegisterController {
 		} catch (Exception e) {
 			System.out.println(e);
 		}
-		attr.addFlashAttribute("addSucceeded", "User " + user.getUsername() + " has been successfully added!");
+		attr.addFlashAttribute("addSucceeded", "Usuario " + user.getUsername() + " ha sido agregado exitosamente!");
 		//securityService.autologin(user.getUsername(), user.getPassword(),request);
 		
 		return "redirect:/siteManagement";
