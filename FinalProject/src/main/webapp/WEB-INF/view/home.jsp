@@ -37,7 +37,7 @@
 				<div class="col-12">
 					<br/>	
 						<ul class="nav nav-tabs">
-							<sec:authorize access="hasAuthority('Manager')">
+							<sec:authorize access="hasAuthority('Administrador')">
 							 <!--  <li class="nav-item">
 							    <a class="nav-link" href="dashboard">Panel de Control</a>
 							  </li>					  				
@@ -48,7 +48,7 @@
 							  <li class="nav-item">
 							    <a class="nav-link" href="orders?selectOrderType=true">Pedidos</a>
 							  </li>
-							  <sec:authorize access="hasAuthority('Manager')">
+							  <sec:authorize access="hasAuthority('Administrador')">
 							  <li class="nav-item">
 							    <a class="nav-link" href="inventory?orderStatus=openOrder">Inventario</a>
 							  </li>
@@ -66,7 +66,13 @@
 	        <div class="jumbotron">
 	          <div class="col-sm-8 mx-auto text-dark">
 	            <h1 class="mx-auto">Bienvenido</h1>
-	            <p>Esta aplicación web es un control de inventario multi-usuario. No solo ayuda a administradores en manejar el inventario y poner órdenes de producto, también permite a diferentes usuarios (clientes, vendedores o distribuidores) en hacer pedidos para diferentes productos. </p>	           
+	            <sec:authorize access="hasAuthority('Administrador')">
+	           		<p>Esta aplicación web es un control de inventario multi-usuario. No solo ayuda a administradores en manejar el inventario y poner órdenes de producto, también permite a diferentes usuarios (clientes, vendedores o distribuidores) en hacer pedidos para diferentes productos. </p>	           
+	            </sec:authorize>
+	            <%-- <sec:authorize access="hasAnyRole('Cliente','Vendedor','Distribuidor')"> --%>
+	            <sec:authorize access="hasAuthority('Distribuidor') or hasAuthority('Vendedor') or hasAuthority('Cliente')">
+	            	<p>Use esta pagina Web para hacer todos sus pediods con BH-ZOR!</p>
+	            </sec:authorize>
 	            <p>
 	              <a class="btn btn-primary" href="orders?selectOrderType=true" role="button">Entrar &raquo;</a>
 	            </p>

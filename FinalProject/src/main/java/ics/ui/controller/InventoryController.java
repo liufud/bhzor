@@ -8,6 +8,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
 
+import org.hibernate.annotations.Check;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -122,7 +123,12 @@ public class InventoryController {
 			Collection<ReplenishmentOrder> openOrders = replenishmentOrderService.listOrders("open");
 			model.addAttribute("openOrders", openOrders);
 		}	
-		
+//		if(null != openOrderQueryString && openOrderQueryString.contains("closedOrder")) {
+//			List<Product> listProductNames = (List<Product>) productService.listProducts();
+//			model.addAttribute("productNames", listProductNames);
+//			Collection<ReplenishmentOrder> closedOrders = receivedRpOrderService.listOrders("Closed");
+//			model.addAttribute("closedOrders", closedOrders);
+//		}
 		return "inventory";
 	}
 	
@@ -131,7 +137,7 @@ public class InventoryController {
 								@ModelAttribute("receivedQtyError")String receivedQtyError,
 								@ModelAttribute("saveReceivedQtyToAnotherLot")String saveReceivedQtyToAnotherLot,
 								@ModelAttribute("rpOrderClosed")String rpOrderClosed) {
-		model.addAttribute("rpOrderReceivedForm", "rpOrderReceivedForm");
+		model.addAttribute("rpOrderReceivedForm", rpOrderID);
 		model.addAttribute("rpOrderID", rpOrderID);
 		model.addAttribute("receivedQtyError", receivedQtyError);
 		model.addAttribute("saveReceivedQtyToAnotherLot", saveReceivedQtyToAnotherLot);
@@ -156,25 +162,23 @@ public class InventoryController {
 			model.addAttribute("openOrders", openOrders);
 			return "inventory";
 		}
+			
 		List<ReceivedRpOrder> receivedRpOrdersByShelf = receivedRpOrderService.getOrderByShelf(receivedRpOrder.getRpOrderID() ,receivedRpOrder.getShelfID(), receivedRpOrder.getReceivedRpProductName());
 		ReceivedRpOrder receivedRpOrderToBeSaved = new ReceivedRpOrder();
 		UserDetails userDetails =
 				 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 		User user = userService.findUserByName(userDetails.getUsername());
 //		if(null != user.getUsername()) System.out.println("User is " + user.getUsername());
-		receivedRpOrderToBeSaved.setCreateByUser(user);
+		receivedRpOrderToBeSaved.setLotID(receivedRpOrder.getLotID());
+		receivedRpOrderToBeSaved.setShelfID(receivedRpOrder.getShelfID());		
 		receivedRpOrderToBeSaved.setExpDate(receivedRpOrder.getExpDate());
-		receivedRpOrderToBeSaved.setShelfID(receivedRpOrder.getShelfID());
-		if(receivedRpOrder.getQuantityRejected() == null) {
-			receivedRpOrderToBeSaved.setQuantityRejected(0);
-		}else {
-			receivedRpOrderToBeSaved.setQuantityRejected(receivedRpOrder.getQuantityRejected());
-		}
-		receivedRpOrderToBeSaved.setRpOrderID(receivedRpOrder.getRpOrderID());
-		receivedRpOrderToBeSaved.setReceivedRpProductName(receivedRpOrder.getReceivedRpProductName());
+		receivedRpOrderToBeSaved.setCreateByUser(user);
+		receivedRpOrderToBeSaved.setReceivedRpProductName(receivedRpOrder.getReceivedRpProductName());		
 		double productCost = productService.getProductByName(receivedRpOrder.getReceivedRpProductName()).getCost();
 		Double totalCost = receivedRpOrder.getQuantityReceived() * productCost;
+		System.out.println("totoal cost is: " + totalCost);
 		receivedRpOrderToBeSaved.setTotalCost(totalCost);
+		receivedRpOrderToBeSaved.setRpOrderID(receivedRpOrder.getRpOrderID());
 		
 //		receivedRpOrderToBeSaved.setQuantityReceived(receivedRpOrder.getQuantityReceived());
 		
@@ -191,53 +195,92 @@ public class InventoryController {
 				}
 				//if qty received is less than quantity ordered, ask user if he/she wants to save it to another lot
 				else if(receivedRpOrder.getQuantityReceived() < o.getOrderedProductQty()) {
-					Collection<ReceivedRpOrder> receivedRpOrders = receivedRpOrderService.getOrderByRpOrderID(receivedRpOrder.getRpOrderID(), receivedRpOrder.getReceivedRpProductName());
+					Collection<ReceivedRpOrder> receivedRpOrdersFromAllShelfBasedOnOneProduct = receivedRpOrderService.getOrderByRpOrderID(receivedRpOrder.getRpOrderID(), receivedRpOrder.getReceivedRpProductName());
 					Integer quantityReceived = new Integer(0);
-					if(null != receivedRpOrders) {
-						for(ReceivedRpOrder recRpOrder:receivedRpOrders) quantityReceived+=recRpOrder.getQuantityReceived();
+					Integer quantityRejected = new Integer(0);
+					if(null != receivedRpOrdersFromAllShelfBasedOnOneProduct) {
+						for(ReceivedRpOrder recRpOrder:receivedRpOrdersFromAllShelfBasedOnOneProduct) {
+							quantityReceived+=recRpOrder.getQuantityReceived();
+							quantityRejected+=recRpOrder.getQuantityRejected();
+						}
 					}
+//					System.out.println("total quantity unprocessed: " + o.getUnprocessedProductqty());
+//					System.out.println("total quantity received: " + quantityReceived);
+//					System.out.println("total quantity rejected: " + quantityRejected);
 					//check if the added quantity exceeds ordered quantity
-					if(quantityReceived + receivedRpOrder.getQuantityReceived() > o.getOrderedProductQty()) {
+					if(quantityReceived + receivedRpOrder.getQuantityReceived() + quantityRejected + receivedRpOrder.getQuantityRejected()> o.getOrderedProductQty()) {
 						model.addAttribute("receivedQtyError", "Error! Cantidad Recibida no puede ser mayor a la Cantidad Pedida!");
 						return "redirect:/" + rpOrder.getRpOrderID() + "/receivedRpOrder";
-					}else if(quantityReceived + receivedRpOrder.getQuantityReceived() < o.getOrderedProductQty()){
+					}else if(quantityReceived + receivedRpOrder.getQuantityReceived() + quantityRejected + receivedRpOrder.getQuantityRejected()< o.getOrderedProductQty()){
 						model.addAttribute("saveReceivedQtyToAnotherLot", rpOrder.getRpOrderID());
 						if(null != receivedRpOrdersByShelf) {
 							System.out.println("received qty less than ordered qty -----------  received product exist in the lot");
 							receivedRpOrdersByShelf.get(0).setQuantityReceived(receivedRpOrdersByShelf.get(0).getQuantityReceived() + receivedRpOrder.getQuantityReceived());
+							receivedRpOrdersByShelf.get(0).setQuantityRejected(receivedRpOrdersByShelf.get(0).getQuantityRejected() + receivedRpOrder.getQuantityRejected());
 							receiveProducts(receivedRpOrder.getReceivedRpProductName(), receivedRpOrder.getQuantityReceived());
-							receivedRpOrdersByShelf.get(0).setTotalCost(receivedRpOrdersByShelf.get(0).getTotalCost() + receivedRpOrder.getQuantityReceived()*productCost);
+							receivedRpOrdersByShelf.get(0).setTotalCost(receivedRpOrdersByShelf.get(0).getTotalCost() + totalCost);
+							o.setReceivedProductqty(receivedRpOrdersByShelf.get(0).getQuantityReceived());
+							o.setRejectedProdutqty(receivedRpOrdersByShelf.get(0).getQuantityRejected());
 							receivedRpOrderService.createOrder(receivedRpOrdersByShelf.get(0));
 						}else {
 							System.out.println("received qty less than ordered qty -----------  received product does NOT exist in the lot");
-							receivedRpOrderToBeSaved.setQuantityReceived(receivedRpOrder.getQuantityReceived());							
+							receivedRpOrderToBeSaved.setQuantityReceived(receivedRpOrder.getQuantityReceived());
+							receivedRpOrderToBeSaved.setTotalCost(totalCost);
+							if(receivedRpOrder.getQuantityRejected() == null) {
+								receivedRpOrderToBeSaved.setQuantityRejected(quantityRejected);
+							}else {
+								receivedRpOrderToBeSaved.setQuantityRejected(receivedRpOrder.getQuantityRejected());
+							}
 							receiveProducts(receivedRpOrder.getReceivedRpProductName(), receivedRpOrder.getQuantityReceived());
 							receivedRpOrderService.createOrder(receivedRpOrderToBeSaved);
+							o.setReceivedProductqty(receivedRpOrder.getQuantityReceived());
+							o.setRejectedProdutqty(receivedRpOrder.getQuantityRejected());
 						}
-						o.setUnreceivedProductqty(o.getUnreceivedProductqty()-receivedRpOrder.getQuantityReceived());
+						o.setUnprocessedProductqty(o.getOrderedProductQty() - (receivedRpOrder.getQuantityReceived() + receivedRpOrder.getQuantityRejected() + quantityReceived + quantityRejected));
+						o.setUnreceivedProductqty(o.getUnreceivedProductqty() - receivedRpOrder.getQuantityReceived());						
 						rpOrder.setRpProducts(rpProducts);
-						System.out.println("saving rpOrder -----");
+						System.out.println("saving rpOrder ----- ");
 						replenishmentOrderService.createOrder(rpOrder);
 						System.out.println("rpOrder saved ----");
-												
+						
 						System.out.println("Received " + receivedRpOrder.getQuantityReceived() + " of " + receivedRpOrder.getReceivedRpProductName());
-						return "redirect:/" + rpOrder.getRpOrderID() + "/receivedRpOrder";
-					}else if(quantityReceived + receivedRpOrder.getQuantityReceived() == o.getOrderedProductQty()){					
-						System.out.println("received qty EQUAL to ordered qty -----------  received product exist in the lot");
+						
+						if(closedRpOrder(rpOrder, quantityReceived, quantityRejected)) {
+							model.addAttribute("rpOrderClosed", rpOrder.getRpOrderID());
+							return "redirect:/inventory?orderStatus=openOrder";
+						}						
+					}else if(quantityReceived + receivedRpOrder.getQuantityReceived() + quantityRejected + receivedRpOrder.getQuantityRejected() == o.getOrderedProductQty()){					
+						System.out.println("received qty EQUAL to ordered qty ----------- received product exist in the lot");
 						if(null != receivedRpOrdersByShelf) {
 							receivedRpOrdersByShelf.get(0).setQuantityReceived(receivedRpOrdersByShelf.get(0).getQuantityReceived() + receivedRpOrder.getQuantityReceived());
+							receivedRpOrdersByShelf.get(0).setQuantityRejected(receivedRpOrdersByShelf.get(0).getQuantityRejected() + receivedRpOrder.getQuantityRejected());
 							receiveProducts(receivedRpOrder.getReceivedRpProductName(), receivedRpOrder.getQuantityReceived());
-							receivedRpOrdersByShelf.get(0).setTotalCost(/*receivedRpOrdersByShelf.get(0).getTotalCost() + */receivedRpOrder.getQuantityReceived()*productCost);
+							receivedRpOrdersByShelf.get(0).setTotalCost(receivedRpOrdersByShelf.get(0).getTotalCost() + totalCost);
 							receivedRpOrderService.createOrder(receivedRpOrdersByShelf.get(0));
+							o.setReceivedProductqty(receivedRpOrdersByShelf.get(0).getQuantityReceived());
+							o.setRejectedProdutqty(receivedRpOrdersByShelf.get(0).getQuantityRejected());							 
 						}else {
-							receivedRpOrderToBeSaved.setQuantityReceived(receivedRpOrder.getQuantityReceived());							
+							receivedRpOrderToBeSaved.setQuantityReceived(receivedRpOrder.getQuantityReceived());
+							if(receivedRpOrder.getQuantityRejected() == null) {
+								receivedRpOrderToBeSaved.setQuantityRejected(quantityRejected);
+							}else {
+								receivedRpOrderToBeSaved.setQuantityRejected(receivedRpOrder.getQuantityRejected());
+							}
+							receivedRpOrderToBeSaved.setTotalCost(totalCost);
 							receiveProducts(receivedRpOrder.getReceivedRpProductName(), receivedRpOrder.getQuantityReceived());
 							receivedRpOrderService.createOrder(receivedRpOrderToBeSaved);
+							o.setReceivedProductqty(receivedRpOrder.getQuantityReceived());
+							o.setRejectedProdutqty(receivedRpOrder.getQuantityRejected());							
 						};
-						o.setUnreceivedProductqty(o.getUnreceivedProductqty()-receivedRpOrder.getQuantityReceived());
+						o.setUnprocessedProductqty(o.getOrderedProductQty() - (receivedRpOrder.getQuantityReceived() + receivedRpOrder.getQuantityRejected() + quantityReceived + quantityRejected));
+						o.setUnreceivedProductqty(o.getUnreceivedProductqty()-receivedRpOrder.getQuantityReceived());						
 						rpOrder.setRpProducts(rpProducts);
 						replenishmentOrderService.createOrder(rpOrder);
 						System.out.println("Received all the quantity for product [" + receivedRpOrder.getReceivedRpProductName() + "]" );
+						if(closedRpOrder(rpOrder, quantityReceived, quantityRejected)) {
+							model.addAttribute("rpOrderClosed", rpOrder.getRpOrderID());
+							return "redirect:/inventory?orderStatus=openOrder";
+						}
 					}
 					
 					
@@ -246,48 +289,55 @@ public class InventoryController {
 				else {
 					Collection<ReceivedRpOrder> receivedRpOrders = receivedRpOrderService.getOrderByRpOrderID(receivedRpOrder.getRpOrderID(), receivedRpOrder.getReceivedRpProductName());
 					Integer quantityReceived = new Integer(0);
+					Integer quantityRejected = new Integer(0);
 					if(null != receivedRpOrders) {
-						for(ReceivedRpOrder recRpOrder:receivedRpOrders) quantityReceived+=recRpOrder.getQuantityReceived();
+						for(ReceivedRpOrder recRpOrder:receivedRpOrders) {
+							quantityReceived+=recRpOrder.getQuantityReceived();
+							quantityRejected+=recRpOrder.getQuantityRejected();
+						}
 					}
-					if(quantityReceived + receivedRpOrder.getQuantityReceived() > o.getOrderedProductQty()) {
+//					System.out.println("total quantity received: " + quantityReceived);
+//					System.out.println("total quantity rejected: " + quantityRejected);
+					Integer qtyReceived = new Integer(0);
+					if(null != receivedRpOrders) {
+						for(ReceivedRpOrder recRpOrder:receivedRpOrders) qtyReceived+=recRpOrder.getQuantityReceived();
+					}
+					if(qtyReceived + receivedRpOrder.getQuantityReceived() + quantityRejected + receivedRpOrder.getQuantityRejected() > o.getOrderedProductQty()) {
 						model.addAttribute("receivedQtyError", "Error! Cantidad Recibida no puede ser mayor a la Cantidad Pedida!");
 						return "redirect:/" + rpOrder.getRpOrderID() + "/receivedRpOrder";
 					}
 					if(null != receivedRpOrdersByShelf) {
 						receivedRpOrdersByShelf.get(0).setQuantityReceived(receivedRpOrdersByShelf.get(0).getQuantityReceived() + receivedRpOrder.getQuantityReceived());
+						receivedRpOrdersByShelf.get(0).setQuantityRejected(receivedRpOrdersByShelf.get(0).getQuantityRejected() + receivedRpOrder.getQuantityRejected());
 						receiveProducts(receivedRpOrder.getReceivedRpProductName(), receivedRpOrder.getQuantityReceived());
-						receivedRpOrdersByShelf.get(0).setTotalCost(receivedRpOrdersByShelf.get(0).getTotalCost() + receivedRpOrder.getQuantityReceived()*productCost);
+						receivedRpOrdersByShelf.get(0).setTotalCost(receivedRpOrdersByShelf.get(0).getTotalCost() + totalCost);
 						receivedRpOrderService.createOrder(receivedRpOrdersByShelf.get(0));
 					}else {
-						receivedRpOrderToBeSaved.setQuantityReceived(receivedRpOrder.getQuantityReceived());							
+						receivedRpOrderToBeSaved.setQuantityReceived(receivedRpOrder.getQuantityReceived());
+						receivedRpOrderToBeSaved.setQuantityRejected(quantityRejected);
+						receivedRpOrderToBeSaved.setTotalCost(totalCost);
 						receiveProducts(receivedRpOrder.getReceivedRpProductName(), receivedRpOrder.getQuantityReceived());
 						receivedRpOrderService.createOrder(receivedRpOrderToBeSaved);
 					}
-					o.setUnreceivedProductqty(o.getUnreceivedProductqty()-receivedRpOrder.getQuantityReceived());
+					o.setUnreceivedProductqty(o.getUnreceivedProductqty() - receivedRpOrder.getQuantityReceived());
+					o.setUnprocessedProductqty(o.getOrderedProductQty() - (receivedRpOrder.getQuantityReceived() + receivedRpOrder.getQuantityRejected() + quantityReceived + quantityRejected));
 					rpOrder.setRpProducts(rpProducts);
 					replenishmentOrderService.createOrder(rpOrder);
 					System.out.println("Received all the quantity for product [" + receivedRpOrder.getReceivedRpProductName() + "]" );
+					if(closedRpOrder(rpOrder, quantityReceived, quantityRejected)) {
+						model.addAttribute("rpOrderClosed", rpOrder.getRpOrderID());
+						return "redirect:/inventory?orderStatus=openOrder";
+					}
 				}
 			}
-		}
-		List<OrderedProd> rpOrderedProds = replenishmentOrderService.getOrder(rpOrder.getRpOrderID()).getRpProducts();
-		
-		System.out.println("checking if rpOrder is closed");
-		boolean closeRpOrder = true;
-		for(OrderedProd o:rpOrderedProds) {
-			if(o.getUnreceivedProductqty() > 0) {
-				System.out.println("unreceived qty is greater than zero, cannot close rpOrder");
-				closeRpOrder = false;
-			}
-		}
-		if(closeRpOrder  == true) {			
-			rpOrder.setOrderStatus("Closed");
-			replenishmentOrderService.createOrder(rpOrder);
-			model.addAttribute("rpOrderClosed", rpOrder.getRpOrderID());
-			System.out.println("rpOrder closed");
-		}
-		System.out.println("check complete");
-		
+		}	
+		//adding shelf location for the product
+		Product product = productService.getProductByName(receivedRpOrder.getReceivedRpProductName());
+		System.out.println("product name for shelf location is: " + product.getProductName());
+		if(!product.getShelfLocations().contains(receivedRpOrder.getShelfID())) {
+			product.getShelfLocations().add(receivedRpOrder.getShelfID());
+			productService.addOrUpdateProduct(product);
+		}	
 		return "redirect:/inventory?orderStatus=openOrder";
 	}
 	
@@ -296,6 +346,25 @@ public class InventoryController {
 		if(null != product.getQuantity()) product.setQuantity(product.getQuantity() + quantity);
 		else product.setQuantity(quantity);
 		productService.addOrUpdateProduct(product);
+	}
+	
+	private boolean closedRpOrder(ReplenishmentOrder rpOrder, Integer quantityReceived, Integer quantityRejected) {
+		List<OrderedProd> rpOrderedProds = replenishmentOrderService.getOrder(rpOrder.getRpOrderID()).getRpProducts();
+		System.out.println("checking if rpOrder is closed");
+		boolean closeRpOrder = true;
+		for(OrderedProd o:rpOrderedProds) {
+			if(o.getUnprocessedProductqty() > 0) {
+				System.out.println("close rpOrder is false");
+				closeRpOrder = false;
+			}			
+		}
+		if(closeRpOrder == true) {			
+			rpOrder.setOrderStatus("Closed");
+			replenishmentOrderService.createOrder(rpOrder);			
+			System.out.println("rpOrder closed");
+		}
+		System.out.println("check complete");
+		return closeRpOrder;
 	}
 	
 	@RequestMapping(value="addProduct",method=RequestMethod.GET)
@@ -308,7 +377,6 @@ public class InventoryController {
 	public String addProduct(@Valid@ModelAttribute("product") Product product, BindingResult bindingResult, 
 							Model model, RedirectAttributes attr) {
 		System.out.println("addProduct is called");
-		System.out.println(product);
 		if(bindingResult.hasErrors()) {
 			System.out.println("data binding unsuccessful");			
 			for(FieldError e:bindingResult.getFieldErrors()) System.out.println(e);
@@ -370,7 +438,6 @@ public class InventoryController {
 			productService.addOrUpdateProduct(productInInventory);
 			attr.addFlashAttribute("updateProductSucceeded", "Has actualizado el producto exitosamente " + product.getProductName() + "!");
 		}
-		System.out.println("product added");
 		return "redirect:/inventory";
 	}
 	
@@ -652,6 +719,7 @@ public class InventoryController {
 			rpProduct.setQuantity(productList.get(i).getQuantity());
 			rpProduct.setOrderedProductQty(0);
 			rpProduct.setUnreceivedProductqty(0);
+			rpProduct.setUnprocessedProductqty(0);
 			rpProducts.add(rpProduct);
 		}
 		for(int i=0; i<productsInCart.size(); i++) {
@@ -666,6 +734,7 @@ public class InventoryController {
 					rpProducts.get(j).setQuantity(productInDB.getQuantity());
 					rpProducts.get(j).setOrderedProductQty(productsInCart.get(i).getOrderedProductQty());
 					rpProducts.get(j).setUnreceivedProductqty(productsInCart.get(i).getOrderedProductQty());
+					rpProducts.get(j).setUnprocessedProductqty(productsInCart.get(i).getOrderedProductQty());
 					rpProducts.get(j).getRpOrders().add(rpOrder);
 				}
 			}

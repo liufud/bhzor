@@ -15,67 +15,20 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="initial-scale=1, maximum-scale=1">
 <link rel='stylesheet' href='webjars/bootstrap/4.0.0/css/bootstrap.css'>
-
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 <style type="text/css">
 #paymentOptions {display:none;}
 #vendorSale {display:none;}
 #distributorSale {display:none;}
 #customerSale {display:none;}
 </style>
-<script type="text/javascript">
-
-function myFunction1() {
-	document.getElementById("vendorSale").style.display = "block";
-	document.getElementById("distributorSale").style.display = "none";
-	document.getElementById("customerSale").style.display = "none";
-}
-
-function myFunction2() {
-	document.getElementById("distributorSale").style.display = "block";
-	document.getElementById("vendorSale").style.display = "none";
-	document.getElementById("customerSale").style.display = "none";
-}
-
-function myFunction3() {
-	document.getElementById("customerSale").style.display = "block";
-	document.getElementById("distributorSale").style.display = "none";
-	document.getElementById("vendorSale").style.display = "none";
-}
-
-window.onload = function() {
-	  var c = document.getElementById('customCheck1');
-	  c.onclick = function() {
-	    if (c.checked == true) {document.getElementById('paymentOptions').style.display = 'block';}
-	    else {document.getElementById('paymentOptions').style.display = '';
-	    }
-	  }
-	}
-</script>
-<!-- webjars/jquery/3.2.1/dist/jquery.min.js -->
-<script type="text/javascript">
-$(document).ready(function(){
-
-	  //hides dropdown content
-	  $(".sale_type").hide();
-	  
-	  //unhides first option content
-	 // $("#option1").show();
-	  
-	  //listen to dropdown for change
-	  $("#saleType_select").change(function(){
-	    //rehide content on change
-	    $('.sale_type').hide();
-	    //unhides current item
-	    $('#'+$(this).val()).show();
-	  });
-	  
-	});
-	
-</script>
 
 <!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script> -->
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+
+<!-- <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script> -->
+
 <title>Orders</title>
 </head>
 <body class="bg-light">
@@ -121,7 +74,7 @@ $(document).ready(function(){
 							  <li class="nav-item">
 							    <!-- <a class="nav-link active" href="orders">Orders</a> -->
 							    <div class="dropdown show">
-								  <a class="nav-link active" href="orders?selectOrderType=true" role="button" id="dropdownMenuLink" aria-haspopup="true" aria-expanded="false">
+								  <a class="nav-link active" href="orders?selectOrderType=true" role="button"  aria-haspopup="true" aria-expanded="false">
 								    Pedidos
 								  </a>								
 								  <!-- <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -132,7 +85,7 @@ $(document).ready(function(){
 								  </div> -->
 							    </div>
 							  </li>
-							  <sec:authorize access="hasAuthority('Manager')">
+							  <sec:authorize access="hasAuthority('Administrador')">
 							  <li class="nav-item">
 							    <a class="nav-link" href="inventory?orderStatus=openOrder">Inventario</a>
 							  </li>
@@ -180,7 +133,7 @@ $(document).ready(function(){
 				
 				<!-- Unshipped Order and Unpaid Order information -->
 				<c:if test="${not empty selectOrderType}">
-				<sec:authorize access="hasAuthority('Manager')">
+				<sec:authorize access="hasAuthority('Administrador')">
 				<table class="table">								
 					<thead>
 						<tr>
@@ -221,8 +174,10 @@ $(document).ready(function(){
 							<c:forEach items="${productNames}" var="product">
 								<th scope="col">${product.productName}</th>
 							</c:forEach>
+							<sec:authorize access="hasAuthority('Administrador')">
 							<th scope="col">Creado Por</th>
 							<th scope="col">Creado Para</th>
+							</sec:authorize>
 							<!-- <th scope="col">Total de Pedido</th> -->
 							<!-- <th scope="col">Acción</th> -->
 						</tr>
@@ -235,6 +190,7 @@ $(document).ready(function(){
 							<c:forEach items="${order.products}" var="product">
 								<td>${product.unshippedProductqty}</td>
 							</c:forEach>
+							<sec:authorize access="hasAuthority('Administrador')">
 							<td>
 								${order.createByUser.firstName} ${order.createByUser.lastName}<br/>
 								(${order.createByUser.roleName})
@@ -243,6 +199,7 @@ $(document).ready(function(){
 								${order.createForUser.firstName} ${order.createForUser.lastName}
 								(${order.createForUser.roleName})
 							</td>
+							</sec:authorize>
 							<%-- <td>${order.totalPrice}</td> --%>
 							<%-- <td>								
 								<a href="${order.orderID}/shippedOrder">Marcar como Enviado</a><br/>
@@ -370,7 +327,7 @@ $(document).ready(function(){
 					<form name="markAsPaidForm" action="${markAsPaid}/orderPaid" method="post" class="form-control">
 						<label class="input-group-text" for="inputGroupSelect01">Que metodo de pago fue utlizado para este pedido</label>
 						  <select class="custom-select" id="inputGroupSelect01" name="paymentMethod">
-						   <!-- <option selected>Choose...</option> -->
+						   	<option selected>Choose...</option>
 						    <option value="Cash">Cash</option>
 						    <option value="Direct Deposit">Deposito Directo</option>
 						    <option value="Credit">Credito</option>
@@ -544,8 +501,7 @@ $(document).ready(function(){
 								<div class="row">
 									<!-- <div class="col-sm-2 hidden-xs"><img src="http://placehold.it/100x100" alt="..." class="img-responsive"/></div> -->
 									<div class="col-sm-10">
-										<h4 class="nomargin">${product.productName}</h4>
-										<p>Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet.</p>
+										<h4 class="nomargin">${product.productName}</h4>									
 									</div>
 								</div>
 							</td>
@@ -612,32 +568,31 @@ $(document).ready(function(){
                                         <div class="panel-body">
                                             <div class="items">
                                                 <div class="col-md-9">
-                                                <c:forEach items="${productsInCart}" var="product">
                                                     <table class="table table-striped">
-                                                        <tr>
-                                                            <td colspan="2">
-                                                                <a class="btn btn-warning btn-sm pull-right"
+                                                     <thead>
+														<tr>
+															<th>Nombre de Producto</th>
+															<!-- <th style="width:10%">Precio</th> -->
+															<th>Cantidad</th>
+															<!-- <th style="width:22%" class="text-center">Total Parcial</th> -->
+														</tr>
+													</thead>
+													<tbody>
+													<c:forEach items="${productsInCart}" var="product">
+														<tr>
+                                                            <td>
+                                                                <%-- <a class="btn btn-warning btn-sm pull-right"
                                                                    href="${product.productID}/deleteProductInCheckout"
-                                                                   title="Remove Item">X</a>
-                                                                <b>&nbsp ${product.productName}</b>                                                              
+                                                                   title="Remove Item">X</a> --%>
+                                                                ${product.productName}                                                             
+                                                            </td>
+                                                            <td style="center;">
+                                                                <span style="color:green;center;">${product.orderedProductQty}</span>                                                             
                                                             </td>
                                                         </tr>
-                                                       <!-- product description -->
-                                                        <tr>
-                                                            <td>
-                                                                <p>Quis aute iure reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Lorem ipsum dolor sit amet.</p>
-                                                            </td>
-                                                            <td>
-	                                                            <div class="col-md-3">
-				                                                    <div style="text-align: center;">
-				                                                        <h3>Cantidad</h3>
-				                                                        <h3><span style="color:green;text-align:center;">${product.orderedProductQty}</span></h3>
-				                                                    </div>
-				                                                </div>                                                            
-                                                            </td>
-                                                        </tr>
+													</c:forEach>
+													</tbody>                       
                                                     </table>
-                                                    </c:forEach>
                                                 </div>
                                                 
                                             </div>
@@ -1000,7 +955,7 @@ $(document).ready(function(){
                                     </c:if> --%>
                             		
                             		
-                          	<sec:authorize access="hasAuthority('Manager')">
+                          	<sec:authorize access="hasAuthority('Administrador')">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
@@ -1017,22 +972,24 @@ $(document).ready(function(){
                             </sec:authorize>
                             <div class="panel panel-default">
                                 <div class="panel-heading">
+                                	<sec:authorize access="hasAuthority('Administrador')">
                                     <h4 class="panel-title">
                                         <a data-toggle="collapse" data-parent="#accordion" href="#collapseThree">
                                             <b>Informacion de Pago</b>
                                         </a>
                                     </h4>
+                                    </sec:authorize>
                                 </div>
                                 <div id="collapseThree" class="panel-collapse collapse">
                                     <div class="panel-body">
                                         <span class='payment-errors'></span>
                                         <fieldset>
-                                        <sec:authorize access="hasAuthority('Manager')">
+                                       <sec:authorize access="hasAuthority('Administrador')">
                                             <div class="custom-control custom-checkbox">
-											  <input type="checkbox" class="custom-control-input" id="customCheck1" name="paymentStatus">
-											  <label class="custom-control-label font-weight-bold" for="customCheck1">Este Pedido fue pagado</label>
+                                           		<label class="custom-control-label font-weight-bold" for="customCheck1">Este Pedido fue pagado</label>
+												<input type="checkbox" class="custom-control-input" id="customCheck1" name="paymentStatus">											  
 											</div>
-                                       </sec:authorize>     
+                                        </sec:authorize>      
                                             <div id="paymentOptions" class="input-group mb-3">
 											  <div class="input-group-prepend">
 											    <label class="input-group-text" for="inputGroupSelect01">Que metodo de pago fue utlizado para este pedido</label>
@@ -1113,25 +1070,20 @@ $(document).ready(function(){
                                                         <input type="text" class="form-control" stripe-data="cvc"
                                                                id="card-cvc" placeholder="Security Code">
                                                     </div>
-                                                </div> -->
-                                                <div class="form-group">
-                                                    <div class="col-sm-offset-3 col-sm-9">
-                                                    </div>
-                                                </div>
-                                          
-                                        </fieldset>
-                                        <button type="submit" class="btn btn-success btn-lg" style="width:100%;">Realizar Pedido
-                                        </button>
+                                                </div> -->                                          
+                                        </fieldset>                                        
                                         <br/>
-                                        <div style="text-align: left;"><br/>
+                                        <!-- <div style="text-align: left;"><br/>
                                             By submiting this order you are agreeing to our <a href="/legal/billing/">universal
                                                 billing agreement</a>, and <a href="/legal/terms/">terms of service</a>.
                                             If you have any questions about our products or services please contact us
                                             before placing this order.
-                                        </div>
+                                        </div> -->
                                     </div>
                                 </div>
                             </div>
+                            <button type="submit" class="btn btn-success btn-lg" style="width:100%;">Realizar Pedido
+                            </button>
                         </form:form>
                     </div>
                 	</c:if>
@@ -1148,14 +1100,14 @@ $(document).ready(function(){
 					        <div class="col-xs-12">
 					    		<div class="row">
 					    			<div class="col-xs-6">
-					        			<address>
+					        			<%-- <address>
 					    				<strong>Direccion de Envio:</strong><br>
 					                        ${confirmedOrder.billingInfo.firstName} ${confirmedOrder.billingInfo.lastName}<br>
 					                        ${confirmedOrder.billingInfo.email}<br>
 					                        ${confirmedOrder.billingInfo.phone}<br>
 					    					${confirmedOrder.billingInfo.address}<br>
 					    					${confirmedOrder.billingInfo.city}, ${confirmedOrder.billingInfo.state} ${confirmedOrder.billingInfo.postalCode}
-					    				</address>					
+					    				</address> --%>					
 					    			</div>
 					    			<div class="col-xs-6 text-right">
 					                <h1><span class="glyphicon glyphicon glyphicon-cloud-download" aria-hidden="true"></span></h1>
@@ -1227,8 +1179,57 @@ $(document).ready(function(){
 		</div>
 	</div>
 </div>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+<script type="text/javascript">
+
+function myFunction1() {
+	document.getElementById("vendorSale").style.display = "block";
+	document.getElementById("distributorSale").style.display = "none";
+	document.getElementById("customerSale").style.display = "none";
+}
+
+function myFunction2() {
+	document.getElementById("distributorSale").style.display = "block";
+	document.getElementById("vendorSale").style.display = "none";
+	document.getElementById("customerSale").style.display = "none";
+}
+
+function myFunction3() {
+	document.getElementById("customerSale").style.display = "block";
+	document.getElementById("distributorSale").style.display = "none";
+	document.getElementById("vendorSale").style.display = "none";
+}
+ 
+window.onload = function() {
+	  var c = document.getElementById('customCheck1');
+	  c.onclick = function() {
+	    if (c.checked == true) {document.getElementById('paymentOptions').style.display = 'block';}
+	    else {document.getElementById('paymentOptions').style.display = '';
+	    }
+	  }
+	}
+</script>
+<!-- webjars/jquery/3.2.1/dist/jquery.min.js -->
+<!-- <script type="text/javascript">
+$(document).ready(function(){
+
+	  //hides dropdown content
+	  $(".sale_type").hide();
+	  
+	  //unhides first option content
+	 // $("#option1").show();
+	  
+	  //listen to dropdown for change
+	  $("#saleType_select").change(function(){
+	    //rehide content on change
+	    $('.sale_type').hide();
+	    //unhides current item
+	    $('#'+$(this).val()).show();
+	  });
+	  
+	});
+	
+</script> -->
+
+
 </body>
 </html>

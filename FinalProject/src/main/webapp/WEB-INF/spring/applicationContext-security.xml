@@ -92,8 +92,8 @@
 	    </authentication-provider> -->
 	    <security:authentication-provider>
             <user-service>
-                <user name="Jacky" password="pass" authorities="Manager"/>
-                <user name="test" password="test" authorities="Customer"/>
+                <user name="Jacky" password="pass" authorities="Administrador"/>
+                <user name="test" password="test" authorities="Cliente"/>
             </user-service>
         </security:authentication-provider>
 	</security:authentication-manager>

@@ -49,9 +49,10 @@ public class UserDetailsServiceImpl implements UserDetailsService {
 //			boolean accountNonLocked = user.getStatus().equals(UserStatus.ACTIVE);
 			//populate user roles
 			Collection<GrantedAuthority> authorities = new ArrayList<GrantedAuthority>();
-			for(Role role : user.getRoles()) {
-				authorities.add(new SimpleGrantedAuthority(role.getRoleName()));
-			}
+//			for(Role role : user.getRoles()) {
+//				authorities.add(new SimpleGrantedAuthority(role.getRoleName()));
+//			}
+			authorities.add(new SimpleGrantedAuthority(user.getRoleName()));
 			
 			//create Spring Security User object
 			

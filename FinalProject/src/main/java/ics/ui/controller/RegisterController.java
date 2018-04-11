@@ -86,21 +86,21 @@ public class RegisterController {
 		}
 		String roleName = request.getParameter("roleList");
 		if(!roleName.equals("Choose...")) {
+			String vendorName = (String) request.getParameter("_vandorName");
+			if(!vendorName.isEmpty() && !vendorName.equals("Choose...") && roleName.equals("Cliente")) {
+				System.out.println("vendorName is: " + vendorName);
+				User vendor = userService.getUserByName(vendorName);
+				user.setVendor(vendor);
+				vendor.getCustomer().add(user);
+			}
 			Role role = new Role();
 			role.setRoleName(roleName);
 			user.getRoles().add(role);
 			user.setEnabled(true);
 			user.setRoleName(roleName);
-			role.setUser(user);
+			role.setUser(user);		
 		}		
-		String vendorName = (String) request.getParameter("_vandorName");
-		if(!vendorName.isEmpty() && !vendorName.equals("Choose...")) {
-			System.out.println("vendorName is: " + vendorName);
-			User vendor = userService.getUserByName(vendorName);
-			user.setVendor(vendor);
-			vendor.getCustomer().add(user);
-			userService.addUser(vendor);
-		}		
+				
 		try {
 			userService.addUser(user);			
 			System.out.println("user registration successful");

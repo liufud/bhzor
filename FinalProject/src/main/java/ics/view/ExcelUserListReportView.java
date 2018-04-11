@@ -51,16 +51,16 @@ public class ExcelUserListReportView extends AbstractXlsView{
 		//header row
 		Row userHeader = userSheet.createRow(0);
 		userHeader.createCell(0).setCellValue("ID");
-		userHeader.createCell(1).setCellValue("Nombre de Usuario");
-		userHeader.createCell(2).setCellValue("Nombre");
-		userHeader.createCell(3).setCellValue("Apellido");
+		userHeader.createCell(1).setCellValue("Nombre de Usuario"); //username
+		userHeader.createCell(2).setCellValue("Nombre"); //first name
+		userHeader.createCell(3).setCellValue("Apellido"); //last name
 		userHeader.createCell(4).setCellValue("EMAIL");
-		userHeader.createCell(5).setCellValue("Telefono");
-		userHeader.createCell(6).setCellValue("Direccion");
-		userHeader.createCell(7).setCellValue("Ciudad");
-		userHeader.createCell(8).setCellValue("Estado");
-		userHeader.createCell(9).setCellValue("Codigo Postal");
-		userHeader.createCell(10).setCellValue("Tipo");
+		userHeader.createCell(5).setCellValue("Telefono"); //phone numnber
+		userHeader.createCell(6).setCellValue("Direccion"); //address
+		userHeader.createCell(7).setCellValue("Ciudad"); //city
+		userHeader.createCell(8).setCellValue("Estado"); //state
+		userHeader.createCell(9).setCellValue("Codigo Postal"); //zip code
+		userHeader.createCell(10).setCellValue("Tipo"); //
 		userHeader.createCell(11).setCellValue("Vendedor");
 		
 		int rowNum = 1;
@@ -96,7 +96,7 @@ public class ExcelUserListReportView extends AbstractXlsView{
 			row.createCell(0).setCellValue(product.getProductID());
 			row.createCell(1).setCellValue(product.getProductName());
 			row.createCell(2).setCellValue(product.getCost());
-			row.createCell(3).setCellValue(product.getPrice());
+//			row.createCell(3).setCellValue(product.getPrice());
 			if(null!=product.getQuantity()) row.createCell(4).setCellValue(product.getQuantity());
 		}
 		
@@ -222,7 +222,7 @@ public class ExcelUserListReportView extends AbstractXlsView{
 				}
 			}
 			row.createCell(prodNum+1).setCellValue(rpOrder.getCreated_At());
-			row.createCell(prodNum+2).setCellValue(rpOrder.getCreateByUser().getFirstName()+ " " +rpOrder.getCreateByUser().getLastName());
+			if(null != rpOrder.getCreateByUser())row.createCell(prodNum+2).setCellValue(rpOrder.getCreateByUser().getFirstName()+ " " +rpOrder.getCreateByUser().getLastName());
 			row.createCell(prodNum+3).setCellValue(rpOrder.getOrderStatus());
 			if(null!=rpOrder.getTotalPrice())row.createCell(prodNum+4).setCellValue(rpOrder.getTotalPrice());
 		}
@@ -253,7 +253,7 @@ public class ExcelUserListReportView extends AbstractXlsView{
 			row.createCell(6).setCellValue(rRpO.getReceivedRpProductName());
 			row.createCell(7).setCellValue(rRpO.getRpOrderID());
 			row.createCell(8).setCellValue(rRpO.getTotalCost());
-			row.createCell(9).setCellValue(rRpO.getCreateByUser().getFirstName() + " " + rRpO.getCreateByUser().getLastName());
+			if(null != rRpO.getCreateByUser()) row.createCell(9).setCellValue(rRpO.getCreateByUser().getFirstName() + " " + rRpO.getCreateByUser().getLastName());
 		}
 	}
 

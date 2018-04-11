@@ -72,7 +72,7 @@ public class SiteManagementController {
 	
 	@ModelAttribute("allVendorsName")
 	public List<String> getAllVendors(Model model) {
-		List<User> allVendors = userService.getUsersByRole("Vendor");
+		List<User> allVendors = userService.getUsersByRole("Vendedor");
 		List<String> allVendorNames = new ArrayList<String>();
 		for(User u:allVendors) {
 			allVendorNames.add(u.getFirstName() + " " + u.getLastName());

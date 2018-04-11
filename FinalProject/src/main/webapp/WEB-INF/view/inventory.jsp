@@ -14,8 +14,10 @@
 <meta name="viewport" content="initial-scale=1, maximum-scale=1">
 <link rel='stylesheet' href='webjars/bootstrap/4.0.0/css/bootstrap.css'>
 
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+
 <!-- <script src="//webjars/1.17.0/dist/jquery.validate.min.js" type="text/javascript"></script>
 <script src="//webjars/1.17.0/dist/jquery.validate.js" type="text/javascript"></script> -->
 <!-- <script src="webjars/1.17.0/src/localization/messages_es.js" type="text/javascript"></script> -->
@@ -115,9 +117,10 @@
 				<br/>
 					<div class="btn-group-vertical">
 						<a class="btn btn-sm btn-secondary" href="inventory?orderStatus=openOrder" role="button">Abrir Pedidos de Reposicion</a>
+						<a class="btn btn-sm btn-secondary" href="inventory?orderStatus=closedOrder" role="button">Cerrado Pedidos de Reposicion</a>
 						<a class="btn btn-sm btn-secondary" href="addProduct" role="button">Agregar Productos</a>
 						<a class="btn btn-sm btn-secondary" href="editProduct" role="button">Ver inventario</a>
-						<a class="btn btn-sm btn-secondary" href="orderReplenishment" role="button">Orden de Reposición de Producto</a>
+						<a class="btn btn-sm btn-secondary" href="orderReplenishment" role="button">Pedidos de Reposición de Producto</a>
 					</div>
 				</div>
 				<div class="col-9">
@@ -128,14 +131,8 @@
 				<form:form name="receivedOrderForm" modelAttribute="receivedRpOrder" action="receivedRpOrder" method="post" class="form-control">
 				<div class="row">
 					<div class="col"></div>
-					<div class="col-10">
-						  <div class="form-group row">
-							    <label for="shelfID" class="col-sm-3 col-form-label"># de Estante</label>
-							    <div class="col-sm-7">
-							      <form:input name="shelfID" id="shelfID" type="number" path="shelfID" class="form-control" autofocus="true"></form:input>
-			                      <form:errors path="shelfID"></form:errors>
-							    </div>
-						  </div>
+					<div class="col-10">					
+					<h2 class="form-signin-heading"># de Pedido ${rpOrderReceivedForm}</h2>
 						  <div class="form-group row">
 						  		<label for="productName" class="col-sm-3 col-form-label">Producto</label>
 						  		<div class="col-sm-7">
@@ -143,6 +140,20 @@
 					                   <%-- <form:option value = "NONE" label = "Select"/> --%>
 					                   <form:options items = "${rpProdNames}" />
 					                </form:select>
+							    </div>
+						  </div>
+						  <div class="form-group row">
+							    <label for="lotID" class="col-sm-3 col-form-label"># de Lote</label>
+							    <div class="col-sm-7">
+							      <form:input name="lotID" id="lotID" type="number" path="lotID" class="form-control" autofocus="true"></form:input>
+			                      <form:errors path="lotID"></form:errors>
+							    </div>
+						  </div>
+						  <div class="form-group row">
+							    <label for="shelfID" class="col-sm-3 col-form-label"># de Estante</label>
+							    <div class="col-sm-7">
+							      <form:input name="shelfID" id="shelfID" type="number" path="shelfID" class="form-control" autofocus="true"></form:input>
+			                      <form:errors path="shelfID"></form:errors>
 							    </div>
 						  </div>	 					  
 						  <div class="form-group row">
@@ -152,15 +163,15 @@
 			                      <form:errors path="quantityReceived"></form:errors>
 							    </div>
 						  </div>
-						  <%-- <div class="form-group row">
+						  <div class="form-group row">
 							    <label for="qtyRejected" class="col-sm-3 col-form-label">Cantidad Rechazada</label>
 							    <div class="col-sm-7">
 							      <form:input name="qtyRejected" id="qtyRejected" type="number" path="quantityRejected" class="form-control" autofocus="true"></form:input>
 			                      <form:errors path="quantityRejected"></form:errors>
 							    </div>
-						  </div> --%>
+						  </div>
 						  <div class="form-group row">
-							    <label for="expDate" class="col-sm-3 col-form-label">Fecha de Expiracion</label>
+							    <label for="expDate" class="col-sm-3 col-form-label">Fecha de Expiracion<br>(mm/dd/yy)</label>
 							    <div class="col-sm-7">
 							      <form:input name="expDate" id="expDate" type="text" path="expDate" class="form-control" autofocus="true"></form:input>
 			                      <form:errors path="expDate"></form:errors>
@@ -213,7 +224,7 @@
 							<th scope="row">${order.rpOrderID}</th>
 							<td>${order.created_At}</td>
 							<c:forEach items="${order.rpProducts}" var="product">
-								<td>${product.unreceivedProductqty}</td>
+								<td>${product.unprocessedProductqty}</td>
 							</c:forEach>
 							<td>${order.createByUser.firstName} ${order.createByUser.lastName}</td>
 							<%-- <td>${order.totalPrice}</td> --%>
@@ -225,6 +236,41 @@
 					</tbody>
 				</table>
 				</c:if>	
+				
+<%-- 				<!-- View Closed Replenishment Order -->
+				<c:if test="${not empty closedOrders}">
+				<h4><b>Cerrado Pedidos de Reposicion</b></h4>
+				<table class="table">								
+					<thead>
+						<tr>
+							<th scope="col"># de Pedido</th>
+							<th scope="col">Fecha</th>
+							<c:forEach items="${productNames}" var="product">
+								<th scope="col">No Recibido ${product.productName}</th>
+							</c:forEach>
+							<th scope="col">Creado Por</th>
+							<!-- <th scope="col">Total de Pedido</th> -->
+							<th scope="col">Accion</th>
+						</tr>
+					</thead>					
+					<tbody>
+					<c:forEach items="${openOrders}" var="order">
+						<tr>
+							<th scope="row">${order.rpOrderID}</th>
+							<td>${order.created_At}</td>
+							<c:forEach items="${order.rpProducts}" var="product">
+								<td>${product.unprocessedProductqty}</td>
+							</c:forEach>
+							<td>${order.createByUser.firstName} ${order.createByUser.lastName}</td>
+							<td>${order.totalPrice}</td>
+							<td>								
+								<a href="${order.rpOrderID}/receivedRpOrder">Marcar como Recibido</a>
+							</td>							
+						</tr>
+					</c:forEach>				
+					</tbody>
+				</table>
+				</c:if> --%>
 				
 				<!-- Add Product -->
 				<c:if test="${!empty addProductForm}">
@@ -253,14 +299,14 @@
 				                <form:errors path="cost"></form:errors>
 				            </div>
 				        </spring:bind>
-				        <spring:bind path="quantityOnHand">
+				        <%-- <spring:bind path="quantityOnHand">
 				            <div class="form-group">
 				            	Cantidad
 				                <form:input type="text" path="quantityOnHand" class="form-control"
 				                            autofocus="true"></form:input>
 				                <form:errors path="quantityOnHand"></form:errors>
 				            </div>
-				        </spring:bind>
+				        </spring:bind> --%>
 				        <%-- <spring:bind path="distributorPrice">
 				            <div class="form-group">
 				            	Precio de Distribuidor:
@@ -343,13 +389,14 @@
 						<tr>
 							<th scope="col">ID del Producto</th>
 							<th scope="col">Nombre del Producto</th>
-							<sec:authorize access="hasAuthority('Manager')">
+							<sec:authorize access="hasAuthority('Administrador')">
 							<th scope="col">Costo</th>
 							</sec:authorize>
 							<!-- <th scope="col">Distribuidor Precio</th>
 							<th scope="col">Vendedor Precio</th>
 							<th scope="col">Cliente Precio</th> -->
 							<th scope="col">Cantidad</th> 
+							<th scope="col">Estante</th> 
 							<th scope="col">Acciòn</th>
 						</tr>
 					</thead>					
@@ -358,14 +405,15 @@
 						<tr>
 							<th scope="row">${product.productID}</th>
 							<td>${product.productName}</td>
-							<sec:authorize access="hasAuthority('Manager')">
+							<sec:authorize access="hasAuthority('Administrador')">
 							<td>${product.cost}</td>
 							</sec:authorize>
 							<%-- <td>${product.distributorPrice}</td>
 							<td>${product.vendorPrice}</td>
 							<td>${product.clientPrice}</td> --%>
-							<td>${product.quantity}</td>								
-							<sec:authorize access="hasAuthority('Manager')">
+							<td>${product.quantity}</td>
+							<td>${product.shelfLocations}</td>								
+							<sec:authorize access="hasAuthority('Administrador')">
 							<%-- <td><a href="products/${product.productID}/updateProduct">Update</a></td> --%>
 							<td>								
 								<a href="${product.productID}/updateProduct">Actualizar</a><br/>
@@ -385,10 +433,10 @@
 						<tr>
 							<th scope="col">ID del Producto</th>
 							<th scope="col">Nombre del Producto</th>
-							<sec:authorize access="hasAuthority('Manager')">
+							<sec:authorize access="hasAuthority('Administrador')">
 							<th scope="col">Costo</th>
 							</sec:authorize>
-							<th scope="col">Precio</th>
+							<!-- <th scope="col">Precio</th> -->
 							<th scope="col">Cantidad</th>
 							<th scope="col">Acciòn</th>
 						</tr>
@@ -397,12 +445,12 @@
 						<tr>
 							<th scope="row">${productToBeEdited.productID}</th>
 							<td>${productToBeEdited.productName}</td>
-							<sec:authorize access="hasAuthority('Manager')">
+							<sec:authorize access="hasAuthority('Administrador')">
 							<td>${productToBeEdited.cost}</td>
 							</sec:authorize>
-							<td>${productToBeEdited.price}</td>
+							<%-- <td>${productToBeEdited.price}</td> --%>
 							<td>${productToBeEdited.quantity}</td>								
-							<sec:authorize access="hasAuthority('Manager')">
+							<sec:authorize access="hasAuthority('Administrador')">
 							<%-- <td><a href="products/${product.productID}/updateProduct">Update</a></td> --%>
 							<td>								
 								<a href="${productToBeEdited.productID}/updateProduct">Actualizar</a><br/>
@@ -444,13 +492,13 @@
 				        </spring:bind>
 				        <spring:bind path="cost">
 				            <div class="form-group">
-				            	Sto de Fàbrica:
+				            	Costo de Fàbrica:
 				                <form:input type="text" path="cost" class="form-control"
 				                            autofocus="true"></form:input>
 				                <form:errors path="cost"></form:errors>
 				            </div>
 				        </spring:bind>
-				        <spring:bind path="distributorPrice">
+				        <%-- <spring:bind path="distributorPrice">
 				            <div class="form-group">
 				            	Precio de Distribuidor:
 				                <form:input type="text" path="distributorPrice" class="form-control"
@@ -473,7 +521,7 @@
 				                            autofocus="true"></form:input>
 				                <form:errors path="clientPrice"></form:errors>
 				            </div>
-				        </spring:bind>
+				        </spring:bind> --%>
 				       	<spring:bind path="productID">
 				            <div class="form-group">
 				                <form:hidden path="productID" class="form-control"
@@ -516,7 +564,7 @@
 							<input type="text" name="num" class="form-control text-center" value="0">
 						</td>
 						<td>
-							<button class="btn btn-primary" type="submit">Agregar a la orden </button>
+							<button class="btn btn-primary" type="submit">Agregar al Pedido </button>
 							<%-- <a href="${product.productID}/addToCart">Add to Cart</a> --%>					
 						</td>							
 					</tr>
@@ -535,7 +583,7 @@
 						</td>	
 						<td ></td>					
 						<td>
-							<a href="orderSummary" class="btn btn-warning">Resumen de la Pedido</a>							
+							<a href="orderSummary" class="btn btn-warning">Resumen del Pedido</a>							
 						</td>
 					</tr>
 				</tfoot>
@@ -548,7 +596,7 @@
 		        <div class="col-md-12">
 		            <div class="panel panel-default">
 		                <div class="panel-heading">
-		                    <h3 class="text-center"><strong>Resumen de la Pedido</strong></h3>
+		                    <h3 class="text-center"><strong>Resumen del Pedido</strong></h3>
 		                </div>
 		                <div class="panel-body">
 		                    <div class="table-responsive">		                        		                        
@@ -557,7 +605,7 @@
 		                                <tr>
 		                                    <td><strong>Nombre de Producto</strong></td>
 		                                    <td class="text-center"><strong>Costo de Producto</strong></td>
-		                                    <td class="text-center"><strong>Cantidad de Pedido</strong></td>
+		                                    <td class="text-center"><strong>Cantidad</strong></td>
 		                                    <td class="text-center"><strong>Acción</strong></td>
 		                                    <td class="text-right"><strong>Total</strong></td>
 		                                </tr>
@@ -639,8 +687,5 @@
 			<div class="col"></div>
 		</div>
 	</div>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 </body>
 </html>

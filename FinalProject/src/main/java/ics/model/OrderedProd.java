@@ -31,6 +31,9 @@ public class OrderedProd extends Product {
 	private Integer orderedProductQty;
 	private Integer unreceivedProductqty;
 	private Integer unshippedProductqty;
+	private Integer rejectedProdutqty;
+	private Integer receivedProductqty;
+	private Integer unprocessedProductqty;
 	@ManyToOne
 	private Cart cart;
 	@ManyToMany(mappedBy="products",fetch=FetchType.EAGER)
@@ -94,4 +97,29 @@ public class OrderedProd extends Product {
 	public void setUnshippedProductqty(Integer unshippedProductqty) {
 		this.unshippedProductqty = unshippedProductqty;
 	}
+
+	public Integer getRejectedProdutqty() {
+		return rejectedProdutqty;
+	}
+
+	public void setRejectedProdutqty(Integer rejectedProdutqty) {
+		this.rejectedProdutqty = rejectedProdutqty;
+	}
+
+	public Integer getReceivedProductqty() {
+		return receivedProductqty;
+	}
+
+	public void setReceivedProductqty(Integer receivedProductqty) {
+		this.receivedProductqty = receivedProductqty;
+	}
+
+	public Integer getUnprocessedProductqty() {
+		return unprocessedProductqty;
+	}
+
+	public void setUnprocessedProductqty(Integer unprocessedProductqty) {
+		this.unprocessedProductqty = unprocessedProductqty;
+	}
+	
 }

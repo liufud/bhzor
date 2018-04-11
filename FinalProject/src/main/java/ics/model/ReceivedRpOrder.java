@@ -30,9 +30,9 @@ public class ReceivedRpOrder {
 	@GeneratedValue(generator="increment")
 	@GenericGenerator(name="increment", strategy = "increment")
 	private Long receivedRpOrderID;	
-//	@NotNull(message="ID de Lote no puede estaer vacio!")
-//	@Min(value=0)
-//	private Long lotID;
+	@NotNull(message="ID de Lote no puede estaer vacio!")
+	@Min(value=0)
+	private Long lotID;
 	@NotNull(message="# de estante no puede estaer vacio!")
 	@Min(value=0)
 	@Max(value=1000)
@@ -43,6 +43,7 @@ public class ReceivedRpOrder {
 	@Min(value=0)
 	@Max(value=10000000)
 	private Integer quantityReceived;
+	@NotNull(message="¡La cantidad rechazada no puede estar vacía!")
 	@Min(value=0)
 	@Max(value=100000)
 	private Integer quantityRejected;
@@ -53,7 +54,6 @@ public class ReceivedRpOrder {
 	private User createByUser;
 	@NotEmpty
 	private String receivedRpProductName;
-	@Transient
 	private Double totalCost;
 	private Long rpOrderID;
 	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
@@ -127,10 +127,10 @@ public class ReceivedRpOrder {
 	public void setShelfID(Long shelfID) {
 		this.shelfID = shelfID;
 	}
-//	public Long getLotID() {
-//		return lotID;
-//	}
-//	public void setLotID(Long lotID) {
-//		this.lotID = lotID;
-//	}
+	public Long getLotID() {
+		return lotID;
+	}
+	public void setLotID(Long lotID) {
+		this.lotID = lotID;
+	}
 }

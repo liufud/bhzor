@@ -14,9 +14,9 @@
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="initial-scale=1, maximum-scale=1">
 <link rel='stylesheet' href='webjars/bootstrap/4.0.0/css/bootstrap.css'>
-
-<script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script>
-<script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
+<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
 <title>Administración de la Pagina</title>
 <style>
 #cust {
@@ -500,7 +500,7 @@ display:none;
 							<td>${user.vendor.firstName} ${user.vendor.lastName}</td>
 							<td>
 								<a href="user/${user.userId}/updateRole">Update Role</a><br/>
-								<sec:authorize access="hasAuthority('Manager')">
+								<sec:authorize access="hasAuthority('Administrador')">
 								<a href="user/${user.userId}/updateInfo">Update Info</a><br/>							
 								<a href="user/${user.userId}/deleteUser">Delete</a>
 								</sec:authorize>					
@@ -539,7 +539,7 @@ display:none;
 							<td>${user.vendor.firstName} ${user.vendor.lastName}</td>
 							<td>
 								<a href="user/${user.userId}/updateRole">Update Role</a><br/>
-								<sec:authorize access="hasAuthority('Manager')">
+								<sec:authorize access="hasAuthority('Administrador')">
 								<a href="user/${user.userId}/updateInfo">Update Info</a><br/>							
 								<a href="user/${user.userId}/deleteUser">Delete</a>
 								</sec:authorize>						
@@ -619,7 +619,7 @@ display:none;
 								<td>${userSelected.roleName}</td>
 								<td>
 									<a href="customer/${userSelected.username}/viewOrder">View Order</a><br/>
-									<sec:authorize access="hasAuthority('Manager')">							
+									<sec:authorize access="hasAuthority('Administrador')">							
 									<a href="user/${userSelected.userId}/deleteCustomer">Delete</a>
 									</sec:authorize>						
 								</td>							
@@ -675,16 +675,19 @@ display:none;
 			<div class="col"></div>
 		</div>
 	</div>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
+
+<!-- <script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script> -->
 <script>
 function check() {
 	document.getElementById("cust").style.display="block";
 }
+
 function check2() {
 		document.getElementById("cust").style.display="none";
 }
+
 </script>
 </body>
 </html>

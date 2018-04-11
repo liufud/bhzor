@@ -288,7 +288,7 @@ public class OrderController {
 			model.addAttribute("viewAllOrders", all);
 		}else if(orderType.equals("Shipped Orders")) {
 			List<Order> shipped = (List<Order>) orderService.getShippedOrdersByStatus("Cerrado");
-			System.out.println("shipped order" + shipped.get(0).getOrderID() + "===========================");
+//			System.out.println("shipped order" + shipped.get(0).getOrderID() + "===========================");
 			model.addAttribute("viewShippedOrders", shipped);
 		}
 		
@@ -297,8 +297,10 @@ public class OrderController {
 			UserDetails userDetails =
 					 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			User currentUser = userService.findUserByName(userDetails.getUsername());
-			List<Order> myOrders = orderService.getOrderByUserId(currentUser.getUserId());
-			model.addAttribute("myOrders", myOrders);
+			if(null != currentUser) {
+				List<Order> myOrders = orderService.getOrderByUserId(currentUser.getUserId());
+				model.addAttribute("myOrders", myOrders);
+			}			
 		}
 		
 		return "orders";
