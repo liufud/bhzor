@@ -37,25 +37,27 @@ public class User {
 	private Long userId;
 	@Column(name = "password",
 	nullable = false, length = 60)
-	@Size(min=6,max=15,message="Your password must be betwen 6 and 15 characters")
+//	@Size(min=6,max=15,message="Your password must be betwen 6 and 15 characters")
+	@NotEmpty(message="Porfavor ponga su contraseña")
 	private String password;
-	@Size(min=6,max=15,message="Porfavor confirma tu contraseña")
+	@NotEmpty(message="Porfavor ponga su email")
+//	@Size(min=6,max=15,message="Porfavor confirma tu contraseña")
 	private String passwordConfirm;
 	@NotEmpty(message="Porfavor ponga su email")
 	@Email
 	private String email;
-	@NotEmpty(message="Escriba su Nombre")
+	@NotEmpty(message="Porfavor escriba su Nombre")
 	private String firstName;
-	@NotEmpty(message="Escriba su Apellido")
+	@NotEmpty(message="Porfavor escriba su Apellido")
 	private String lastName;
 	private Long phoneNumber;
-	@NotEmpty(message="Porfavor ponga su Direccion")
+	@NotEmpty(message="Porfavor escriba su Direccion")
 	private String address;
-	@NotEmpty(message="Ponga la Ciudad")
+	@NotEmpty(message="Porfavor escriba la Ciudad")
 	private String city;
-	@NotEmpty(message="Ponga el Estado")
+	@NotEmpty(message="Porfavor escriba el Estado")
 	private String state;
-	@NotEmpty(message="Ponga el Codigo Postal")
+	@NotEmpty(message="Porfavor escriba el Codigo Postal")
 	private String zip;
 	@Column(name = "enabled", nullable = false)
 	private boolean enabled;

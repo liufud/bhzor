@@ -117,7 +117,7 @@
 				<br/>
 					<div class="btn-group-vertical">
 						<a class="btn btn-sm btn-secondary" href="inventory?orderStatus=openOrder" role="button">Abrir Pedidos de Reposicion</a>
-						<a class="btn btn-sm btn-secondary" href="inventory?orderStatus=closedOrder" role="button">Cerrado Pedidos de Reposicion</a>
+						<!-- <a class="btn btn-sm btn-secondary" href="inventory?orderStatus=closedOrder" role="button">Cerrado Pedidos de Reposicion</a> -->
 						<a class="btn btn-sm btn-secondary" href="addProduct" role="button">Agregar Productos</a>
 						<a class="btn btn-sm btn-secondary" href="editProduct" role="button">Ver inventario</a>
 						<a class="btn btn-sm btn-secondary" href="orderReplenishment" role="button">Pedidos de Reposición de Producto</a>
@@ -171,7 +171,7 @@
 							    </div>
 						  </div>
 						  <div class="form-group row">
-							    <label for="expDate" class="col-sm-3 col-form-label">Fecha de Expiracion<br>(mm/dd/yy)</label>
+							    <label for="expDate" class="col-sm-3 col-form-label">Fecha de Expiracion<br>(dd/mm/yyyy)</label>
 							    <div class="col-sm-7">
 							      <form:input name="expDate" id="expDate" type="text" path="expDate" class="form-control" autofocus="true"></form:input>
 			                      <form:errors path="expDate"></form:errors>
@@ -209,9 +209,9 @@
 					<thead>
 						<tr>
 							<th scope="col"># de Pedido</th>
-							<th scope="col">Fecha</th>
+							<th scope="col">Fecha Creada</th>
 							<c:forEach items="${productNames}" var="product">
-								<th scope="col">No Recibido ${product.productName}</th>
+								<th scope="col">${product.productName} No Procesado</th>
 							</c:forEach>
 							<th scope="col">Creado Por</th>
 							<!-- <th scope="col">Total de Pedido</th> -->
@@ -390,12 +390,12 @@
 							<th scope="col">ID del Producto</th>
 							<th scope="col">Nombre del Producto</th>
 							<sec:authorize access="hasAuthority('Administrador')">
-							<th scope="col">Costo</th>
+							<th scope="col">Costo de Fabrica</th>
 							</sec:authorize>
 							<!-- <th scope="col">Distribuidor Precio</th>
 							<th scope="col">Vendedor Precio</th>
 							<th scope="col">Cliente Precio</th> -->
-							<th scope="col">Cantidad</th> 
+							<th scope="col">Cantidad Total en Mano</th> 
 							<th scope="col">Estante</th> 
 							<th scope="col">Acciòn</th>
 						</tr>
@@ -549,7 +549,7 @@
 				<thead>
 					<tr>
 						<th scope="col" style="width:25%">Nombre de Producto</th>
-						<th scope="col" style="width:25%">Cantidad Actual</th>
+						<th scope="col" style="width:25%">Cantidad Total en Mano</th>
 						<th scope="col" style="width:25%">Cantidad de Pedido</th>
 						<th scope="col" style="width:25%">Acción</th>
 					</tr>
@@ -564,7 +564,7 @@
 							<input type="text" name="num" class="form-control text-center" value="0">
 						</td>
 						<td>
-							<button class="btn btn-primary" type="submit">Agregar al Pedido </button>
+							<button class="btn btn-primary" type="submit">Agregar al Carrito</button>
 							<%-- <a href="${product.productID}/addToCart">Add to Cart</a> --%>					
 						</td>							
 					</tr>
@@ -603,8 +603,8 @@
 		                        <table class="table table-condensed">
 		                            <thead>
 		                                <tr>
-		                                    <td><strong>Nombre de Producto</strong></td>
-		                                    <td class="text-center"><strong>Costo de Producto</strong></td>
+		                                    <td><strong>Nombre del Producto</strong></td>
+		                                    <td class="text-center"><strong>Costo de Fabrica</strong></td>
 		                                    <td class="text-center"><strong>Cantidad</strong></td>
 		                                    <td class="text-center"><strong>Acción</strong></td>
 		                                    <td class="text-right"><strong>Total</strong></td>

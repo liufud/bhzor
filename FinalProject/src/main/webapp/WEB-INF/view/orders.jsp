@@ -118,14 +118,15 @@
 					<div class="btn-group-vertical">
 						<a class="btn btn-sm btn-secondary" href="orders?selectOrderType=true" role="button">Historial de Pedidos</a>	
 						<a class="btn btn-sm btn-secondary" href="listProducts" role="button">Hacer Pedido</a>
-						<a class="btn btn-sm btn-secondary" href="myCart" role="button">Mis Pedidos</a>
+						<a class="btn btn-sm btn-secondary" href="myCart" role="button">Mi Carrito de Compra</a>
 						<a class="btn btn-sm btn-secondary" href="mailto:isaacrozen8@gmail.com,scrowavila@gmail.com,arturoavilabaeza@yahoo.com?
 																subject=Reportar Producto Dañado&
 																body=Porfavor ponga la siguiente informacion:%0D%0A
-																1. ID Pedido %0D%0A
+																1. Numero de Pedido %0D%0A
 																2. Descripcion sobre el producto dañado %0D%0A
 																3. Adjunte una foto del producto dañado %0D%0A %0D%0A
-																Regards, %0D%0A
+																Le remplazaremos el producto dañado pronto! %0D%0A %0D%0A
+																Muchas Gracias, %0D%0A
 																BHZOR Team" role="button">Remplazar Producto Dañado</a>
 					</div>
 				</div>
@@ -147,7 +148,7 @@
 							<th scope="row">
 								  <select class="custom-select custom-select-sm" name="orderTypeName">
 								    <option selected>Todos los Pedidos</option>
-								    <option value="Shipped Orders">Pedidos Enviados</option>
+								    <!-- <option value="Shipped Orders">Pedidos Enviados</option> -->
 								    <option value="Unshipped Orders">Pedidos no Enviados</option>
 								    <option value="Unpaid Orders">Pedidos no Pagados</option>
 								  </select> 
@@ -164,50 +165,6 @@
 					</tbody>
 				</table>
 				</sec:authorize>		
-				
-				<h4><b>Mi Historial de Pedidos</b></h4>
-				<table class="table">								
-					<thead>
-						<tr>
-							<th scope="col"># de Pedido</th>
-							<th scope="col">Fecha de Creación</th>
-							<c:forEach items="${productNames}" var="product">
-								<th scope="col">${product.productName}</th>
-							</c:forEach>
-							<sec:authorize access="hasAuthority('Administrador')">
-							<th scope="col">Creado Por</th>
-							<th scope="col">Creado Para</th>
-							</sec:authorize>
-							<!-- <th scope="col">Total de Pedido</th> -->
-							<!-- <th scope="col">Acción</th> -->
-						</tr>
-					</thead>					
-					<tbody>
-					<c:forEach items="${myOrders}" var="order">
-						<tr>
-							<th scope="row">${order.orderID}</th>
-							<td>${order.created_At}</td>
-							<c:forEach items="${order.products}" var="product">
-								<td>${product.unshippedProductqty}</td>
-							</c:forEach>
-							<sec:authorize access="hasAuthority('Administrador')">
-							<td>
-								${order.createByUser.firstName} ${order.createByUser.lastName}<br/>
-								(${order.createByUser.roleName})
-							</td>
-							<td>
-								${order.createForUser.firstName} ${order.createForUser.lastName}
-								(${order.createForUser.roleName})
-							</td>
-							</sec:authorize>
-							<%-- <td>${order.totalPrice}</td> --%>
-							<%-- <td>								
-								<a href="${order.orderID}/shippedOrder">Marcar como Enviado</a><br/>
-							</td> --%>							
-						</tr>
-					</c:forEach>				
-					</tbody>
-				</table>
 
 				<c:if test="${not empty viewUnshippedOrders}">
 				<c:if test="${not empty shippedOrderForm}">
@@ -216,8 +173,9 @@
 				<div class="row">
 					<div class="col"></div>
 					<div class="col-10">
+					<h2 class="form-signin-heading"># de Pedido ${shippedOrderForm}</h2>
 						  <div class="form-group row">
-							    <label for="lotID" class="col-sm-3 col-form-label">ID de Lote</label>
+							    <label for="lotID" class="col-sm-3 col-form-label"># de Lote</label>
 							    <div class="col-sm-7">
 							      <form:input name="lotID" id="lotID" type="number" path="lotID" class="form-control" autofocus="true"></form:input>
 			                      <form:errors path="lotID"></form:errors>
@@ -255,7 +213,7 @@
 						  </div>
 						      <form:input name="orderID" id="orderID" type="hidden" path="orderID" class="form-control" autofocus="true" value="${orderID}"></form:input>					  
 
-					  		  <button class="btn btn-lg btn-primary btn-block text-center" type="submit">Submit</button>						  
+					  		  <button class="btn btn-lg btn-primary btn-block text-center" type="submit">Confirmar</button>						  
 					</div>
 					<div class="col"></div>
 				</div>
@@ -269,7 +227,7 @@
 					  <div class="card-body">
 					    <h5 class="card-title text-info">Nota:</h5>
 					    <p class="card-text">¿Desea enviar el resto de la cantidad desde otro estante?</p>
-					    <a href="${shipFromAnotherLot}/shippedOrder" class="card-link btn btn-primary" role="button">Yes</a>
+					    <a href="${shipFromAnotherLot}/shippedOrder" class="card-link btn btn-primary" role="button">Si</a>
 					    <a href="orders?selectOrderType=true" class="card-link btn btn-primary" role="button">No</a>
 					  </div>
 					</div>
@@ -320,9 +278,10 @@
 					<p class="text-success">${orderPaid}</p>
 				</c:if>	
 				<c:if test="${!empty orderShipped}">
-					<p class="text-success">Order # ${orderShipped} is now closed</p>
+					<p class="text-success"># de Pedido ${orderShipped} cerrado</p>
 				</c:if>
 				
+				<c:if test="${not empty viewUnpaidOrders}">
 				<c:if test="${not empty markAsPaid}">
 					<form name="markAsPaidForm" action="${markAsPaid}/orderPaid" method="post" class="form-control">
 						<label class="input-group-text" for="inputGroupSelect01">Que metodo de pago fue utlizado para este pedido</label>
@@ -335,15 +294,54 @@
 						  <div class="row">
 						  		<div class="col"></div>
 						  		<div class="col">
-						  			<button class="btn btn-lg btn-primary text-center" type="submit">Submit</button>
+						  			<button class="btn btn-lg btn-primary text-center" type="submit">Confirmar</button>
 						  		</div>
 						  		<div class="col"></div>
 						  </div>						  
 					</form>
 				</c:if>
-				
-				<c:if test="${not empty viewShippedOrders}">
-				<h4><b>Pedidos Enviados</b></h4>
+				<h4><b>Pedidos no Pagado</b></h4>
+				<table class="table">								
+					<thead>
+						<tr>
+							<th scope="col"># de Pedido</th>
+							<th scope="col">Fecha de Creación</th>
+							<c:forEach items="${productNames}" var="product">
+								<th scope="col">${product.productName}</th>
+							</c:forEach>
+							<th scope="col">Creado Por</th>
+							<th scope="col">Creado Para</th>
+							<!-- <th scope="col">Total de Pedido</th> -->
+							<!-- <th scope="col">Acción</th> -->
+						</tr>
+					</thead>					
+					<tbody>
+					<c:forEach items="${viewUnpaidOrders}" var="order">
+						<tr>
+							<th scope="row">${order.orderID}</th>
+							<td>${order.created_At}</td>
+							<c:forEach items="${order.products}" var="product">
+								<td>${product.orderedProductQty}</td>
+							</c:forEach>
+							<td>
+								${order.createByUser.firstName} ${order.createByUser.lastName}
+								(${order.createByUser.roleName})
+							</td>
+							<td>
+								${order.createForUser.firstName} ${order.createForUser.lastName}
+								(${order.createForUser.roleName})
+							</td>
+							<%-- <td>${order.totalPrice}</td> --%>
+							<td>								
+								<a href="${order.orderID}/orderPaid">Marcar como Pagado</a><br/>
+							</td>							
+						</tr>
+					</c:forEach>				
+					</tbody>
+				</table>
+				</c:if>
+				<%-- <c:if test="${not empty viewShippedOrders}">
+				<h4><b>Pedidos no Pagado</b></h4>
 				<table class="table">								
 					<thead>
 						<tr>
@@ -374,15 +372,15 @@
 								${order.createForUser.firstName} ${order.createForUser.lastName}
 								(${order.createForUser.roleName})
 							</td>
-							<%-- <td>${order.totalPrice}</td> --%>
-							<%-- <td>								
+							<td>${order.totalPrice}</td>
+							<td>								
 								<a href="${order.orderID}/orderPaid">Marcar como Pagado</a><br/>
-							</td> --%>							
+							</td>							
 						</tr>
 					</c:forEach>				
 					</tbody>
 				</table>
-				</c:if>	
+				</c:if>	 --%>
 				
 				<c:if test="${not empty viewAllOrders}">
 				<h4><b>Todos los Pedidos</b></h4>
@@ -422,7 +420,52 @@
 					</c:forEach>				
 					</tbody>
 				</table>
-				</c:if>	
+				</c:if>
+				
+				<!-- My Order History -->
+				<h4><b>Mi Historial de Pedidos</b></h4>
+				<table class="table">								
+					<thead>
+						<tr>
+							<th scope="col"># de Pedido</th>
+							<th scope="col">Fecha de Creación</th>
+							<c:forEach items="${productNames}" var="product">
+								<th scope="col">${product.productName}</th>
+							</c:forEach>
+							<sec:authorize access="hasAuthority('Administrador')">
+							<th scope="col">Creado Por</th>
+							<th scope="col">Creado Para</th>
+							</sec:authorize>
+							<!-- <th scope="col">Total de Pedido</th> -->
+							<!-- <th scope="col">Acción</th> -->
+						</tr>
+					</thead>					
+					<tbody>
+					<c:forEach items="${myOrders}" var="order">
+						<tr>
+							<th scope="row">${order.orderID}</th>
+							<td>${order.created_At}</td>
+							<c:forEach items="${order.products}" var="product">
+								<td>${product.unshippedProductqty}</td>
+							</c:forEach>
+							<sec:authorize access="hasAuthority('Administrador')">
+							<td>
+								${order.createByUser.firstName} ${order.createByUser.lastName}<br/>
+								(${order.createByUser.roleName})
+							</td>
+							<td>
+								${order.createForUser.firstName} ${order.createForUser.lastName}
+								(${order.createForUser.roleName})
+							</td>
+							</sec:authorize>
+							<%-- <td>${order.totalPrice}</td> --%>
+							<%-- <td>								
+								<a href="${order.orderID}/shippedOrder">Marcar como Pagado</a><br/>
+							</td>	 --%>						
+						</tr>
+					</c:forEach>				
+					</tbody>
+				</table>	
 				</c:if>	
 				
 				<!-- Product Catalog to Shopping Cart -->
@@ -467,7 +510,7 @@
 						<!-- <td ></td> -->					
 						<td>
 							<c:if test="${!empty addToCartSucceeded}">
-							<a href="myCart" class="btn btn-warning">Mi Pedido</a>
+							<a href="myCart" class="btn btn-warning">Mi Carrito de Compra</a>
 							</c:if>	
 						</td>
 					</tr>
@@ -663,9 +706,14 @@
 												  		<c:forEach var="customer" items="${allCustomers}">
 												  			<option value="${customer.firstName} ${customer.lastName}">${customer.firstName} ${customer.lastName}</option>
 												  		</c:forEach>
-												  	</select>
+												  	</select>												  	
 										  		</div>
 										  </div>
+										  <div class="input-group mb-3">
+										  		<div class="input-group-prepend">
+										  		<p>Si el cliente no aparece en la lista, porfavor informe al equipo de BH-ZOR con su nuevo cliente para que lo agreguen al sistema. Si no tiene cliente, deje en blanco</p>
+										  		</div>
+										  </div>										  
 									</div>
 									<div id="distributorSale" class="sale_type">
 									  <div class="input-group mb-3">
@@ -1090,8 +1138,9 @@
 					<c:if test="${not empty orderConfirmation}">
                			<div class="alert alert-success" role="alert">
 							<center>  
-								<h4 class="alert-heading">Pedido Confirmado!</h4>
-								<h5 class="text-success">Numero de Pedido: #${confirmedOrder.orderID}</h5>
+								<h4 class="text-success">Numero de Pedido: #${confirmedOrder.orderID}</h4>
+								<h5 class="alert-heading">Pedido Confirmado!</h5>
+								<h5 class="alert-heading">Gracias por realizar su pedido! El equipo de BH-ZOR los contactara brevemente con la confirmacion de su pedido y las opciones de pago</h5>
 								<hr />
 							</center>  
 						</div>

@@ -30,10 +30,10 @@ public class ReceivedRpOrder {
 	@GeneratedValue(generator="increment")
 	@GenericGenerator(name="increment", strategy = "increment")
 	private Long receivedRpOrderID;	
-	@NotNull(message="ID de Lote no puede estaer vacio!")
+	@NotNull(message="El # de Lote no puede estaer vacio!")
 	@Min(value=0)
 	private Long lotID;
-	@NotNull(message="# de estante no puede estaer vacio!")
+	@NotNull(message="El # de Estante no puede estaer vacio!")
 	@Min(value=0)
 	@Max(value=1000)
 	private Long shelfID;
@@ -43,12 +43,12 @@ public class ReceivedRpOrder {
 	@Min(value=0)
 	@Max(value=10000000)
 	private Integer quantityReceived;
-	@NotNull(message="¡La cantidad rechazada no puede estar vacía!")
+	@NotNull(message="¡La cantidad rechazada no puede estar vacía!Ponga 0 si no hay producto dañado")
 	@Min(value=0)
 	@Max(value=100000)
 	private Integer quantityRejected;
-	@NotNull(message="La fecha de caducidad no puede estar vacía!")
-	@Pattern(message="Formato de fecha inválido. La entrada tiene que estar en formato dd/mm/yy", regexp="^(\\d{1,2})\\/(\\d{1,2})\\/(\\d{2})$")
+	@NotNull(message="La fecha de expiracion no puede estar vacía!")
+	@Pattern(message="Formato de fecha inválida. La entrada tiene que estar en formato dd/mm/yy", regexp="^(\\d{1,2})\\/(\\d{1,2})\\/(\\d{4})$")
 	private String expDate;
 	@ManyToOne(fetch=FetchType.EAGER)
 	private User createByUser;

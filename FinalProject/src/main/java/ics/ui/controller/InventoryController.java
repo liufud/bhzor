@@ -160,6 +160,7 @@ public class InventoryController {
 			model.addAttribute("rpOrderID", receivedRpOrder.getRpOrderID());
 			Collection<ReplenishmentOrder> openOrders = replenishmentOrderService.listOrders("open");
 			model.addAttribute("openOrders", openOrders);
+			model.addAttribute("rpOrderReceivedForm", receivedRpOrder.getRpOrderID());
 			return "inventory";
 		}
 			
@@ -189,7 +190,7 @@ public class InventoryController {
 			if(o.getProductName().equals(receivedRpOrder.getReceivedRpProductName())) {
 				//if qty received is greater than quantity ordered, throw error
 				if(receivedRpOrder.getQuantityReceived() > o.getOrderedProductQty()) {
-					System.out.println("Error! Cantidad de Orden Recibida es mayor a la cantidad de Order Pedida.");
+					System.out.println("Error! Cantidad de Pedido Recibida es mayor a la cantidad de Order Pedida.");
 					model.addAttribute("receivedQtyError", "Error! Cantidad Recibida no puede ser mayor a la Cantidad Pedida!");
 					return "redirect:/" + rpOrder.getRpOrderID() + "/receivedRpOrder";
 				}
@@ -546,7 +547,7 @@ public class InventoryController {
 			try {
 				Integer.parseInt(quantity[0]);
 				if(Integer.parseInt(quantity[0]) <= 0) {
-					model.addAttribute("shoppingCartQtyError", "Cantidad de Orden no puede ser 0!");
+					model.addAttribute("shoppingCartQtyError", "Cantidad de Pedido no puede ser 0!");
 					return "redirect:/orderReplenishment";
 				}else if(Integer.parseInt(quantity[0]) > 10000000) {
 					model.addAttribute("shoppingCartQtyError", "Cantidad Invalida!");
@@ -596,7 +597,7 @@ public class InventoryController {
 				try {
 					Integer.parseInt(quantity[0]);
 					if(Integer.parseInt(quantity[0]) <= 0) {
-						model.addAttribute("shoppingCartQtyError", "Cantidad de Orden no puede ser 0!");
+						model.addAttribute("shoppingCartQtyError", "Cantidad de Pedido no puede ser 0!");
 						return "redirect:/orderReplenishment";
 					}else if(Integer.parseInt(quantity[0]) > 10000000) {
 						model.addAttribute("shoppingCartQtyError", "Cantidad Invalida!");
@@ -622,7 +623,7 @@ public class InventoryController {
 				try {
 					Integer.parseInt(quantityParam[0]);
 					if(Integer.parseInt(quantityParam[0]) <= 0) {
-						model.addAttribute("shoppingCartQtyError", "Cantidad de Orden no puede ser 0!");
+						model.addAttribute("shoppingCartQtyError", "Cantidad de Pedido no puede ser 0!");
 						return "redirect:/orderReplenishment";
 					}else if(Integer.parseInt(quantityParam[0]) > 10000000) {
 						model.addAttribute("shoppingCartQtyError", "Cantidad Invalida!");
@@ -656,7 +657,7 @@ public class InventoryController {
 							@ModelAttribute("shoppingCartQtyError")String shoppingCartQtyError) {
 		Cart cart = (Cart) session.getAttribute("cart");
 		if(cart == null) {
-			model.addAttribute("shoppingCartQtyError", "Cantidad de Orden no puede ser 0!");
+			model.addAttribute("shoppingCartQtyError", "Cantidad de Pedido no puede ser 0!");
 			return "redirect:/orderReplenishment";
 		}
 		model.addAttribute("orderSummary", "orderSummary");
@@ -673,7 +674,7 @@ public class InventoryController {
 			 try {
 					Integer.parseInt(quantity[i]);
 					if(Integer.parseInt(quantity[i]) <= 0) {
-						model.addAttribute("shoppingCartQtyError", "Cantidad de Orden no puede ser 0");
+						model.addAttribute("shoppingCartQtyError", "Cantidad de Pedido no puede ser 0");
 						return "redirect:/orderSummary";
 					}else if(Integer.parseInt(quantity[i]) > 10000000) {
 						model.addAttribute("shoppingCartQtyError", "Cantidad Invalida!");
@@ -744,7 +745,7 @@ public class InventoryController {
 		replenishmentOrderService.createOrder(rpOrder);
 		session.removeAttribute("cart");
 		System.out.println("Replenishment order has been place");
-		model.addAttribute("replenishmentOrderConfirmed", "A realizado una orden de reposicion de producto!");
+		model.addAttribute("replenishmentOrderConfirmed", "A realizado una pedido de reposicion de producto!");
 		return "redirect:/inventory";
 	}
 	

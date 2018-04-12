@@ -65,9 +65,9 @@
 		  <main role="main">
 	        <div class="jumbotron">
 	          <div class="col-sm-8 mx-auto text-dark">
-	            <h1 class="mx-auto">Bienvenido</h1>
+	            <h1 class="mx-auto">Bienvenido!</h1>
 	            <sec:authorize access="hasAuthority('Administrador')">
-	           		<p>Esta aplicación web es un control de inventario multi-usuario. No solo ayuda a administradores en manejar el inventario y poner órdenes de producto, también permite a diferentes usuarios (clientes, vendedores o distribuidores) en hacer pedidos para diferentes productos. </p>	           
+	           		<p>Esta aplicación web es un control de inventario multi-usuario. No solo ayuda a administradores en manejar el inventario y hacer pedidos de producto, también permite a diferentes usuarios (clientes, vendedores o distribuidores) en hacer pedidos para diferentes productos. </p>	           
 	            </sec:authorize>
 	            <%-- <sec:authorize access="hasAnyRole('Cliente','Vendedor','Distribuidor')"> --%>
 	            <sec:authorize access="hasAuthority('Distribuidor') or hasAuthority('Vendedor') or hasAuthority('Cliente')">

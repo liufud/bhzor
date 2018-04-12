@@ -333,7 +333,7 @@ public class OrderController {
 	public String shippedOrderForm(@PathVariable String orderID, Model model,
 									@ModelAttribute("shippedQtyError")String shippedQtyError,
 									@ModelAttribute("shipFromAnotherLot")String shipFromAnotherLot) {
-		model.addAttribute("shippedOrderForm", "shippedOrderForm");
+		model.addAttribute("shippedOrderForm", orderID);
 		model.addAttribute("orderID", orderID);
 		model.addAttribute("shippedQtyError", shippedQtyError);
 		model.addAttribute("shipFromAnotherLot", shipFromAnotherLot);
@@ -357,6 +357,7 @@ public class OrderController {
 			List<Order> unshipped = (List<Order>) orderService.listOrders("shipmentStatus","Pending Shipment");
 			model.addAttribute("viewUnshippedOrders", unshipped);
 			model.addAttribute("selectOrderType", "selectOrderType");
+			model.addAttribute("shippedOrderForm", shippedOrder.getOrderID());
 			return "orders";
 		}
 		ShippedOrder shippedOrderToBeSaved = new ShippedOrder();
@@ -624,7 +625,7 @@ public class OrderController {
 			try {
 				Integer.parseInt(quantity[0]);
 				if(Integer.parseInt(quantity[0]) <= 0) {
-					model.addAttribute("shoppingCartQtyError", "Cantidad de Orden no puede ser 0!");
+					model.addAttribute("shoppingCartQtyError", "Cantidad de Pedido no puede ser 0!");
 					return "redirect:/listProducts";
 				}else if(Integer.parseInt(quantity[0]) > 10000000) {
 					model.addAttribute("shoppingCartQtyError", "Cantidad Invalida!");
@@ -672,7 +673,7 @@ public class OrderController {
 				try {
 					Integer.parseInt(quantity[0]);
 					if(Integer.parseInt(quantity[0]) <= 0) {
-						model.addAttribute("shoppingCartQtyError", "Cantidad de Orden no puede ser 0!");
+						model.addAttribute("shoppingCartQtyError", "Cantidad de Pedido no puede ser 0!");
 						return "redirect:/listProducts";
 					}else if(Integer.parseInt(quantity[0]) > 10000000) {
 						model.addAttribute("shoppingCartQtyError", "Cantidad Invalida!");
@@ -698,7 +699,7 @@ public class OrderController {
 				try {
 					Integer.parseInt(quantityParam[0]);
 					if(Integer.parseInt(quantityParam[0]) <= 0) {
-						model.addAttribute("shoppingCartQtyError", "Cantidad de Orden no puede ser 0!");
+						model.addAttribute("shoppingCartQtyError", "Cantidad de Pedido no puede ser 0!");
 						return "redirect:/listProducts";
 					}else if(Integer.parseInt(quantityParam[0]) > 10000000) {
 						model.addAttribute("shoppingCartQtyError", "Cantidad Invalida!");
@@ -919,7 +920,7 @@ public class OrderController {
 		 
 		 if(!validateSelectBox(orderType)) {
 			 System.out.println("Check select type of sale");
-			 model.addAttribute("unselectedBoxError", "Falto en escojer una opcion. Porfavor selecciona una opcion!There is an unselected box. Please select!");
+			 model.addAttribute("unselectedBoxError", "Falto en escojer una opcion. Porfavor selecciona una opcion!");
 			 model.addAttribute("showCheckout", "showCheckout");
 			 return "redirect:/orders";
 		 }

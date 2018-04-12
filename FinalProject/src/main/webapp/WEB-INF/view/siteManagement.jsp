@@ -180,7 +180,7 @@ display:none;
 			        </spring:bind> --%>
 			        
 			        
-			        <label>Selecciona el rol para el usuario&nbsp</label>
+			        <label>Selecciona el tipo de usuario&nbsp</label>
 		            <select id="role" name="roleList">
 		            	<option selected>Choose...</option>
 						<option onclick="check()" value="Cliente">Cliente</option>
@@ -191,13 +191,14 @@ display:none;
 				  	
 			        
 			        <div id="cust">
-			        <label>Selecciona a un Vendedor para este cliente&nbsp</label>
-		            <select id="vendorName" name="_vandorName">
+			        <label>Selecciona a un Vendedor para este cliente&nbsp
+			         <select id="vendorName" name="_vandorName">
 				  		<option selected>Choose...</option>
 				  		<c:forEach var="vendor" items="${allVendorsName}">
 				  			<option value="${vendor}">${vendor}</option>
 				  		</c:forEach>
-				  	</select>	
+				  	</select>
+			        <br/>*Si el cliente no tiene un vendedor asociado a el deje en blanco</label>		           	
 				  	</div>        
 			        
 			        <spring:bind path="email">
@@ -232,22 +233,22 @@ display:none;
 			            </div>
 			        </spring:bind>
 			        
-                  	<spring:bind path="state">
+                  	<%-- <spring:bind path="state">
 	                  	<div class="form-group">
 		                   	<form:select id="id_state" class="form-control" path = "state">
 			                   <form:option value = "NONE" label = "Estado"/>
 			                   <form:options items = "${stateName}" />
 			                </form:select>
 			            </div>   
-	                </spring:bind>
+	                </spring:bind> --%>
 			        
-			     <%--    <spring:bind path="state">
+			       <spring:bind path="state">
 			            <div class="form-group">
-			                <form:input type="text" path="state" class="form-control" placeholder="State"
+			                <form:input type="text" path="state" class="form-control" placeholder="Estado"
 			                            autofocus="true"></form:input>
 			                <form:errors path="state"></form:errors>
 			            </div>
-			        </spring:bind> --%>
+			        </spring:bind>
 			        
 			        <spring:bind path="zip">
 			            <div class="form-group">
@@ -434,10 +435,10 @@ display:none;
 				<table class="table">								
 					<thead>
 						<tr>
-							<th scope="col">User</th>
-							<th scope="col">Current Role</th>
-							<th scope="col">Change To</th>
-							<th scope="col">Action</th>
+							<th scope="col">Usuario</th>
+							<th scope="col">Tipo de Usuario</th>
+							<th scope="col">Cambiar a</th>
+							<th scope="col">Accion</th>
 						</tr>
 					</thead>					
 					<tbody>
@@ -454,7 +455,7 @@ display:none;
 			                </spring:bind>  	
 			                </td>
 			                <td>
-			                	<button class="btn btn-primary" type="submit">Submit</button>
+			                	<button class="btn btn-primary" type="submit">Confirmar</button>
 			                </td>				
 							<%-- <sec:authorize access="hasAuthority('Manager')">							
 							<td><a href="user/${order.orderID}/${orderplacedby}/deleteOrder">Delete</a></td>
@@ -476,15 +477,15 @@ display:none;
 					<table class="table">								
 					<thead>
 						<tr>
-							<th scope="col">User ID</th>
-							<th scope="col">Name</th>
+							<th scope="col">ID Usuario</th>
+							<th scope="col">Nombre</th>
 							<th scope="col">Email</th>
-							<th scope="col">Phone Number</th>
-							<th scope="col">Shipping Address</th>
-							<th scope="col">Created At</th>
-							<th scope="col">Role</th>
-							<th scope="col">Vendor</th>
-							<th scope="col">Action</th>
+							<th scope="col">Telefono</th>
+							<th scope="col">Direccion</th>
+							<th scope="col">Fecha Creada</th>
+							<th scope="col">Tipo de Usuario</th>
+							<th scope="col">Vendedor Asociado</th>
+							<th scope="col">Accion</th>
 						</tr>
 					</thead>					
 					<tbody>
@@ -499,10 +500,10 @@ display:none;
 							<td>${user.roleName}</td>
 							<td>${user.vendor.firstName} ${user.vendor.lastName}</td>
 							<td>
-								<a href="user/${user.userId}/updateRole">Update Role</a><br/>
+								<a href="user/${user.userId}/updateRole">Cambiar Tipo de Usuario</a><br/>
 								<sec:authorize access="hasAuthority('Administrador')">
-								<a href="user/${user.userId}/updateInfo">Update Info</a><br/>							
-								<a href="user/${user.userId}/deleteUser">Delete</a>
+								<a href="user/${user.userId}/updateInfo">Actualizar Informacion</a><br/>							
+								<a href="user/${user.userId}/deleteUser">Eliminar</a>
 								</sec:authorize>					
 							</td>							
 						</tr>
@@ -515,15 +516,15 @@ display:none;
 					<table class="table">								
 					<thead>
 						<tr>
-							<th scope="col">User ID</th>
-							<th scope="col">Name</th>
+							<th scope="col">ID Usuario</th>
+							<th scope="col">Nombre</th>
 							<th scope="col">Email</th>
-							<th scope="col">Phone Number</th>
-							<th scope="col">Shipping Address</th>
-							<!-- <th scope="col">Created At</th> -->
-							<th scope="col">Role</th>
-							<th scope="col">Vendor</th>
-							<th scope="col">Action</th>
+							<th scope="col">Telefono</th>
+							<th scope="col">Direccion</th>
+							<!-- <th scope="col">Fecha Creada</th> -->
+							<th scope="col">Tipo de Usuario</th>
+							<th scope="col">Vendedor Asociado</th>
+							<th scope="col">Accion</th>
 						</tr>
 					</thead>									
 					<tbody>
