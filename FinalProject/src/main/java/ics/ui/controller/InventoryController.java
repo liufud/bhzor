@@ -248,6 +248,7 @@ public class InventoryController {
 						
 						if(closedRpOrder(rpOrder, quantityReceived, quantityRejected)) {
 							model.addAttribute("rpOrderClosed", rpOrder.getRpOrderID());
+							addShelfandLot(receivedRpOrderToBeSaved);
 							return "redirect:/inventory?orderStatus=openOrder";
 						}						
 					}else if(quantityReceived + receivedRpOrder.getQuantityReceived() + quantityRejected + receivedRpOrder.getQuantityRejected() == o.getOrderedProductQty()){					
@@ -280,6 +281,7 @@ public class InventoryController {
 						System.out.println("Received all the quantity for product [" + receivedRpOrder.getReceivedRpProductName() + "]" );
 						if(closedRpOrder(rpOrder, quantityReceived, quantityRejected)) {
 							model.addAttribute("rpOrderClosed", rpOrder.getRpOrderID());
+							addShelfandLot(receivedRpOrderToBeSaved);
 							return "redirect:/inventory?orderStatus=openOrder";
 						}
 					}
@@ -327,11 +329,17 @@ public class InventoryController {
 					System.out.println("Received all the quantity for product [" + receivedRpOrder.getReceivedRpProductName() + "]" );
 					if(closedRpOrder(rpOrder, quantityReceived, quantityRejected)) {
 						model.addAttribute("rpOrderClosed", rpOrder.getRpOrderID());
+						addShelfandLot(receivedRpOrderToBeSaved);
 						return "redirect:/inventory?orderStatus=openOrder";
 					}
 				}
 			}
 		}	
+		addShelfandLot(receivedRpOrderToBeSaved);
+		return "redirect:/inventory?orderStatus=openOrder";
+	}
+	
+	private void addShelfandLot(ReceivedRpOrder receivedRpOrder) {
 		//adding shelf location for the product
 		Product product = productService.getProductByName(receivedRpOrder.getReceivedRpProductName());
 		System.out.println("product name for shelf location is: " + product.getProductName());
@@ -339,7 +347,12 @@ public class InventoryController {
 			product.getShelfLocations().add(receivedRpOrder.getShelfID());
 			productService.addOrUpdateProduct(product);
 		}	
-		return "redirect:/inventory?orderStatus=openOrder";
+		//addling lot ID for the product
+		if(!product.getLotID().contains(receivedRpOrder.getLotID())) {
+			product.getLotID().add(receivedRpOrder.getLotID());
+//			System.out.println("adding lotID" + receivedRpOrder.getLotID() + " to product " + product.getProductName());
+			productService.addOrUpdateProduct(product);
+		}
 	}
 	
 	private void receiveProducts(String productName, Integer quantity) {

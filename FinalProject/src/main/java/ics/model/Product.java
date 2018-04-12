@@ -49,6 +49,7 @@ public class Product {
 //	@NotNull(message="You must provide a quantity")
 	private Integer quantityOnHand;
 	private ArrayList<Long> shelfLocations = new ArrayList<Long>();
+	private ArrayList<Long> lotID = new ArrayList<Long>();
 //	@ManyToOne
 //	private Order order;
 
@@ -122,5 +123,13 @@ public class Product {
 
 	public void setShelfLocations(ArrayList<Long> shelfLocations) {
 		this.shelfLocations = shelfLocations;
-	}		
+	}
+
+	public ArrayList<Long> getLotID() {
+		return lotID;
+	}
+
+	public void setLotID(ArrayList<Long> lotID) {
+		this.lotID = lotID;
+	}	
 }

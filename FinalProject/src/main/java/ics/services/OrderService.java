@@ -19,6 +19,7 @@ public interface OrderService {
 	public List<ShippedOrder> getShippedOrderByShelf(Long orderID, Long shelfID, String productName);
 	public List<ShippedOrder> getShippedOrderByID(Long orderID, String productName);
 	public List<Order> getShippedOrdersByStatus(String orderStatus);
+	public int qtyInInventoryByShelf(String productName, Long shelfID);
 	public Order getLatestOrder();
 	public void delete(Long orderID);
 }

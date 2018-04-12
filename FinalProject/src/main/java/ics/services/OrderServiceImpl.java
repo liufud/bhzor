@@ -76,4 +76,9 @@ public class OrderServiceImpl implements OrderService {
 		return orderDAO.getShippedOrdersByStatus(orderStatus);
 	}
 
+
+	public int qtyInInventoryByShelf(String productName, Long shelfID) {
+		return orderDAO.qtyInInventoryByShelf(productName, shelfID);
+	}
+
 }

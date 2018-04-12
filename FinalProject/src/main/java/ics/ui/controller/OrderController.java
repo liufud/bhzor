@@ -204,7 +204,9 @@ public class OrderController {
 							@ModelAttribute("orderShipped")String orderShipped,
 							@ModelAttribute("orderPaid")String orderPaid,
 							@ModelAttribute("unselectedBoxError")String unselectedBoxError,
-							@ModelAttribute("markAsPaid")String markAsPaid) {
+							@ModelAttribute("markAsPaid")String markAsPaid,
+							@ModelAttribute("qtyOnShelfExceeded")String qtyOnShelfExceeded,
+							@ModelAttribute("lotIDs")ArrayList<String> lotIDs) {
 		model.addAttribute("showList", showList);
 		model.addAttribute("addToCartSucceeded", addToCartSucceeded);
 		if(!addToCartSucceeded.isEmpty()) {
@@ -224,6 +226,8 @@ public class OrderController {
 		System.out.println("Shipped order ID: " + orderShipped);
 		model.addAttribute("orderPaid", orderPaid);
 		model.addAttribute("unselectedBoxError", unselectedBoxError);
+		model.addAttribute("qtyOnShelfExceeded", qtyOnShelfExceeded);
+		model.addAttribute("lotIDs", lotIDs);
 		if(!markAsPaid.isEmpty()) {
 			model.addAttribute("markAsPaid", markAsPaid);
 			List<Order> unpaid = (List<Order>) orderService.listOrders("paymentStatus","Pending Payment");
@@ -332,11 +336,14 @@ public class OrderController {
 	@RequestMapping(value="{orderID}/shippedOrder", method=RequestMethod.GET)
 	public String shippedOrderForm(@PathVariable String orderID, Model model,
 									@ModelAttribute("shippedQtyError")String shippedQtyError,
-									@ModelAttribute("shipFromAnotherLot")String shipFromAnotherLot) {
+									@ModelAttribute("shipFromAnotherLot")String shipFromAnotherLot,
+									@ModelAttribute("qtyOnShelfExceeded")String qtyOnShelfExceeded) {
 		model.addAttribute("shippedOrderForm", orderID);
 		model.addAttribute("orderID", orderID);
 		model.addAttribute("shippedQtyError", shippedQtyError);
 		model.addAttribute("shipFromAnotherLot", shipFromAnotherLot);
+		model.addAttribute("qtyOnShelfExceeded", qtyOnShelfExceeded);
+		model.addAttribute("lotIDs", getLotIdArray(orderID));
 		return "redirect:/orders?selectOrderType=true";
 	}
 	
@@ -378,6 +385,12 @@ public class OrderController {
 		List<ShippedOrder> shippedOrdersByShelf = orderService.getShippedOrderByShelf(shippedOrder.getOrderID() ,shippedOrder.getShelfID(), shippedOrder.getShippedProductName());
 		for(OrderedProd o:orderedProducts) {
 			if(o.getProductName().equals(shippedOrder.getShippedProductName())) {
+				//check if quantity on shelf exceeded
+				boolean qtytyOnShelfNotExceeded = qtyOnShelfExceeded(shippedOrder.getShippedProductName(), shippedOrder.getShelfID(), shippedOrder.getQtyShipped());
+				if(qtytyOnShelfNotExceeded) {
+					model.addAttribute("qtyOnShelfExceeded", "La cantidad excede la cantidad disponible en este estante!");//La cantidad excede la cantidad disponible en este estante
+					return "redirect:/" + customerOrder.getOrderID() + "/shippedOrder";
+				}
 				//if qty received is greater than quantity ordered, throw error
 				if(shippedOrder.getQtyShipped() > o.getOrderedProductQty()) {
 					System.out.println("received order qty greater than ordered qty, error!");
@@ -435,6 +448,7 @@ public class OrderController {
 						System.out.println("order saved ----");
 						
 						System.out.println("Shipped all the quantity for product [" + shippedOrder.getShippedProductName() + "]" );
+						
 					}
 					
 					
@@ -467,6 +481,7 @@ public class OrderController {
 					System.out.println("saving customer ordered products -----");
 					orderService.createOrder(customerOrder);
 					System.out.println("order saved ----");
+					
 					System.out.println("Received all the quantity for product [" + shippedOrder.getQtyShipped() + "]" );
 				}
 			}
@@ -495,6 +510,31 @@ public class OrderController {
 		System.out.println("check complete");
 		
 		return "redirect:/orders?selectOrderType=true";
+	}
+	
+	private ArrayList<String> getLotIdArray(String orderID){
+		Order order = orderService.getOrder(Long.valueOf(orderID));
+		List<OrderedProd> orderedProds = order.getProducts();
+		ArrayList<String> lotIDArray = new ArrayList<String>();
+		for(OrderedProd o:orderedProds) {
+			Product product = productService.getProductByName(o.getProductName());
+			if(o.getOrderedProductQty() > 0) {
+				for(Long lotID:product.getLotID()) {
+					System.out.println("Lot ID is " + lotID.toString());
+					lotIDArray.add(lotID.toString());
+				}
+			}			
+		}
+		return lotIDArray;
+	}
+	
+	private boolean qtyOnShelfExceeded(String productName, Long formShelfID, Integer qtyShipped) {
+		boolean productQtyExceeded = true;
+		int qtyOnShelf = orderService.qtyInInventoryByShelf(productName, formShelfID);
+		if(qtyOnShelf > qtyShipped.intValue()) {
+			productQtyExceeded = false;
+		}
+		return productQtyExceeded;
 	}
 	
 	private void shipProducts(String productName, Integer quantity) {

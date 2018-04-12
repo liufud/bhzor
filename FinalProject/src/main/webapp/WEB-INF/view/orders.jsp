@@ -127,7 +127,7 @@
 																3. Adjunte una foto del producto dañado %0D%0A %0D%0A
 																Le remplazaremos el producto dañado pronto! %0D%0A %0D%0A
 																Muchas Gracias, %0D%0A
-																BHZOR Team" role="button">Remplazar Producto Dañado</a>
+																El equipo de BHZOR" role="button">Remplazar Producto Dañado</a>
 					</div>
 				</div>
 				<div class="col-9">
@@ -173,21 +173,7 @@
 				<div class="row">
 					<div class="col"></div>
 					<div class="col-10">
-					<h2 class="form-signin-heading"># de Pedido ${shippedOrderForm}</h2>
-						  <div class="form-group row">
-							    <label for="lotID" class="col-sm-3 col-form-label"># de Lote</label>
-							    <div class="col-sm-7">
-							      <form:input name="lotID" id="lotID" type="number" path="lotID" class="form-control" autofocus="true"></form:input>
-			                      <form:errors path="lotID"></form:errors>
-							    </div>
-						  </div>
-						  <div class="form-group row">
-							    <label for="shelfID" class="col-sm-3 col-form-label"># de Estante</label>
-							    <div class="col-sm-7">
-							      <form:input name="shelfID" id="shelfID" type="number" path="shelfID" class="form-control" autofocus="true"></form:input>
-			                      <form:errors path="shelfID"></form:errors>
-							    </div>
-						  </div>
+					<h2 class="form-signin-heading"># de Pedido ${shippedOrderForm}</h2>						  
 						  <div class="form-group row">
 						  		<label for="productName" class="col-sm-3 col-form-label">Producto</label>
 						  		<div class="col-sm-7">
@@ -195,6 +181,24 @@
 					                   <%-- <form:option value = "NONE" label = "Select"/> --%>
 					                   <form:options items = "${orderedProdNames}" />
 					                </form:select>
+							    </div>
+						  </div>
+						  <div class="form-group row">
+							    <label for="lotID" class="col-sm-3 col-form-label"># de Lote</label>
+							    <div class="col-sm-7">
+							      <form:select name="lotID" class="form-control" path="lotID">
+					                   <%-- <form:option value = "NONE" label = "Select"/> --%>
+					                   <form:options items = "${lotIDs}" />
+					               </form:select>
+							      <%-- <form:input name="lotID" id="lotID" type="number" path="lotID" class="form-control" autofocus="true"></form:input>
+			                      <form:errors path="lotID"></form:errors> --%>
+							    </div>
+						  </div>
+						  <div class="form-group row">
+							    <label for="shelfID" class="col-sm-3 col-form-label"># de Estante</label>
+							    <div class="col-sm-7">
+							      <form:input name="shelfID" id="shelfID" type="number" path="shelfID" class="form-control" autofocus="true"></form:input>
+			                      <form:errors path="shelfID"></form:errors>
 							    </div>
 						  </div>	 					  
 						  <div class="form-group row">
@@ -222,6 +226,9 @@
 				<c:if test="${!empty shippedQtyError}">
 					<p class="text-warning">Error: ${shippedQtyError}</p>
 				</c:if>
+				<c:if test="${!empty qtyOnShelfExceeded}">
+					<p class="text-warning">Error: ${qtyOnShelfExceeded}</p>
+				</c:if>				
 				<c:if test="${!empty shipFromAnotherLot}">
 					<div class="card">
 					  <div class="card-body">
@@ -446,7 +453,7 @@
 							<th scope="row">${order.orderID}</th>
 							<td>${order.created_At}</td>
 							<c:forEach items="${order.products}" var="product">
-								<td>${product.unshippedProductqty}</td>
+								<td>${product.orderedProductQty}</td>
 							</c:forEach>
 							<sec:authorize access="hasAuthority('Administrador')">
 							<td>

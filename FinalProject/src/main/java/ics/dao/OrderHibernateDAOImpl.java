@@ -114,6 +114,25 @@ public class OrderHibernateDAOImpl implements OrderDAO {
 			return null;
 		}
 	}
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public int qtyInInventoryByShelf(String productName, Long shelfID) {
+		List<ReceivedRpOrder> orders = new ArrayList<ReceivedRpOrder>();
+		orders = sessionFactory.getCurrentSession()
+			.createQuery("from ReceivedRpOrder where receivedRpProductName=? and shelfID=?")
+			.setParameter(0, productName)
+			.setParameter(1, shelfID)
+			.list();
+		int qtyInInventoryByShelf = 0;
+		if (orders.size() > 0) {			
+			for(ReceivedRpOrder recRpOder:orders) {
+				qtyInInventoryByShelf += recRpOder.getQuantityReceived();
+			}
+			return qtyInInventoryByShelf;
+		} else {
+			return qtyInInventoryByShelf;
+		}
+	}
 	@Transactional
 	public void delete(Long orderID) {
 		Order orderToDelete = new Order();
