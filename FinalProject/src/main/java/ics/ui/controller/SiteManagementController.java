@@ -5,9 +5,12 @@ import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.ui.ModelMap;
@@ -45,7 +48,8 @@ public class SiteManagementController {
 									@ModelAttribute("updateRoleSucceeded")String updateRoleSucceeded,
 									@ModelAttribute("userInfoToBeUpdated")User userInfoToBeUpdated,
 									@ModelAttribute("passwordError")String passwordError,
-									@ModelAttribute("userForm")User user
+									@ModelAttribute("userForm")User user,
+									@ModelAttribute("user_Role")String user_Role
 									/*@ModelAttribute("count")String count,
 									@ModelAttribute("offset")String offset*/) {		
 		model.addAttribute("user", new User());
@@ -64,6 +68,23 @@ public class SiteManagementController {
 		model.addAttribute("updateRoleSucceeded", updateRoleSucceeded);
 		model.addAttribute("userInfoToBeUpdated", userInfoToBeUpdated);
 		model.addAttribute("passwordError", passwordError);
+		
+		if(null != viewUserByRole) {
+			UserDetails userDetails =
+					 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+			User loggedInUser = userService.findUserByName(userDetails.getUsername());
+			if(loggedInUser.getRoleName().equals("Vendedor")) {
+				System.out.println("sending " + loggedInUser.getRoleName());
+				model.addAttribute("user_Vendor", loggedInUser);
+			}else if(loggedInUser.getRoleName().equals("Distribuidor")) {
+				System.out.println("sending " + loggedInUser.getRoleName());
+				model.addAttribute("user_Distributor", loggedInUser);
+			}else if(loggedInUser.getRoleName().equals("Cliente")) {
+				System.out.println("sending " + loggedInUser.getRoleName());
+				model.addAttribute("user_Client", loggedInUser);
+			}
+		}
+		
 //		model.addAttribute("count", count);
 //		model.addAttribute("offset", offset);
 		
@@ -92,7 +113,7 @@ public class SiteManagementController {
     }
 	
 	@RequestMapping(value="allUsers",method=RequestMethod.GET)
-	public String listAllUsers(RedirectAttributes attr, Integer offset, Integer maxResults) {
+	public String listAllUsers(RedirectAttributes attr, Integer offset, Integer maxResults, Model model) {
 		List<User> allUsers = userService.getAllUsers();
 		attr.addFlashAttribute("allUsers", allUsers);
 //		attr.addFlashAttribute("allUsers", userService.list(offset, maxResults));
@@ -157,7 +178,7 @@ public class SiteManagementController {
 	
 	@RequestMapping(value="updateUserInfo",method=RequestMethod.POST)
 	public String updateInfo(@Valid@ModelAttribute("userInfoToBeUpdated")User user, BindingResult bindingResult, Model model,
-							RedirectAttributes attr) {		
+							RedirectAttributes attr, HttpServletRequest request) {		
 		if(bindingResult.hasErrors()) {
 			System.out.println("data binding unsuccessful");
 			model.addAttribute("org.springframework.validation.BindingResult.user",bindingResult);
@@ -168,8 +189,25 @@ public class SiteManagementController {
 			model.addAttribute("userInfoToBeUpdated",user);
 			model.addAttribute("passwordError", "Please enter the same password!");
 			return "siteManagement";
-			}
+		}
+		
+		String roleName = request.getParameter("roleList");
 		User oldUser = userService.findUser(user.getUserId());
+		Role oldRole = roleService.findRoleByUserId(user.getUserId());
+		
+		if(roleName != null && !roleName.equals("Choose...")) {
+			String vendorName = (String) request.getParameter("_vendorName");
+			if(!vendorName.isEmpty() && !vendorName.equals("Choose...") && roleName.equals("Cliente")) {
+				System.out.println("vendorName is: " + vendorName);
+				User vendor = userService.getUserByName(vendorName);
+				oldUser.setVendor(vendor);
+				vendor.getCustomer().add(user);
+			}			
+			oldRole.setRoleName(roleName);
+			oldUser.setRoleName(roleName);
+			oldRole.setUser(oldUser);		
+		}
+		roleService.updateRole(oldRole);
 		updateUser(oldUser, user);
 		userService.editUser(oldUser);
 		attr.addFlashAttribute("userUpdateSucceeded", "Usted ha actualizado exitosamente usuario " + oldUser.getUsername() + "!");

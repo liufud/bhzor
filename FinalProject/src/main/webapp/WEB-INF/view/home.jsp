@@ -52,10 +52,10 @@
 							  <li class="nav-item">
 							    <a class="nav-link" href="inventory?orderStatus=openOrder">Inventario</a>
 							  </li>
+							  </sec:authorize>
 							  <li class="nav-item">
 							    <a class="nav-link" href="siteManagement">Administración de la Pagina</a>
 							  </li>
-							  </sec:authorize>
 						</ul>
 						Conectado como: <sec:authentication property="name"/> <sec:authentication property="authorities"/>
 					<br/>

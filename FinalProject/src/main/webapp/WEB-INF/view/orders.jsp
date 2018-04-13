@@ -89,6 +89,7 @@
 							  <li class="nav-item">
 							    <a class="nav-link" href="inventory?orderStatus=openOrder">Inventario</a>
 							  </li>
+							  </sec:authorize>							  
 							  <li class="nav-item">
 							    <a class="nav-link" href="siteManagement">Administración de la Pagina</a>
 							    <!-- <div class="dropdown show">
@@ -102,7 +103,6 @@
 								  </div>
 							     </div> -->
 							  </li>
-							  </sec:authorize>
 						</ul>
 						Conectado como: <sec:authentication property="name"/> <sec:authentication property="authorities"/>
 					<br/>
@@ -657,6 +657,7 @@
                                     
                                 </div>
                             </div>
+                            <sec:authorize access="hasAuthority('Administrador') or hasAuthority('Vendedor')">
                             <div class="panel panel-default">
                                 <div class="panel-heading">
                                     <h4 class="panel-title">
@@ -671,6 +672,7 @@
                                     </h4>
                                 </div>
                             </div>
+                            </sec:authorize>
                             <div class="panel panel-default">
                                 <!-- <div class="panel-heading">
                                      <h4 class="panel-title">
@@ -685,8 +687,23 @@
 												<p class="text-warning">Error: ${unselectedBoxError}</p>
 											</c:if>
                                       </div>
-                                      </div> 
-                                      <%-- <sec:authorize access="hasAuthority('Manager')"> --%>
+                                      </div>
+                                     
+                                      <sec:authorize access="hasAuthority('Vendedor')">                                      
+                                      <div class="input-group mb-3">
+									  		<div class="input-group-prepend">							  	
+											  	<label class="input-group-text" for="customers">Selecciona un Cliente para este Vendedor</label>
+											  	<select class="custom-select" id="customers" name="customerName">
+											  		<option selected>Choose...</option>
+											  		<c:forEach var="customer" items="${customerNames}">
+											  			<option value="${customer.firstName} ${customer.lastName}">${customer.firstName} ${customer.lastName}</option>
+											  		</c:forEach>
+											  	</select>												  	
+									  		</div>
+									  </div>                                       
+									  </sec:authorize>
+									  
+                                      <sec:authorize access="hasAuthority('Administrador')">
                                       <div class="input-group mb-3">  					  
 									  <div class="input-group-prepend">
 									    <label class="input-group-text" for="saleType_select">Selecciona el tipo de Venta</label>
@@ -754,7 +771,7 @@
 									  		</div>
 									  	</div>
 									  </div>
-									<%--   </sec:authorize>	 --%>								 
+									</sec:authorize>								 
                                     <%-- <div class="card" style="width: 25rem;">
 									  <div class="card-body">
 									    <h5 class="card-title">${user.firstName} ${user.lastName}</h5>

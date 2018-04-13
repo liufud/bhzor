@@ -19,8 +19,10 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 public class ShippedOrder {
@@ -37,6 +39,8 @@ public class ShippedOrder {
 	@Max(value=1000)
 	private Long shelfID;
 	@CreationTimestamp
+	@Type(type="date")
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date dateShipped;
 	@NotNull(message="Cantidad Enviada no puede estar vacio!")
 	@Min(value=0)

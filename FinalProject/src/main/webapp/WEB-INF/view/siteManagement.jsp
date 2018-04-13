@@ -78,6 +78,7 @@ display:none;
 								  </div>
 							    </div> -->
 							  </li>
+							  <sec:authorize access="hasAuthority('Administrador')">
 							  <li class="nav-item">
 							    <a class="nav-link" href="inventory?orderStatus=openOrder">Inventario</a>
 							    <!-- <div class="dropdown show">
@@ -91,6 +92,7 @@ display:none;
 								  </div>
 							     </div> -->	
 							  </li>
+							  </sec:authorize>
 							  <li class="nav-item">
 							    <!-- <a class="nav-link" href="siteManagement">Site Management</a> -->
 							    <div class="dropdown show">
@@ -117,9 +119,15 @@ display:none;
 				<div class="col-2">
 				<br/>
 					<div class="btn-group-vertical">
+						<sec:authorize access="hasAuthority('Administrador')">
 						<a class="btn btn-sm btn-secondary" href="allUsers" role="button">Todos los Usuarios</a>
+						</sec:authorize>
+						<sec:authorize access="hasAuthority('Administrador') or hasAuthority('Vendedor') or hasAuthority('Distribuidor')">
 						<a class="btn btn-sm btn-secondary" href="addUser" role="button">Agregar Usuario</a>
+						</sec:authorize>
+						<sec:authorize access="hasAuthority('Administrador')">
 						<a class="btn btn-sm btn-secondary" href="report/?type=xls" role="button">Exportar Datos</a>
+						</sec:authorize>
 					</div>
 				</div>
 				<div class="col-10 small">
@@ -184,9 +192,11 @@ display:none;
 		            <select class="roleList_select" id="role" name="roleList">
 		            	<option selected>Choose...</option>
 						<option onclick="check()" value="Cliente">Cliente</option>
+						<sec:authorize access="hasAuthority('Administrador')">
 						<option onclick="check2()" value="Vendedor">Vendedor</option>
 						<option onclick="check2()" value="Distribuidor">Distribuidor</option>
 						<option onclick="check2()" value="Administrador">Administrador</option>
+						</sec:authorize>
 				  	</select>	
 				  	
 			        
@@ -318,7 +328,29 @@ display:none;
 					        </form:select>
 			                <form:errors path="roleName"></form:errors>
 			            </div>
-			        </spring:bind>  --%>       
+			        </spring:bind>  --%>
+			        <sec:authorize access="hasAuthority('Administrador') or hasAuthority('Vendedor') or hasAuthority('Distribuidor')">  
+			        <label>Selecciona el tipo de usuario&nbsp</label>
+		            <select class="roleList_select" id="role" name="roleList">
+		            	<option selected>Choose...</option>
+						<option onclick="check()" value="Cliente">Cliente</option>
+						<option onclick="check2()" value="Vendedor">Vendedor</option>
+						<option onclick="check2()" value="Distribuidor">Distribuidor</option>
+						<option onclick="check2()" value="Administrador">Administrador</option>
+				  	</select>	
+				  	
+			        
+			        <div id="cust">
+			        <label>Selecciona a un Vendedor para este cliente&nbsp
+			         <select id="vendorName" name="_vendorName">
+				  		<option selected>Choose...</option>
+				  		<c:forEach var="vendor" items="${allVendorsName}">
+				  			<option value="${vendor}">${vendor}</option>
+				  		</c:forEach>
+				  	</select>
+			        <br/>*Si el cliente no tiene un vendedor asociado a el deje en blanco</label>		           	
+				  	</div>    
+			        </sec:authorize>
 			        
 			        <spring:bind path="email">
 			            <div class="form-group">
@@ -547,6 +579,120 @@ display:none;
 							</td>							
 						</tr>
 					</c:forEach>
+					</tbody>
+				</table>
+				<tag:paginate max="3" offset="${offset}" count="${count}"
+   				uri="siteManagement" next="&raquo;" previous="&laquo;" />
+				</c:if>
+				
+				<!-- Vendor Only -->
+				<c:if test="${not empty user_Vendor}">	
+					<table class="table">								
+					<thead>
+						<tr>
+							<th scope="col">ID Usuario</th>
+							<th scope="col">Nombre</th>
+							<th scope="col">Email</th>
+							<th scope="col">Telefono</th>
+							<th scope="col">Direccion</th>
+							<!-- <th scope="col">Fecha Creada</th> -->
+							<th scope="col">Tipo de Usuario</th>
+							<th scope="col">Vendedor Asociado</th>
+							<th scope="col">Accion</th>
+						</tr>
+					</thead>									
+					<tbody>
+						<tr>
+							<th scope="row">${user_Vendor.userId}</th>
+							<td>${user_Vendor.firstName} ${user_Vendor.lastName}</td>
+							<td>${user_Vendor.email}</td>
+							<td>${user_Vendor.phoneNumber}</td>
+							<td>${user_Vendor.address}, ${user_Vendor.city}, ${user_Vendor.state} ${user_Vendor.zip}</td>
+							<%-- <td>${user.created_at}</td> --%>
+							<td>${user_Vendor.roleName}</td>
+							<td>${user_Vendor.vendor.firstName} ${user_Vendor.vendor.lastName}</td>
+							<td>
+								<sec:authorize access="hasAuthority('Vendedor')">
+								<a href="user/${user_Vendor.userId}/updateInfo">Update Info</a><br/>							
+								</sec:authorize>						
+							</td>							
+						</tr>
+					</tbody>
+				</table>
+				<tag:paginate max="3" offset="${offset}" count="${count}"
+   				uri="siteManagement" next="&raquo;" previous="&laquo;" />
+				</c:if>
+				
+				<!-- Distributor Only -->
+				<c:if test="${not empty user_Distributor}">	
+					<table class="table">								
+					<thead>
+						<tr>
+							<th scope="col">ID Usuario</th>
+							<th scope="col">Nombre</th>
+							<th scope="col">Email</th>
+							<th scope="col">Telefono</th>
+							<th scope="col">Direccion</th>
+							<!-- <th scope="col">Fecha Creada</th> -->
+							<th scope="col">Tipo de Usuario</th>
+							<th scope="col">Vendedor Asociado</th>
+							<th scope="col">Accion</th>
+						</tr>
+					</thead>									
+					<tbody>
+						<tr>
+							<th scope="row">${user_Distributor.userId}</th>
+							<td>${user_Distributor.firstName} ${user_Distributor.lastName}</td>
+							<td>${user_Distributor.email}</td>
+							<td>${user_Distributor.phoneNumber}</td>
+							<td>${user_Distributor.address}, ${user_Distributor.city}, ${user_Distributor.state} ${user_Distributor.zip}</td>
+							<%-- <td>${user.created_at}</td> --%>
+							<td>${user_Distributor.roleName}</td>
+							<td>${user_Distributor.vendor.firstName} ${user_Distributor.vendor.lastName}</td>
+							<td>
+								<sec:authorize access="hasAuthority('Distribuidor')">
+								<a href="user/${user_Distributor.userId}/updateInfo">Update Info</a><br/>							
+								</sec:authorize>						
+							</td>							
+						</tr>
+					</tbody>
+				</table>
+				<tag:paginate max="3" offset="${offset}" count="${count}"
+   				uri="siteManagement" next="&raquo;" previous="&laquo;" />
+				</c:if>
+				
+				<!-- Client Only -->
+				<c:if test="${not empty user_Client}">	
+					<table class="table">								
+					<thead>
+						<tr>
+							<th scope="col">ID Usuario</th>
+							<th scope="col">Nombre</th>
+							<th scope="col">Email</th>
+							<th scope="col">Telefono</th>
+							<th scope="col">Direccion</th>
+							<!-- <th scope="col">Fecha Creada</th> -->
+							<th scope="col">Tipo de Usuario</th>
+							<th scope="col">Vendedor Asociado</th>
+							<th scope="col">Accion</th>
+						</tr>
+					</thead>									
+					<tbody>
+						<tr>
+							<th scope="row">${user_Client.userId}</th>
+							<td>${user_Client.firstName} ${user_Client.lastName}</td>
+							<td>${user_Client.email}</td>
+							<td>${user_Client.phoneNumber}</td>
+							<td>${user_Client.address}, ${user_Client.city}, ${user_Client.state} ${user_Client.zip}</td>
+							<%-- <td>${user.created_at}</td> --%>
+							<td>${user_Client.roleName}</td>
+							<td>${user_Client.vendor.firstName} ${user_Client.vendor.lastName}</td>
+							<td>
+								<sec:authorize access="hasAuthority('Cliente')">
+								<a href="user/${user_Client.userId}/updateInfo">Update Info</a><br/>							
+								</sec:authorize>						
+							</td>							
+						</tr>
 					</tbody>
 				</table>
 				<tag:paginate max="3" offset="${offset}" count="${count}"

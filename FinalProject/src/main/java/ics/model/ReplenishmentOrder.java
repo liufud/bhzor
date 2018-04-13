@@ -16,7 +16,9 @@ import javax.persistence.ManyToOne;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 public class ReplenishmentOrder {
@@ -33,6 +35,8 @@ public class ReplenishmentOrder {
 	@ManyToOne(fetch=FetchType.EAGER)
 	private User createByUser;
 	@CreationTimestamp
+	@Type(type="date")
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date created_At;
 	private String orderStatus;
 	private Double totalPrice;

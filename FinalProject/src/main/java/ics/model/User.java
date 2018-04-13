@@ -18,9 +18,11 @@ import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.Email;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name="users")
@@ -74,6 +76,8 @@ public class User {
 	@OneToOne
 	private Cart cart;
 	@CreationTimestamp
+	@Type(type="date")
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date created_at;
 	private String roleName;
 	@ManyToOne

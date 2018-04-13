@@ -53,21 +53,21 @@ public class ProductController {
 //		return "redirect:/vendor/" + vendorID + "/products";
 //	}
 	
-	@RequestMapping(value="vendor/{vendorID}/products",method=RequestMethod.GET)
-	public String listProduct(@PathVariable Long vendorID, Model model) {
-		Vendor vendor = vendorService.get(vendorID);
-		Product newproduct = new Product();
-		newproduct.setVendor(vendor);
-		System.out.println("listProduct is called");
-		if(!model.containsAttribute("product")) {
-			System.out.println("model did not exist on the page, creating a new one...");
-			model.addAttribute("product",newproduct);
-		}		
-		model.addAttribute("vendor",vendor);
-		model.addAttribute("productList",vendor.getProducts());
-
-		return "products";
-	}
+//	@RequestMapping(value="vendor/{vendorID}/products",method=RequestMethod.GET)
+//	public String listProduct(@PathVariable Long vendorID, Model model) {
+//		Vendor vendor = vendorService.get(vendorID);
+//		Product newproduct = new Product();
+//		newproduct.setVendor(vendor);
+//		System.out.println("listProduct is called");
+//		if(!model.containsAttribute("product")) {
+//			System.out.println("model did not exist on the page, creating a new one...");
+//			model.addAttribute("product",newproduct);
+//		}		
+//		model.addAttribute("vendor",vendor);
+//		model.addAttribute("productList",vendor.getProducts());
+//
+//		return "products";
+//	}
 	
 	@RequestMapping(value="products",method=RequestMethod.GET)
 	public ModelAndView listProduct() {

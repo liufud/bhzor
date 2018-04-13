@@ -20,8 +20,10 @@ import javax.validation.constraints.NotNull;
 
 import org.hibernate.annotations.CreationTimestamp;
 import org.hibernate.annotations.GenericGenerator;
+import org.hibernate.annotations.Type;
 import org.hibernate.annotations.UpdateTimestamp;
 import org.hibernate.validator.constraints.NotEmpty;
+import org.springframework.format.annotation.DateTimeFormat;
 
 @Entity
 @Table(name="ORDERTABLE")
@@ -58,6 +60,8 @@ public class Order {
 	@OneToOne(mappedBy = "order", cascade=CascadeType.ALL, orphanRemoval=true)
 	private BillingInfo billingInfo;
 	@CreationTimestamp
+	@Type(type="date")
+	@DateTimeFormat(pattern = "dd/MM/yyyy")
 	private Date created_At;
 	private String paid_At;
 	private String shipped_At;

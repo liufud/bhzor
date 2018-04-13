@@ -254,6 +254,13 @@ public class OrderController {
 		}		
 		if(!showCheckout.isEmpty()) {			
 			User userWhoPlaceOrder = userService.findUserByName(user);
+			List<User> vendorCustomers = userWhoPlaceOrder.getCustomer();
+//			System.out.println("customer is " + vendorCustomers.get(0).getFirstName() + " " + vendorCustomers.get(0).getLastName());
+//			List<String> customerNames = new ArrayList<String>();
+//			for(User customer:vendorCustomers) {
+//				customerNames.add(customer.getFirstName() + " " + customer.getLastName());
+//			}
+			model.addAttribute("customerNames", vendorCustomers);
 			model.addAttribute("user", userWhoPlaceOrder);				
 			if(!thisAddress.isEmpty()) {
 				System.out.println("not using new address");
@@ -971,75 +978,101 @@ public class OrderController {
 			 order.setShipmentStatus("Pending Payment");
 		 }
 		 
-		
-		 String orderType = request.getParameter("saleType");
+		 UserDetails userDetails =
+				 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+		 User user = userService.findUserByName(userDetails.getUsername());
 		 
-		 if(!validateSelectBox(orderType)) {
+		 String saleType = request.getParameter("saleType");
+		 
+		 if(!validateSelectBox(saleType) && user.getRoleName().equals("Administrador")) {
 			 System.out.println("Check select type of sale");
 			 model.addAttribute("unselectedBoxError", "Falto en escojer una opcion. Porfavor selecciona una opcion!");
 			 model.addAttribute("showCheckout", "showCheckout");
 			 return "redirect:/orders";
 		 }
 		 
-		 UserDetails userDetails =
-				 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		 User user = userService.findUserByName(userDetails.getUsername());
+		 if(null != saleType) {
+			//Vendor Sale
+			 String vendorName = request.getParameter("_vandorSale");
+			 String customerName = request.getParameter("_customers");		 
+			 if(saleType.equals("vendorSale") && validateSelectBox(vendorName) && validateSelectBox(customerName)) {
+				 User customer = userService.getUserByName(customerName);
+				 User vendor = userService.getUserByName(vendorName);
+				 order.setCreateByUser(vendor);
+				 order.setCreateForUser(customer);
+				 order.setOrderType("Venta por Vendedor");
+				 order.setBillingInfo(setBillingInfo(customer,order));
+				 model.addAttribute("orderConfirmation", customer.getUsername());
+				 vendor.getOrderCreator().add(order);
+				 customer.getOrderReceiver().add(order);
+			 }else if(saleType.equals("vendorSale") && (!validateSelectBox(vendorName) || !validateSelectBox(customerName))) {
+				 System.out.println("check vendor sale");
+				 model.addAttribute("unselectedBoxError", "There is an unselected box. Please select!");
+				 model.addAttribute("showCheckout", "showCheckout");
+				 return "redirect:/orders";
+			 }
+			 
+			 //Distributor Sale
+			 String distributorName = request.getParameter("_distributorSale");		 
+			 if(saleType.equals("distributorSale") && validateSelectBox(distributorName)) {
+				 User distributor = userService.getUserByName(distributorName);
+				 order.setCreateByUser(user);
+				 order.setCreateForUser(distributor);
+				 order.setOrderType("Venta por Distribuidor");
+				 order.setBillingInfo(setBillingInfo(distributor,order));
+				 model.addAttribute("orderConfirmation", distributor.getUsername());
+				 user.getOrderCreator().add(order);
+				 distributor.getOrderReceiver().add(order);
+			 }else if(saleType.equals("distributorSale") && !validateSelectBox(distributorName)) {
+				 System.out.println("check distributor sale");
+				 model.addAttribute("unselectedBoxError", "There is an unselected box. Please select!");
+				 model.addAttribute("showCheckout", "showCheckout");
+				 return "redirect:/orders";
+			 }
+			 
+			 //Direct Sale
+			 String directCustomerName = request.getParameter("_directSale");		
+			 if(saleType.equals("directSale") && validateSelectBox(directCustomerName)) {
+				 User directCustomer = userService.getUserByName(directCustomerName);
+				 order.setCreateByUser(user);
+				 order.setCreateForUser(directCustomer);
+				 order.setOrderType("Venta directa a Cliente");
+				 order.setBillingInfo(setBillingInfo(directCustomer,order));
+				 model.addAttribute("orderConfirmation", directCustomer.getUsername());
+				 user.getOrderCreator().add(order);
+				 directCustomer.getOrderCreator().add(order);
+			 }else if(saleType.equals("directSale") && !validateSelectBox(directCustomerName)) {
+				 System.out.println("check direck sale");
+				 model.addAttribute("unselectedBoxError", "There is an unselected box. Please select!");
+				 model.addAttribute("showCheckout", "showCheckout");
+				 return "redirect:/orders";
+			 }
+		 }
 		 
-		 //Vendor Sale
-		 String vendorName = request.getParameter("_vandorSale");
-		 String customerName = request.getParameter("_customers");		 
-		 if(orderType.equals("vendorSale") && validateSelectBox(vendorName) && validateSelectBox(customerName)) {
+		 //Vendor self-serving sale
+		 if(user.getRoleName().equals("Vendedor")) {
+			 String customerName = request.getParameter("customerName");
 			 User customer = userService.getUserByName(customerName);
-			 User vendor = userService.getUserByName(vendorName);
-			 order.setCreateByUser(vendor);
+			 order.setCreateByUser(user);
 			 order.setCreateForUser(customer);
-			 order.setOrderType("Vendor mediated sale");
+			 order.setOrderType("Venta por Vendedor");
 			 order.setBillingInfo(setBillingInfo(customer,order));
 			 model.addAttribute("orderConfirmation", customer.getUsername());
-			 vendor.getOrderCreator().add(order);
+			 user.getOrderCreator().add(order);
 			 customer.getOrderReceiver().add(order);
-		 }else if(orderType.equals("vendorSale") && (!validateSelectBox(vendorName) || !validateSelectBox(customerName))) {
-			 System.out.println("check vendor sale");
-			 model.addAttribute("unselectedBoxError", "There is an unselected box. Please select!");
-			 model.addAttribute("showCheckout", "showCheckout");
-			 return "redirect:/orders";
 		 }
 		 
-		 //Distributor Sale
-		 String distributorName = request.getParameter("_distributorSale");		 
-		 if(orderType.equals("distributorSale") && validateSelectBox(distributorName)) {
-			 User distributor = userService.getUserByName(distributorName);
+		 //Distributor self-serving sale
+		 if(user.getRoleName().equals("Distribuidor")) {
 			 order.setCreateByUser(user);
-			 order.setCreateForUser(distributor);
 			 order.setOrderType("Distributor sale");
-			 order.setBillingInfo(setBillingInfo(distributor,order));
-			 model.addAttribute("orderConfirmation", distributor.getUsername());
+			 order.setBillingInfo(setBillingInfo(user,order));
+			 model.addAttribute("orderConfirmation", user.getUsername());
 			 user.getOrderCreator().add(order);
-			 distributor.getOrderReceiver().add(order);
-		 }else if(orderType.equals("distributorSale") && !validateSelectBox(distributorName)) {
-			 System.out.println("check distributor sale");
-			 model.addAttribute("unselectedBoxError", "There is an unselected box. Please select!");
-			 model.addAttribute("showCheckout", "showCheckout");
-			 return "redirect:/orders";
+			 user.getOrderReceiver().add(order);
 		 }
 		 
-		 //Direct Sale
-		 String directCustomerName = request.getParameter("_directSale");		
-		 if(orderType.equals("directSale") && validateSelectBox(directCustomerName)) {
-			 User directCustomer = userService.getUserByName(directCustomerName);
-			 order.setCreateByUser(user);
-			 order.setCreateForUser(directCustomer);
-			 order.setOrderType("Direct sale");
-			 order.setBillingInfo(setBillingInfo(directCustomer,order));
-			 model.addAttribute("orderConfirmation", directCustomer.getUsername());
-			 user.getOrderCreator().add(order);
-			 directCustomer.getOrderCreator().add(order);
-		 }else if(orderType.equals("directSale") && !validateSelectBox(directCustomerName)) {
-			 System.out.println("check direck sale");
-			 model.addAttribute("unselectedBoxError", "There is an unselected box. Please select!");
-			 model.addAttribute("showCheckout", "showCheckout");
-			 return "redirect:/orders";
-		 }
+		 //
 
 		 
 		 
@@ -1156,7 +1189,7 @@ public class OrderController {
 	 
 	 private boolean validateSelectBox(String nameInput) {
 		 boolean check = true;
-		 if(nameInput.equals("Choose...")) {
+		 if(null != nameInput && nameInput.equals("Choose...")) {
 			 check = false;
 		 }
 		 return check;
