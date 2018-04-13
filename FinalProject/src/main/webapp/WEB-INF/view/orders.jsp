@@ -690,11 +690,11 @@
                                       <div class="input-group mb-3">  					  
 									  <div class="input-group-prepend">
 									    <label class="input-group-text" for="saleType_select">Selecciona el tipo de Venta</label>
-										  <select class="custom-select" id="saleType_select" name="saleType">
+										  <select class="custom-select saleType_selectbox" id="saleType_select" name="saleType">
 										    <option selected>Choose...</option>
-										    <option id="vendorSaleActive" onclick="myFunction1()" value="vendorSale">Venta por Vendedor</option>
-										    <option id="distributorSaleActive" onclick="myFunction2()" value="distributorSale">Venta por Distribuidor</option>
-										    <option id="directSaleActive" onclick="myFunction3()" value="directSale">Venta directa a Cliente</option>
+										    <option class="vendorSale" id="vendorSaleActive" onclick="myFunction1()" value="vendorSale">Venta por Vendedor</option>
+										    <option class="distributorSale" id="distributorSaleActive" onclick="myFunction2()" value="distributorSale">Venta por Distribuidor</option>
+										    <option class="directSale" id="directSaleActive" onclick="myFunction3()" value="directSale">Venta directa a Cliente</option>
 										  </select>									  
 									  </div>
 									  </div>
@@ -1132,8 +1132,7 @@
                                                                id="card-cvc" placeholder="Security Code">
                                                     </div>
                                                 </div> -->                                          
-                                        </fieldset>                                        
-                                        <br/>
+                                        </fieldset><br>
                                         <!-- <div style="text-align: left;"><br/>
                                             By submiting this order you are agreeing to our <a href="/legal/billing/">universal
                                                 billing agreement</a>, and <a href="/legal/terms/">terms of service</a>.
@@ -1242,24 +1241,49 @@
 	</div>
 </div>
 <script type="text/javascript">
+$("SELECT.saleType_selectbox").change(function(){
+	if($(this).val() == "vendorSale"){
+		document.getElementById("vendorSale").style.display = "block";
+		document.getElementById("distributorSale").style.display = "none";
+		document.getElementById("customerSale").style.display = "none";			
+	}
+	if($(this).val() == "distributorSale"){
+		document.getElementById("distributorSale").style.display = "block";
+		document.getElementById("vendorSale").style.display = "none";
+		document.getElementById("customerSale").style.display = "none";		
+	}
+	if($(this).val() == "directSale"){
+		document.getElementById("customerSale").style.display = "block";
+		document.getElementById("distributorSale").style.display = "none";
+		document.getElementById("vendorSale").style.display = "none";
+	}
+		
+})
 
-function myFunction1() {
-	document.getElementById("vendorSale").style.display = "block";
-	document.getElementById("distributorSale").style.display = "none";
-	document.getElementById("customerSale").style.display = "none";
-}
-
-function myFunction2() {
-	document.getElementById("distributorSale").style.display = "block";
-	document.getElementById("vendorSale").style.display = "none";
-	document.getElementById("customerSale").style.display = "none";
-}
-
-function myFunction3() {
-	document.getElementById("customerSale").style.display = "block";
-	document.getElementById("distributorSale").style.display = "none";
-	document.getElementById("vendorSale").style.display = "none";
-}
+/* $("SELECT.custom-select").change(
+		if($(this).val() == "vendorSale")){
+			function myFunction1() {
+				document.getElementById("vendorSale").style.display = "block";
+				document.getElementById("distributorSale").style.display = "none";
+				document.getElementById("customerSale").style.display = "none";
+			}			
+		}
+		if($(this).val() == "distributorSale")){
+			function myFunction2() {
+				document.getElementById("distributorSale").style.display = "block";
+				document.getElementById("vendorSale").style.display = "none";
+				document.getElementById("customerSale").style.display = "none";
+			}			
+		}
+		if($(this).val() == "directSale")){
+			function myFunction3() {
+				document.getElementById("customerSale").style.display = "block";
+				document.getElementById("distributorSale").style.display = "none";
+				document.getElementById("vendorSale").style.display = "none";
+			}
+		}
+	
+) */
  
 window.onload = function() {
 	  var c = document.getElementById('customCheck1');

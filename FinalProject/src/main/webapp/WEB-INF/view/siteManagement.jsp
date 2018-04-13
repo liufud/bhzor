@@ -181,7 +181,7 @@ display:none;
 			        
 			        
 			        <label>Selecciona el tipo de usuario&nbsp</label>
-		            <select id="role" name="roleList">
+		            <select class="roleList_select" id="role" name="roleList">
 		            	<option selected>Choose...</option>
 						<option onclick="check()" value="Cliente">Cliente</option>
 						<option onclick="check2()" value="Vendedor">Vendedor</option>
@@ -681,13 +681,20 @@ display:none;
 <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script> -->
 <script>
-function check() {
+$("SELECT.roleList_select").change(function(){
+	if($(this).val() == "Cliente"){
+		document.getElementById("cust").style.display="block";
+	}else{
+		document.getElementById("cust").style.display="none";
+	}
+})
+/* function check() {
 	document.getElementById("cust").style.display="block";
 }
 
 function check2() {
 		document.getElementById("cust").style.display="none";
-}
+} */
 
 </script>
 </body>
