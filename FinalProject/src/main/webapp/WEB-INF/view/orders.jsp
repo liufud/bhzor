@@ -165,8 +165,7 @@
 					</tbody>
 				</table>
 				</sec:authorize>		
-
-				<c:if test="${not empty viewUnshippedOrders}">
+				
 				<c:if test="${not empty shippedOrderForm}">
 				<br/>
 				<form:form name="shippedOrderForm" modelAttribute="shippedOrder" action="shippedOrder" method="post" class="form-control">
@@ -197,8 +196,12 @@
 						  <div class="form-group row">
 							    <label for="shelfID" class="col-sm-3 col-form-label"># de Estante</label>
 							    <div class="col-sm-7">
-							      <form:input name="shelfID" id="shelfID" type="number" path="shelfID" class="form-control" autofocus="true"></form:input>
-			                      <form:errors path="shelfID"></form:errors>
+							      <form:select name="shelfID" class="form-control" path="shelfID">
+					                   <%-- <form:option value = "NONE" label = "Select"/> --%>
+					                   <form:options items = "${shelfIDs}" />
+					               </form:select>
+							      <%-- <form:input name="shelfID" id="shelfID" type="number" path="shelfID" class="form-control" autofocus="true"></form:input>
+			                      <form:errors path="shelfID"></form:errors> --%>
 							    </div>
 						  </div>	 					  
 						  <div class="form-group row">
@@ -222,13 +225,7 @@
 					<div class="col"></div>
 				</div>
 				</form:form>
-				</c:if>				
-				<c:if test="${!empty shippedQtyError}">
-					<p class="text-warning">Error: ${shippedQtyError}</p>
 				</c:if>
-				<c:if test="${!empty qtyOnShelfExceeded}">
-					<p class="text-warning">Error: ${qtyOnShelfExceeded}</p>
-				</c:if>				
 				<c:if test="${!empty shipFromAnotherLot}">
 					<div class="card">
 					  <div class="card-body">
@@ -239,6 +236,15 @@
 					  </div>
 					</div>
 				</c:if>
+				
+				<c:if test="${not empty viewUnshippedOrders}">
+								
+				<c:if test="${!empty shippedQtyError}">
+					<p class="text-warning">Error: ${shippedQtyError}</p>
+				</c:if>
+				<c:if test="${!empty qtyOnShelfExceeded}">
+					<p class="text-warning">Error: ${qtyOnShelfExceeded}</p>
+				</c:if>				
 				
 				
 				<h4><b>Pedidos no Enviados</b></h4>

@@ -3,6 +3,7 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page isELIgnored="false"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
@@ -632,14 +633,16 @@
 		                                    <td class="highrow"></td>
 		                                    <td class="highrow"></td>
 		                                    <td class="highrow text-center"><strong>Total Parcial</strong></td>
-		                                    <td class="highrow text-right">$${cart.cartTotal/1.075}</td>
+		                                    <td class="highrow text-right">$<fmt:formatNumber 
+																		     value="${cart.cartTotal/1.16}" 
+																		     maxFractionDigits="3"/></td>
 		                                </tr>
 		                                <tr>
 		                                    <td class="emptyrow"></td>
 		                                    <td class="emptyrow"></td>
 		                                    <td class="emptyrow"></td>
 		                                    <td class="emptyrow text-center"><strong>Impuesto</strong></td>
-		                                    <td class="emptyrow text-right">7.5%</td>
+		                                    <td class="emptyrow text-right">16%</td>
 		                                </tr>
 		                                <tr>
 		                                    <td class="emptyrow"><i class="fa fa-barcode iconbig"></i></td>

@@ -111,22 +111,22 @@ public class OrderController {
 		return model;
 	}
 	
-	@RequestMapping(value="order/{orderID}/deleteOrder", method=RequestMethod.GET)
-	public String deleteOrder(@PathVariable Long orderID) {
-		System.out.println("deleteOrder is called");	
-		
-		Order order = orderService.getOrder(orderID);
-		Product product = order.getProduct();
-		Integer inventoryLevel = product.getInventoryLevel();
-		Integer orderQty = order.getQuantity();
-		product.setInventoryLevel(inventoryLevel + orderQty);
-
-		System.out.println("try to update product after cancelling order ==========");
-		productService.addOrUpdateProduct(product);
-		System.out.println("successfully updated product after cancelling order ========");
-		
-		return "redirect:/delete/" + orderID;
-	}
+//	@RequestMapping(value="order/{orderID}/deleteOrder", method=RequestMethod.GET)
+//	public String deleteOrder(@PathVariable Long orderID) {
+//		System.out.println("deleteOrder is called");	
+//		
+//		Order order = orderService.getOrder(orderID);
+//		Product product = order.getProduct();
+//		Integer inventoryLevel = product.getInventoryLevel();
+//		Integer orderQty = order.getQuantity();
+//		product.setInventoryLevel(inventoryLevel + orderQty);
+//
+//		System.out.println("try to update product after cancelling order ==========");
+//		productService.addOrUpdateProduct(product);
+//		System.out.println("successfully updated product after cancelling order ========");
+//		
+//		return "redirect:/delete/" + orderID;
+//	}
 	
 	@RequestMapping(value="delete/{orderID}", method=RequestMethod.GET)
 	public String delete(@PathVariable Long orderID) {
@@ -138,53 +138,53 @@ public class OrderController {
 		return "redirect:/invoice";
 	}
 	
-	@RequestMapping(value="order/{orderID}/editOrder",method=RequestMethod.GET)
-	public String editOrder(@PathVariable Long orderID, RedirectAttributes attr) {
-		System.out.println("updateOrder is called");
-		Order order = orderService.getOrder(orderID);
-		System.out.println(order.getQuantity());
-		attr.addFlashAttribute("orderUpdate",order);
-		attr.addFlashAttribute("update", "Update the Quantity");
-		return "redirect:/invoice";
-	}
+//	@RequestMapping(value="order/{orderID}/editOrder",method=RequestMethod.GET)
+//	public String editOrder(@PathVariable Long orderID, RedirectAttributes attr) {
+//		System.out.println("updateOrder is called");
+//		Order order = orderService.getOrder(orderID);
+//		System.out.println(order.getQuantity());
+//		attr.addFlashAttribute("orderUpdate",order);
+//		attr.addFlashAttribute("update", "Update the Quantity");
+//		return "redirect:/invoice";
+//	}
 	
 	
-	@RequestMapping(value="order",method=RequestMethod.POST)
-	public String editOrder(@Valid Order order, BindingResult bindingResult, RedirectAttributes attr, HttpSession session) {
-		System.out.println("editOrder is called");
-		if(bindingResult.hasErrors()) {
-			System.out.println("data binding unsuccessful");
-			attr.addFlashAttribute("org.springframework.validation.BindingResult.order",bindingResult);
-			attr.addFlashAttribute("update", "Update the Quantity");
-			attr.addFlashAttribute("error", "Indicate the quantity you want to change to");
-			attr.addFlashAttribute("orderUpdate",order);
-			return "redirect:/invoice";
-		}
-		System.out.println(order);
-		Integer oldQty = orderService.getOrder(order.getOrderID()).getQuantity();
-		Integer newQty = order.getQuantity();
-		System.out.println("getting product..........................");
-//		if (session != null) {
-//		    session.invalidate();
+//	@RequestMapping(value="order",method=RequestMethod.POST)
+//	public String editOrder(@Valid Order order, BindingResult bindingResult, RedirectAttributes attr, HttpSession session) {
+//		System.out.println("editOrder is called");
+//		if(bindingResult.hasErrors()) {
+//			System.out.println("data binding unsuccessful");
+//			attr.addFlashAttribute("org.springframework.validation.BindingResult.order",bindingResult);
+//			attr.addFlashAttribute("update", "Update the Quantity");
+//			attr.addFlashAttribute("error", "Indicate the quantity you want to change to");
+//			attr.addFlashAttribute("orderUpdate",order);
+//			return "redirect:/invoice";
 //		}
-		Product product = productService.getProductByName(orderService.getOrder(order.getOrderID()).getShippedProductName());
-		System.out.println("product gotten............................");
-		Integer newInventoryLvl = product.getInventoryLevel() - (newQty - oldQty);
-		product.setInventoryLevel(newInventoryLvl);
-		Integer totalPrice = order.getUnitPrice() * order.getQuantity();
-		order.setTotalPrice(totalPrice);
-		System.out.println("updating order................................");
-		
-		Order originalOrder = orderService.getOrder(order.getOrderID());
-		originalOrder.setQuantity(newQty);
-		originalOrder.setTotalPrice(totalPrice);
-		product.getOrderCreator().add(originalOrder);
-		originalOrder.setProduct(product);
-		productService.addOrUpdateProduct(product);
-		//orderService.createOrder(originalOrder);
-		System.out.println("order updated...............................");
-		return "redirect:/invoice";
-	}
+//		System.out.println(order);
+//		Integer oldQty = orderService.getOrder(order.getOrderID()).getQuantity();
+//		Integer newQty = order.getQuantity();
+//		System.out.println("getting product..........................");
+////		if (session != null) {
+////		    session.invalidate();
+////		}
+//		Product product = productService.getProductByName(orderService.getOrder(order.getOrderID()).getShippedProductName());
+//		System.out.println("product gotten............................");
+//		Integer newInventoryLvl = product.getInventoryLevel() - (newQty - oldQty);
+//		product.setInventoryLevel(newInventoryLvl);
+//		Integer totalPrice = order.getUnitPrice() * order.getQuantity();
+//		order.setTotalPrice(totalPrice);
+//		System.out.println("updating order................................");
+//		
+//		Order originalOrder = orderService.getOrder(order.getOrderID());
+//		originalOrder.setQuantity(newQty);
+//		originalOrder.setTotalPrice(totalPrice);
+//		product.getOrderCreator().add(originalOrder);
+//		originalOrder.setProduct(product);
+//		productService.addOrUpdateProduct(product);
+//		//orderService.createOrder(originalOrder);
+//		System.out.println("order updated...............................");
+//		return "redirect:/invoice";
+//	}
 	@RequestMapping(value="orders",method=RequestMethod.GET)
 	public String showOrder(Model model, HttpSession session, HttpServletRequest request,
 							@ModelAttribute("showList")String showList,
@@ -205,8 +205,7 @@ public class OrderController {
 							@ModelAttribute("orderPaid")String orderPaid,
 							@ModelAttribute("unselectedBoxError")String unselectedBoxError,
 							@ModelAttribute("markAsPaid")String markAsPaid,
-							@ModelAttribute("qtyOnShelfExceeded")String qtyOnShelfExceeded,
-							@ModelAttribute("lotIDs")ArrayList<String> lotIDs) {
+							@ModelAttribute("qtyOnShelfExceeded")String qtyOnShelfExceeded) {
 		model.addAttribute("showList", showList);
 		model.addAttribute("addToCartSucceeded", addToCartSucceeded);
 		if(!addToCartSucceeded.isEmpty()) {
@@ -227,7 +226,11 @@ public class OrderController {
 		model.addAttribute("orderPaid", orderPaid);
 		model.addAttribute("unselectedBoxError", unselectedBoxError);
 		model.addAttribute("qtyOnShelfExceeded", qtyOnShelfExceeded);
-		model.addAttribute("lotIDs", lotIDs);
+		
+		if(!shippedOrderForm.isEmpty()) {
+			model.addAttribute("lotIDs", getLotIdArray(orderID));
+			model.addAttribute("shelfIDs", getShelfArray(orderID));
+		}
 		if(!markAsPaid.isEmpty()) {
 			model.addAttribute("markAsPaid", markAsPaid);
 			List<Order> unpaid = (List<Order>) orderService.listOrders("paymentStatus","Pending Payment");
@@ -341,9 +344,8 @@ public class OrderController {
 		model.addAttribute("shippedOrderForm", orderID);
 		model.addAttribute("orderID", orderID);
 		model.addAttribute("shippedQtyError", shippedQtyError);
-		model.addAttribute("shipFromAnotherLot", shipFromAnotherLot);
+//		model.addAttribute("shipFromAnotherLot", shipFromAnotherLot);
 		model.addAttribute("qtyOnShelfExceeded", qtyOnShelfExceeded);
-		model.addAttribute("lotIDs", getLotIdArray(orderID));
 		return "redirect:/orders?selectOrderType=true";
 	}
 	
@@ -355,7 +357,7 @@ public class OrderController {
 			for(FieldError e:bindingResult.getFieldErrors()) System.out.println(e);
 			model.addAttribute("org.springframework.validation.BindingResult.receivedorder",bindingResult);
 			model.addAttribute("shippedOrder", shippedOrder);
-			model.addAttribute("shippedOrderForm", "shippedOrderForm");
+//			model.addAttribute("shippedOrderForm", "shippedOrderForm");
 			List<OrderedProd> orderedProds = orderService.getOrder(shippedOrder.getOrderID()).getProducts();
 			List<String> orderedProdNames = new ArrayList<String>();
 			for(OrderedProd o:orderedProds) orderedProdNames.add(o.getProductName());
@@ -429,7 +431,7 @@ public class OrderController {
 						System.out.println("order saved ----");
 						
 						System.out.println("Shipped " + shippedOrder.getQtyShipped() + " of " + shippedOrder.getShippedProductName());
-						return "redirect:/" + customerOrder.getOrderID() + "/shippedOrder";
+//						return "redirect:/" + customerOrder.getOrderID() + "/shippedOrder";
 					}else if(quantityShipped + shippedOrder.getQtyShipped() == o.getOrderedProductQty()){					
 						System.out.println("Shipped qty EQUAL to ordered qty -----------  received product exist in the lot");
 						if(null != shippedOrdersByShelf) {
@@ -520,12 +522,26 @@ public class OrderController {
 			Product product = productService.getProductByName(o.getProductName());
 			if(o.getOrderedProductQty() > 0) {
 				for(Long lotID:product.getLotID()) {
-					System.out.println("Lot ID is " + lotID.toString());
 					lotIDArray.add(lotID.toString());
 				}
 			}			
 		}
 		return lotIDArray;
+	}
+	
+	private ArrayList<String> getShelfArray(String orderID){
+		Order order = orderService.getOrder(Long.valueOf(orderID));
+		List<OrderedProd> orderedProds = order.getProducts();
+		ArrayList<String> shelfArray = new ArrayList<String>();
+		for(OrderedProd o:orderedProds) {
+			Product product = productService.getProductByName(o.getProductName());
+			if(o.getOrderedProductQty() > 0) {
+				for(Long shelfID:product.getShelfLocations()) {
+					shelfArray.add(shelfID.toString());
+				}
+			}
+		}
+		return shelfArray;
 	}
 	
 	private boolean qtyOnShelfExceeded(String productName, Long formShelfID, Integer qtyShipped) {

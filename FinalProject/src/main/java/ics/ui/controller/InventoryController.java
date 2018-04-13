@@ -766,7 +766,7 @@ public class InventoryController {
 		Double cartTotal = (double) 0;
 		List<OrderedProd> p = cart.getProducts();
 		for(OrderedProd a:p) {
-			cartTotal+=a.getCost()*a.getOrderedProductQty()*1.075;//7.5% tax
+			cartTotal+=a.getCost()*a.getOrderedProductQty()*1.16;//16% tax
 		}
 		return cartTotal;
 	 }
