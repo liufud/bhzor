@@ -329,7 +329,7 @@ display:none;
 			                <form:errors path="roleName"></form:errors>
 			            </div>
 			        </spring:bind>  --%>
-			        <sec:authorize access="hasAuthority('Administrador') or hasAuthority('Vendedor') or hasAuthority('Distribuidor')">  
+			        <sec:authorize access="hasAuthority('Administrador')">  
 			        <label>Selecciona el tipo de usuario&nbsp</label>
 		            <select class="roleList_select" id="role" name="roleList">
 		            	<option selected>Choose...</option>

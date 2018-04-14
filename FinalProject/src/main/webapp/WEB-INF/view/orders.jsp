@@ -325,7 +325,7 @@
 							<th scope="col">Creado Por</th>
 							<th scope="col">Creado Para</th>
 							<!-- <th scope="col">Total de Pedido</th> -->
-							<!-- <th scope="col">Acción</th> -->
+							<th scope="col">Acción</th>
 						</tr>
 					</thead>					
 					<tbody>
@@ -1064,8 +1064,14 @@
                                         <fieldset>
                                        <sec:authorize access="hasAuthority('Administrador')">
                                             <div class="custom-control custom-checkbox">
-                                           		<label class="custom-control-label font-weight-bold" for="customCheck1">Este Pedido fue pagado</label>
-												<input type="checkbox" class="custom-control-input" id="customCheck1" name="paymentStatus">											  
+                                            	<div class="form-check">
+												  <input class="form-check-input" type="checkbox" value="" id="customCheck1">
+												  <label class="form-check-label font-weight-bold" for="customCheck1">
+												    Este Pedido fue pagado
+												  </label>
+												</div>
+                                           		<!-- <label class="custom-control-label font-weight-bold" for="customCheck1">Este Pedido fue pagado</label>
+												<input type="checkbox" class="custom-control-input" id="customCheck1" name="paymentStatus">	 -->										  
 											</div>
                                         </sec:authorize>      
                                             <div id="paymentOptions" class="input-group mb-3">

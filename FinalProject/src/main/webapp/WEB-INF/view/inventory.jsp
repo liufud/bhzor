@@ -649,7 +649,10 @@
 		                                    <td class="emptyrow"></td>
 		                                    <td class="emptyrow"></td>
 		                                    <td class="emptyrow text-center"><strong>Total</strong></td>
-		                                    <td class="emptyrow text-right">$${cart.cartTotal}</td>
+		                                    <td class="emptyrow text-right">$<fmt:formatNumber 
+																		     value="${cart.cartTotal}" 
+																		     maxFractionDigits="3"/></td>
+		                                    
 		                                </tr>
 		                                <form:form class="form-horizontal" role="form" action="placeReplenishmentOrder" method="post" id="payment-form">
 		                                <tr>
