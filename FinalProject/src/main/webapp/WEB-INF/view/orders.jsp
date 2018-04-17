@@ -407,7 +407,9 @@
 							</c:forEach>
 							<th scope="col">Creado Por</th>
 							<th scope="col">Creado Para</th>
-							<th scope="col">Estado de Pedido</th>
+							<th scope="col">Estado de Pago</th>
+							<th scope="col">Estado de Envio</th>
+							<th scope="col">Estado de Pedido</th>						
 							<!-- <th scope="col">Total de Pedido</th> -->
 						</tr>
 					</thead>					
@@ -427,6 +429,8 @@
 								${order.createForUser.firstName} ${order.createForUser.lastName}
 								(${order.createByUser.roleName})
 							</td>
+							<td>${order.paymentStatus}</td>							
+							<td>${order.shipmentStatus}</td>
 							<td>${order.orderStatus}</td>
 							<%-- <td>${order.totalPrice}</td>	 --%>						
 						</tr>
@@ -1184,14 +1188,14 @@
 					        <div class="col-xs-12">
 					    		<div class="row">
 					    			<div class="col-xs-6">
-					        			<%-- <address>
+					        			<address>
 					    				<strong>Direccion de Envio:</strong><br>
 					                        ${confirmedOrder.billingInfo.firstName} ${confirmedOrder.billingInfo.lastName}<br>
 					                        ${confirmedOrder.billingInfo.email}<br>
 					                        ${confirmedOrder.billingInfo.phone}<br>
 					    					${confirmedOrder.billingInfo.address}<br>
 					    					${confirmedOrder.billingInfo.city}, ${confirmedOrder.billingInfo.state} ${confirmedOrder.billingInfo.postalCode}
-					    				</address> --%>					
+					    				</address>				
 					    			</div>
 					    			<div class="col-xs-6 text-right">
 					                <h1><span class="glyphicon glyphicon glyphicon-cloud-download" aria-hidden="true"></span></h1>

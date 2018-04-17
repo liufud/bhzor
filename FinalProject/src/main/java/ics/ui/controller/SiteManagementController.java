@@ -73,13 +73,13 @@ public class SiteManagementController {
 			UserDetails userDetails =
 					 (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
 			User loggedInUser = userService.findUserByName(userDetails.getUsername());
-			if(loggedInUser.getRoleName().equals("Vendedor")) {
+			if(loggedInUser != null && loggedInUser.getRoleName().equals("Vendedor")) {
 				System.out.println("sending " + loggedInUser.getRoleName());
 				model.addAttribute("user_Vendor", loggedInUser);
-			}else if(loggedInUser.getRoleName().equals("Distribuidor")) {
+			}else if(loggedInUser != null && loggedInUser.getRoleName().equals("Distribuidor")) {
 				System.out.println("sending " + loggedInUser.getRoleName());
 				model.addAttribute("user_Distributor", loggedInUser);
-			}else if(loggedInUser.getRoleName().equals("Cliente")) {
+			}else if(loggedInUser != null && loggedInUser.getRoleName().equals("Cliente")) {
 				System.out.println("sending " + loggedInUser.getRoleName());
 				model.addAttribute("user_Client", loggedInUser);
 			}

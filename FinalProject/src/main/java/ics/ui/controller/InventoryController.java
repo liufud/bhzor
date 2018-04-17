@@ -74,7 +74,8 @@ public class InventoryController {
 								@ModelAttribute("rpOrderID")String rpOrderID,
 								@ModelAttribute("receivedQtyError")String receivedQtyError,
 								@ModelAttribute("saveReceivedQtyToAnotherLot")String saveReceivedQtyToAnotherLot,
-								@ModelAttribute("rpOrderClosed")String rpOrderClosed) {
+								@ModelAttribute("rpOrderClosed")String rpOrderClosed,
+								@ModelAttribute("receivedRpOrders")String receivedRpOrders) {
 		model.addAttribute("addProductForm", addProductForm);
 		model.addAttribute("product", productToAdd);
 		model.addAttribute("editProduct", editProduct);
@@ -93,6 +94,12 @@ public class InventoryController {
 		model.addAttribute("receivedQtyError", receivedQtyError);
 		model.addAttribute("saveReceivedQtyToAnotherLot", saveReceivedQtyToAnotherLot);
 		model.addAttribute("rpOrderClosed", rpOrderClosed);
+		model.addAttribute("receivedRpOrders", receivedRpOrders);
+		if(!receivedRpOrders.isEmpty()) {
+			List<ReceivedRpOrder> receivedRpOrdersList = (List<ReceivedRpOrder>) receivedRpOrderService.listOrders();
+			model.addAttribute("receivedRpOrders", receivedRpOrdersList);
+			for(OrderedProd o:receivedRpOrdersList.get(0).getReceivedProds()) System.out.println("received product name " + o.getProductName());
+		}		
 		if(!rpOrderReceivedForm.isEmpty()) {
 			model.addAttribute("receivedRpOrder", new ReceivedRpOrder());
 			List<OrderedProd> rpProds = replenishmentOrderService.getOrder(Long.valueOf(rpOrderID)).getRpProducts();
@@ -130,6 +137,13 @@ public class InventoryController {
 //			model.addAttribute("closedOrders", closedOrders);
 //		}
 		return "inventory";
+	}
+	
+	
+	@RequestMapping(value="viewReceivedOrders", method=RequestMethod.GET)
+	public String viewReceievedOrders(Model model) {		
+		model.addAttribute("receivedRpOrders", "receivedRpOrders");
+		return "redirect:/inventory"; 
 	}
 	
 	@RequestMapping(value="{rpOrderID}/receivedRpOrder",method=RequestMethod.GET)

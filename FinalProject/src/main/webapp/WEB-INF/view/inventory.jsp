@@ -11,6 +11,12 @@
 <!-- <link href="https://getbootstrap.com/docs/4.0/examples/cover/cover.css" rel="stylesheet"> -->
 <html>
 <head>
+<style>
+.errorField{
+  border:1px solid red;
+}
+</style>
+
 <meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
 <meta name="viewport" content="initial-scale=1, maximum-scale=1">
 <link rel='stylesheet' href='webjars/bootstrap/4.0.0/css/bootstrap.css'>
@@ -117,10 +123,11 @@
 				<div class="col-3">
 				<br/>
 					<div class="btn-group-vertical">
-						<a class="btn btn-sm btn-secondary" href="inventory?orderStatus=openOrder" role="button">Abrir Pedidos de Reposicion</a>
-						<!-- <a class="btn btn-sm btn-secondary" href="inventory?orderStatus=closedOrder" role="button">Cerrado Pedidos de Reposicion</a> -->
-						<a class="btn btn-sm btn-secondary" href="addProduct" role="button">Agregar Productos</a>
 						<a class="btn btn-sm btn-secondary" href="editProduct" role="button">Ver inventario</a>
+						<a class="btn btn-sm btn-secondary" href="addProduct" role="button">Agregar Productos</a>
+						<a class="btn btn-sm btn-secondary" href="inventory?orderStatus=openOrder" role="button">Abrir Pedidos de Reposicion</a>
+						<a class="btn btn-sm btn-secondary" href="viewReceivedOrders" role="button">Ver Pedidos Recibidos</a>
+						<!-- <a class="btn btn-sm btn-secondary" href="inventory?orderStatus=closedOrder" role="button">Cerrado Pedidos de Reposicion</a> -->						
 						<a class="btn btn-sm btn-secondary" href="orderReplenishment" role="button">Pedidos de Reposición de Producto</a>
 					</div>
 				</div>
@@ -168,7 +175,7 @@
 							    <label for="qtyRejected" class="col-sm-3 col-form-label">Cantidad Rechazada</label>
 							    <div class="col-sm-7">
 							      <form:input name="qtyRejected" id="qtyRejected" type="number" path="quantityRejected" class="form-control" autofocus="true"></form:input>
-			                      <form:errors path="quantityRejected"></form:errors>
+			                      <form:errors path="quantityRejected" cssErrorClass="errorField"></form:errors>
 							    </div>
 						  </div>
 						  <div class="form-group row">
@@ -202,6 +209,43 @@
 				<c:if test="${!empty rpOrderClosed}">
 					<p class="text-success">#${rpOrderClosed} de Pedido de Reposicion está ahora cerrada</p>
 				</c:if>
+				
+				
+				<!-- View Received Replenishment Order -->
+				<c:if test="${not empty receivedRpOrders}">
+				<h4><b>Pedidos Recibidos</b></h4>
+				<table class="table">								
+					<thead>
+						<tr>
+							<th scope="col">No.</th>
+							<th scope="col">Fecha de Expiracion</th>
+							<th scope="col"># de Lote</th>
+							<th scope="col"># de Estante</th>
+							<th scope="col">ID de Pedido de Reposicion</th>
+							<th scope="col">Producto</th>
+							<th scope="col">Candidad Recibida</th>
+							<th scope="col">Candidad Rechazada</th>							
+							<th scope="col">Recibido  Por</th>
+							<!-- <th scope="col">Total de Pedido</th> -->
+						</tr>
+					</thead>					
+					<tbody>
+					<c:forEach items="${receivedRpOrders}" var="order">
+						<tr>
+							<th scope="row">${order.receivedRpOrderID}</th>
+							<td>${order.expDate}</td>
+							<td>${order.lotID}</td>
+							<td>${order.shelfID}</td>
+							<td>${order.rpOrderID}</td>
+							<td>${order.receivedRpProductName}</td>
+							<td>${order.quantityReceived}</td>
+							<td>${order.quantityRejected}</td>							
+							<td>${order.createByUser.firstName} ${order.createByUser.lastName}</td>					
+						</tr>
+					</c:forEach>				
+					</tbody>
+				</table>
+				</c:if>	
 				
 				<!-- View Open Replenishment Order -->
 				<c:if test="${not empty openOrders}">

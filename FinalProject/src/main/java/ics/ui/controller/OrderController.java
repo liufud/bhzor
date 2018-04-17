@@ -233,7 +233,7 @@ public class OrderController {
 		}
 		if(!markAsPaid.isEmpty()) {
 			model.addAttribute("markAsPaid", markAsPaid);
-			List<Order> unpaid = (List<Order>) orderService.listOrders("paymentStatus","Pending Payment");
+			List<Order> unpaid = (List<Order>) orderService.listOrders("paymentStatus","Pago Pendiente");
 			model.addAttribute("viewUnpaidOrders", unpaid);
 		}
 		if(!orderID.isEmpty()) {
@@ -292,10 +292,10 @@ public class OrderController {
 		model.addAttribute("productNames", listProductNames);
 		System.out.println("order type is: " + orderType);
 		if(orderType.equals("Unshipped Orders")) {
-			List<Order> unshipped = (List<Order>) orderService.listOrders("shipmentStatus","Pending Shipment");
+			List<Order> unshipped = (List<Order>) orderService.listOrders("shipmentStatus","Envio Pendiente");
 			model.addAttribute("viewUnshippedOrders", unshipped);
 		}else if(orderType.equals("Unpaid Orders")) {
-			List<Order> unpaid = (List<Order>) orderService.listOrders("paymentStatus","Pending Payment");
+			List<Order> unpaid = (List<Order>) orderService.listOrders("paymentStatus","Pago Pendiente");
 			model.addAttribute("viewUnpaidOrders", unpaid);
 		}else if(orderType.equals("Todos los Pedidos")) {
 			List<Order> all = (List<Order>) orderService.listOrders();
@@ -329,8 +329,8 @@ public class OrderController {
 	@RequestMapping(value="{orderID}/orderPaid", method=RequestMethod.POST)
 	public String orderPaidPost(@PathVariable Long orderID, Model model, HttpServletRequest request) {
 		Order order = orderService.getOrder(orderID);
-		order.setPaymentStatus("Payment Received"); //Pago Recibido
-		order.setShipmentStatus("Pending Shipment"); // Envio Pendiente
+		order.setPaymentStatus("Pago Recibido"); //payment received
+		order.setShipmentStatus("Envio Pendiente"); // pending payment
 		String paymentMethod = request.getParameter("paymentMethod");
 		if(null == paymentMethod) order.setPaymentMethod("AwaitPayment");
 		else order.setPaymentMethod(paymentMethod);
@@ -395,8 +395,9 @@ public class OrderController {
 		for(OrderedProd o:orderedProducts) {
 			if(o.getProductName().equals(shippedOrder.getShippedProductName())) {
 				//check if quantity on shelf exceeded
-				boolean qtytyOnShelfNotExceeded = qtyOnShelfExceeded(shippedOrder.getShippedProductName(), shippedOrder.getShelfID(), shippedOrder.getQtyShipped());
-				if(qtytyOnShelfNotExceeded) {
+				boolean qtytyOnShelfExceeded = qtyOnShelfExceeded(shippedOrder.getShippedProductName(), shippedOrder.getShelfID(), shippedOrder.getQtyShipped());
+				if(qtytyOnShelfExceeded) {
+					System.out.println("qty on shelf exceeded");
 					model.addAttribute("qtyOnShelfExceeded", "La cantidad excede la cantidad disponible en este estante!");//La cantidad excede la cantidad disponible en este estante
 					return "redirect:/" + customerOrder.getOrderID() + "/shippedOrder";
 				}
@@ -971,11 +972,11 @@ public class OrderController {
 		 order.setTotalPrice(cart.getCartTotal());
 		 order.setPaymentMethod(paymentMethod);
 		 if(paymentStatus != null) {
-			 order.setPaymentStatus("Payment Received");
-			 order.setShipmentStatus("Pending Shipment");
+			 order.setPaymentStatus("Pagado");
+			 order.setShipmentStatus("Envio Pendiente");
 		 }else {
-			 order.setPaymentStatus("Pending Payment");
-			 order.setShipmentStatus("Pending Payment");
+			 order.setPaymentStatus("Pago Pendiente");
+			 order.setShipmentStatus("Envio Pendiente");
 		 }
 		 
 		 UserDetails userDetails =
@@ -1072,7 +1073,15 @@ public class OrderController {
 			 user.getOrderReceiver().add(order);
 		 }
 		 
-		 //
+		 //Cliente self-serving sale
+		 if(user.getRoleName().equals("Cliente")) {
+			 order.setCreateByUser(user);
+			 order.setOrderType("Venta Directa a Cliente");
+			 order.setBillingInfo(setBillingInfo(user, order));
+			 model.addAttribute("orderConfirmation", user.getUsername());
+			 user.getOrderCreator().add(order);
+			 user.getOrderReceiver().add(order);
+		 }
 
 		 
 		 

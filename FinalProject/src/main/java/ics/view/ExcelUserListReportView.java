@@ -100,52 +100,69 @@ public class ExcelUserListReportView extends AbstractXlsView{
 			if(null!=product.getQuantity()) row.createCell(4).setCellValue(product.getQuantity());
 		}
 		
+		int prodNum = productList.size();
+		
 		//Orders
 		Row orderHeader = orderSheet.createRow(0);
 		orderHeader.createCell(0).setCellValue("ID");
-		int prodNum = productList.size();
+		orderHeader.createCell(1).setCellValue("Dia creado");
+		orderHeader.createCell(2).setCellValue("Tipo de Pedido");
 		for(int i=0; i<prodNum; i++) {
-			orderHeader.createCell(i+1).setCellValue(productList.get(i).getProductName());
+			orderHeader.createCell(i+3).setCellValue(productList.get(i).getProductName());
 		}
-		orderHeader.createCell(prodNum+1).setCellValue("Total de Pedido");
-		orderHeader.createCell(prodNum+2).setCellValue("Creado Por");
-		orderHeader.createCell(prodNum+3).setCellValue("Creado Para");
-		orderHeader.createCell(prodNum+4).setCellValue("Metodo de Paga");
-		orderHeader.createCell(prodNum+5).setCellValue("Estado de la Pedido");
-		orderHeader.createCell(prodNum+6).setCellValue("Estado de la Paga");
-		orderHeader.createCell(prodNum+7).setCellValue("Estado del Envio");
-		orderHeader.createCell(prodNum+8).setCellValue("Dia creado");
-		orderHeader.createCell(prodNum+9).setCellValue("Tiempo pagado");
-		orderHeader.createCell(prodNum+10).setCellValue("Tiempo enviado");
-		orderHeader.createCell(prodNum+11).setCellValue("Tipo de Pedido");
+//		for(int i=0; i<prodNum; i++) {
+//			orderHeader.createCell(i+1).setCellValue(productList.get(i).getProductName());
+//		}
+		orderHeader.createCell(prodNum+3).setCellValue("Total de Pedido");
+		orderHeader.createCell(prodNum+4).setCellValue("Creado Por");
+		orderHeader.createCell(prodNum+5).setCellValue("Creado Para");
+		orderHeader.createCell(prodNum+6).setCellValue("Metodo de Paga");
+		orderHeader.createCell(prodNum+7).setCellValue("Estado de la Pedido");
+		orderHeader.createCell(prodNum+8).setCellValue("Estado de la Paga");
+		orderHeader.createCell(prodNum+9).setCellValue("Estado del Envio");
+//		orderHeader.createCell(prodNum+8).setCellValue("Dia creado");
+		orderHeader.createCell(prodNum+10).setCellValue("Tiempo pagado");
+		orderHeader.createCell(prodNum+11).setCellValue("Tiempo enviado");
+//		orderHeader.createCell(prodNum+10).setCellValue("Tipo de Pedido");
 		
 		int orderRowNum = 1;
 		
 		for(Order order:orderList) {
 			Row row = orderSheet.createRow(orderRowNum++);
 			row.createCell(0).setCellValue(order.getOrderID());
-			List<OrderedProd> orderedProd = order.getProducts();			
+			row.createCell(1).setCellValue(order.getCreated_At());
+			if(null!=order.getOrderType()) row.createCell(2).setCellValue(order.getOrderType());
+			List<OrderedProd> orderedProd = order.getProducts();	
 			for(int j=0; j<prodNum; j++) {
 				for(int i=0; i<orderedProd.size(); i++) {
 					//check if there is any orderd product										
 					if(productList.get(j).getProductName().equals(orderedProd.get(i).getProductName())) {
 						if(null!=orderedProd.get(i).getOrderedProductQty()) {
-							row.createCell(i+1).setCellValue(orderedProd.get(i).getOrderedProductQty());
+							row.createCell(i+3).setCellValue(orderedProd.get(i).getOrderedProductQty());
 						}
 					}
 				}
-			}						
-			row.createCell(prodNum+1).setCellValue(order.getTotalPrice());
-			if(null!=order.getCreateByUser()) row.createCell(prodNum+2).setCellValue(order.getCreateByUser().getFirstName()+ " " +order.getCreateByUser().getLastName());
-			if(null!=order.getCreateByUser()) row.createCell(prodNum+3).setCellValue(order.getCreateForUser().getFirstName()+ " " +order.getCreateForUser().getLastName());
-			if(null!=order.getPaymentMethod()) row.createCell(prodNum+4).setCellValue(order.getPaymentMethod());
-			row.createCell(prodNum+5).setCellValue(order.getOrderStatus());
-			row.createCell(prodNum+6).setCellValue(order.getPaymentStatus());
-			row.createCell(prodNum+7).setCellValue(order.getShipmentStatus());
-			row.createCell(prodNum+8).setCellValue(order.getCreated_At());
-			row.createCell(prodNum+9).setCellValue(order.getPaid_At());
-			row.createCell(prodNum+10).setCellValue(order.getShipped_At());
-			if(null!=order.getOrderType()) row.createCell(prodNum+11).setCellValue(order.getOrderType());
+			}
+//			for(int j=0; j<prodNum; j++) {
+//				for(int i=0; i<orderedProd.size(); i++) {
+//					//check if there is any orderd product										
+//					if(productList.get(j).getProductName().equals(orderedProd.get(i).getProductName())) {
+//						if(null!=orderedProd.get(i).getOrderedProductQty()) {
+//							row.createCell(i+1).setCellValue(orderedProd.get(i).getOrderedProductQty());
+//						}
+//					}
+//				}
+//			}						
+//			row.createCell(prodNum+3).setCellValue(order.getTotalPrice());
+			if(null!=order.getCreateByUser()) row.createCell(prodNum+4).setCellValue(order.getCreateByUser().getFirstName()+ " " +order.getCreateByUser().getLastName());
+			if(null!=order.getCreateForUser()) row.createCell(prodNum+5).setCellValue(order.getCreateForUser().getFirstName()+ " " +order.getCreateForUser().getLastName());
+			if(null!=order.getPaymentMethod()) row.createCell(prodNum+6).setCellValue(order.getPaymentMethod());
+			row.createCell(prodNum+7).setCellValue(order.getOrderStatus());
+			row.createCell(prodNum+8).setCellValue(order.getPaymentStatus());
+			row.createCell(prodNum+9).setCellValue(order.getShipmentStatus());
+//			row.createCell(prodNum+8).setCellValue(order.getCreated_At());
+			row.createCell(prodNum+10).setCellValue(order.getPaid_At());
+			row.createCell(prodNum+11).setCellValue(order.getShipped_At());			
 		}
 		
 		//Shipped Order
@@ -178,10 +195,14 @@ public class ExcelUserListReportView extends AbstractXlsView{
 		//Replenishment Order
 		Row rporderHeader = rpOrderSheet.createRow(0);
 		rporderHeader.createCell(0).setCellValue("ID");
+		rporderHeader.createCell(1).setCellValue("Fecha Creada");
 		for(int i=0; i<prodNum; i++) {
-			rporderHeader.createCell(i+1).setCellValue(productList.get(i).getProductName());
+			rporderHeader.createCell(i+2).setCellValue(productList.get(i).getProductName());
 		}
-		rporderHeader.createCell(prodNum+1).setCellValue("Fecha Creada");
+//		for(int i=0; i<prodNum; i++) {
+//			rporderHeader.createCell(i+1).setCellValue(productList.get(i).getProductName());
+//		}
+//		rporderHeader.createCell(prodNum+1).setCellValue("Fecha Creada");
 		rporderHeader.createCell(prodNum+2).setCellValue("Creado Por");
 		rporderHeader.createCell(prodNum+3).setCellValue("Estado de Pedido");
 		rporderHeader.createCell(prodNum+4).setCellValue("Total de Pedido");
@@ -191,39 +212,29 @@ public class ExcelUserListReportView extends AbstractXlsView{
 		for(ReplenishmentOrder rpOrder:rpOrderList) {
 			Row row = rpOrderSheet.createRow(rpOrderRowNum++);
 			row.createCell(0).setCellValue(rpOrder.getRpOrderID());
+			row.createCell(1).setCellValue(rpOrder.getCreated_At());
 			List<OrderedProd> orderedProd = rpOrder.getRpProducts();
-//			System.out.println(orderedProd.size()+"------------------------------------------------------------");
-//			for(OrderedProd op:orderedProd) {
-//				System.out.println("ordered prod in RPOder: " + op.getProductName());
-//				System.out.println("ordered prod qty: " + op.getOrderedProductQty());
-//			}
-//			for(int i=0; i<orderedProd.size(); i++) {
-//				//check if there is any orderd product
-//				if(null!=orderedProd) {
-//					OrderedProd prod = orderedProd.get(i);
-//					for(int j=0; j<prodNum; j++) {
-//						Product prodInList = productList.get(i);
-//						//if odered product name = one of the product in the product list
-//						// add that the product quantity to that cell
-//						if(prod.getProductName().equals(prodInList.getProductName())) {
-//							if(null!=prod.getOrderedProductQty()) row.createCell(i+1).setCellValue(prod.getOrderedProductQty());
-//						}else {
-//							row.createCell(i+1).setCellValue(0);
-//						}
-//					}
-//				}				
-//			}
 			for(int j=0; j<prodNum; j++) {
 				for(int i=0; i<orderedProd.size(); i++) {
 					//check if there is any ordered product										
 					if(productList.get(j).getProductName().equals(orderedProd.get(i).getProductName())) {
 						if(null!=orderedProd.get(i).getOrderedProductQty()) {
-							row.createCell(i+1).setCellValue(orderedProd.get(i).getOrderedProductQty());
+							row.createCell(i+2).setCellValue(orderedProd.get(i).getOrderedProductQty());
 						}
 					}
 				}
 			}
-			row.createCell(prodNum+1).setCellValue(rpOrder.getCreated_At());
+//			for(int j=0; j<prodNum; j++) {
+//				for(int i=0; i<orderedProd.size(); i++) {
+//					//check if there is any ordered product										
+//					if(productList.get(j).getProductName().equals(orderedProd.get(i).getProductName())) {
+//						if(null!=orderedProd.get(i).getOrderedProductQty()) {
+//							row.createCell(i+1).setCellValue(orderedProd.get(i).getOrderedProductQty());
+//						}
+//					}
+//				}
+//			}
+//			row.createCell(prodNum+1).setCellValue(rpOrder.getCreated_At());
 			if(null != rpOrder.getCreateByUser())row.createCell(prodNum+2).setCellValue(rpOrder.getCreateByUser().getFirstName()+ " " +rpOrder.getCreateByUser().getLastName());
 			row.createCell(prodNum+3).setCellValue(rpOrder.getOrderStatus());
 			if(null!=rpOrder.getTotalPrice())row.createCell(prodNum+4).setCellValue(rpOrder.getTotalPrice());
