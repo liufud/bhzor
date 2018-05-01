@@ -67,7 +67,7 @@ public class RegisterController {
 		return "login";
 	}
 	
-	@RequestMapping(value="siteManagement",method=RequestMethod.POST)
+	@RequestMapping(value= {"siteManagement","addNewClient"},method=RequestMethod.POST)
 	public String addUser(@Valid @ModelAttribute("userForm")User user, 
 						BindingResult bindingResult, Model model,HttpServletRequest request,
 						RedirectAttributes attr) {
@@ -109,6 +109,9 @@ public class RegisterController {
 		}
 		attr.addFlashAttribute("addSucceeded", "Usuario " + user.getUsername() + " ha sido agregado exitosamente!");
 		//securityService.autologin(user.getUsername(), user.getPassword(),request);
+		if(request.getRequestURI().contains("addNewClient")) {
+			return "redirect:/checkout";
+		}
 		
 		return "redirect:/siteManagement";
 	}

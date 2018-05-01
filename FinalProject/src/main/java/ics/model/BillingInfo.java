@@ -22,13 +22,13 @@ public class BillingInfo {
 	private String firstName;
 	@NotEmpty(message="Enter your last name")
 	private String lastName;
-	@NotEmpty(message="Please provide your address")
+	@NotEmpty(message="Porfavor escriba su Direccion")
 	private String address;
-	@NotEmpty(message="Please enter city")
+	@NotEmpty(message="Porfavor escriba la Ciudad")
 	private String city;
-	@NotEmpty(message="Please enter state")
+	@NotEmpty(message="Porfavor escriba el Estado")
 	private String state;
-	@NotEmpty(message="Please enter postal code")
+	@NotEmpty(message="Porfavor escriba el Codigo Postal")
 	private String postalCode;
 	private Long phone;
 	@OneToOne

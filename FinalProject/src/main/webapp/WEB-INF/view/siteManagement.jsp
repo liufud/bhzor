@@ -274,6 +274,149 @@ display:none;
 			    	<a href="addUser/backTOsiteManagement">Regresa</a>
 			    </c:if>
 			    
+			    <!-- Add User -->
+				<c:if test="${!empty addNewClient}">
+				<form:form method="POST" modelAttribute="userForm" class="form-signin" action="addNewClient">
+		        <h2 class="form-signin-heading">Crea tu cuenta</h2>
+			        <spring:bind path="firstName">
+			            <div class="form-group">
+			                <form:input type="text" path="firstName" class="form-control" placeholder="Nombre"
+			                            autofocus="true"></form:input>
+			                <form:errors path="firstName"></form:errors>
+			            </div>
+			        </spring:bind>
+			        
+			        <spring:bind path="lastName">
+			            <div class="form-group">
+			                <form:input type="text" path="lastName" class="form-control" placeholder="Apellido"
+			                            autofocus="true"></form:input>
+			                <form:errors path="lastName"></form:errors>
+			            </div>
+			        </spring:bind>
+			        
+			        <spring:bind path="username">
+			            <div class="form-group">
+			                <form:input type="text" path="username" class="form-control" placeholder="Nombre de Usuario"
+			                            autofocus="true"></form:input>
+			                <form:errors path="username"></form:errors>
+			            </div>
+			        </spring:bind>
+			        
+			        <spring:bind path="password">
+			            <div class="form-group">
+			                <form:input type="password" path="password" class="form-control" placeholder="Contraseña"></form:input>
+			                <form:errors path="password"></form:errors>
+			            </div>
+			        </spring:bind>	
+			        
+			        <c:if test="${not empty passwordError}">
+						<p class="text-warning">Error: ${passwordError}</p>
+					</c:if>
+			        <spring:bind path="passwordConfirm">
+			            <div class="form-group">
+			                <form:input type="password" path="passwordConfirm" class="form-control" placeholder="Confirma Contraseña"></form:input>
+			                <form:errors path="passwordConfirm"></form:errors>
+			            </div>
+			        </spring:bind>
+			        
+			        <%-- <spring:bind path="roleName">
+			            <div class="form-group" name="form" onclick="check()">
+			            <label>Select a role for this user&nbsp</label>
+			                <form:select id="role" path = "roleName">
+					                   <form:option value = "NONE" label = "Select"/>
+					                   <form:options  value="${roleList}" items = "${roleList}" />
+					        </form:select>
+			                <form:errors path="roleName"></form:errors>
+			            </div>
+			        </spring:bind> --%>
+			        
+			        
+			        <label>Selecciona el tipo de usuario&nbsp</label>
+		            <select class="roleList_select" id="role" name="roleList">
+		            	<option selected>Choose...</option>
+						<option onclick="check()" value="Cliente">Cliente</option>
+						<sec:authorize access="hasAuthority('Administrador')">
+						<option onclick="check2()" value="Vendedor">Vendedor</option>
+						<option onclick="check2()" value="Distribuidor">Distribuidor</option>
+						<option onclick="check2()" value="Administrador">Administrador</option>
+						</sec:authorize>
+				  	</select>	
+				  	
+			        
+			        <div id="cust">
+			        <label>Selecciona a un Vendedor para este cliente&nbsp
+			         <select id="vendorName" name="_vandorName">
+				  		<option selected>Choose...</option>
+				  		<c:forEach var="vendor" items="${allVendorsName}">
+				  			<option value="${vendor}">${vendor}</option>
+				  		</c:forEach>
+				  	</select>
+			        <br/>*Si el cliente no tiene un vendedor asociado a el deje en blanco</label>		           	
+				  	</div>        
+			        
+			        <spring:bind path="email">
+			            <div class="form-group">
+			                <form:input type="email" path="email" class="form-control" placeholder="email@example.com"
+			                            autofocus="true"></form:input>
+			                <form:errors path="email"></form:errors>
+			            </div>
+			        </spring:bind>
+			        
+					<spring:bind path="phoneNumber">
+			            <div class="form-group">
+			                <form:input type="text" path="phoneNumber" class="form-control" placeholder="Teléfono"
+			                            autofocus="true"></form:input>
+			                <form:errors path="phoneNumber"></form:errors>
+			            </div>
+			        </spring:bind>
+			        
+			        <spring:bind path="address">
+			            <div class="form-group">
+			                <form:input type="text" path="address" class="form-control" placeholder="Dirección"
+			                            autofocus="true"></form:input>
+			                <form:errors path="address"></form:errors>
+			            </div>
+			        </spring:bind>
+			        
+			        <spring:bind path="city">
+			            <div class="form-group">
+			                <form:input type="text" path="city" class="form-control" placeholder="Ciudad"
+			                            autofocus="true"></form:input>
+			                <form:errors path="city"></form:errors>
+			            </div>
+			        </spring:bind>
+			        
+                  	<%-- <spring:bind path="state">
+	                  	<div class="form-group">
+		                   	<form:select id="id_state" class="form-control" path = "state">
+			                   <form:option value = "NONE" label = "Estado"/>
+			                   <form:options items = "${stateName}" />
+			                </form:select>
+			            </div>   
+	                </spring:bind> --%>
+			        
+			       <spring:bind path="state">
+			            <div class="form-group">
+			                <form:input type="text" path="state" class="form-control" placeholder="Estado"
+			                            autofocus="true"></form:input>
+			                <form:errors path="state"></form:errors>
+			            </div>
+			        </spring:bind>
+			        
+			        <spring:bind path="zip">
+			            <div class="form-group">
+			                <form:input type="text" path="zip" class="form-control" placeholder="Código Postal"
+			                            autofocus="true"></form:input>
+			                <form:errors path="zip"></form:errors>
+			            </div>
+			        </spring:bind>
+			
+			        <button class="btn btn-lg btn-primary btn-block" type="submit">Confirmar</button>
+			    </form:form>
+			    <br/>		    
+			    	<a href="addUser/backTOsiteManagement">Regresa</a>
+			    </c:if>
+			    
 			    <!-- Update User Info -->
 				<c:if test="${!empty userInfoToBeUpdated.userId}">
 				<form:form method="POST" modelAttribute="userInfoToBeUpdated" class="form-signin" action="updateUserInfo">

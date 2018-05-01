@@ -24,9 +24,12 @@ import ics.dao.RoleDAO;
 import ics.dao.RoleDAOImpl;
 import ics.dao.UserDAO;
 import ics.dao.UserDAOImpl;
+import ics.model.BillingInfo;
 import ics.model.Product;
 import ics.model.Role;
 import ics.model.Vendor;
+import ics.services.BillingInfoService;
+import ics.services.BillingInfoServiceImpl;
 import ics.services.CartService;
 import ics.services.CartServiceImpl;
 import ics.services.ProductService;
@@ -130,6 +133,10 @@ public class ICSConfig extends WebMvcConfigurerAdapter {
 	@Bean
 	public ReceivedRpOrderService receivedRpOrderService() {
 		return new ReceivedRpOrderServieImpl();
+	}
+	@Bean
+	public BillingInfoService billingInfoService() {
+		return new BillingInfoServiceImpl();
 	}
 	@Bean
 	public Role role() {

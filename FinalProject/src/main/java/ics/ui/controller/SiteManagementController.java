@@ -49,7 +49,8 @@ public class SiteManagementController {
 									@ModelAttribute("userInfoToBeUpdated")User userInfoToBeUpdated,
 									@ModelAttribute("passwordError")String passwordError,
 									@ModelAttribute("userForm")User user,
-									@ModelAttribute("user_Role")String user_Role
+									@ModelAttribute("user_Role")String user_Role,
+									@ModelAttribute("addNewClient")String addNewClient
 									/*@ModelAttribute("count")String count,
 									@ModelAttribute("offset")String offset*/) {		
 		model.addAttribute("user", new User());
@@ -68,6 +69,7 @@ public class SiteManagementController {
 		model.addAttribute("updateRoleSucceeded", updateRoleSucceeded);
 		model.addAttribute("userInfoToBeUpdated", userInfoToBeUpdated);
 		model.addAttribute("passwordError", passwordError);
+		model.addAttribute("addNewClient", addNewClient);
 		
 		if(null != viewUserByRole) {
 			UserDetails userDetails =
@@ -214,13 +216,17 @@ public class SiteManagementController {
 		return "redirect:/siteManagement";
 	}
 	
-	@RequestMapping(value="addUser",method=RequestMethod.GET)
+	@RequestMapping(value= {"addUser","addNewClient"},method=RequestMethod.GET)
 	public String addUser(RedirectAttributes attr,
 							@ModelAttribute("passwordError")String passwordError,
-							Model model) {	
+							Model model, HttpServletRequest request) {	
 		attr.addFlashAttribute("addUser", "addUser");
 		model.addAttribute("userForm", new User());
 		attr.addFlashAttribute("passwordError", passwordError);
+		if(request.getRequestURI().contains("addNewClient")) {
+			model.addAttribute("addNewClient", "addNewClient");
+			return "redirect:/siteManagement?addNewClient=true";
+		}
 		return "redirect:/siteManagement";
 	}
 	

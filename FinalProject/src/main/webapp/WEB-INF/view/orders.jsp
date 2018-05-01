@@ -702,9 +702,14 @@
 											  		<c:forEach var="customer" items="${customerNames}">
 											  			<option value="${customer.firstName} ${customer.lastName}">${customer.firstName} ${customer.lastName}</option>
 											  		</c:forEach>
-											  	</select>												  	
+											  	</select>											  													  	
 									  		</div>
-									  </div>                                       
+									  </div>
+									  <div class="input-group mb-3">
+									  		<div class="input-group-prepend"> 
+									  			<a href="addNewClient">Agregar nuevo cliente</a>
+									  		</div>
+									  </div>                                      
 									  </sec:authorize>
 									  
                                       <sec:authorize access="hasAuthority('Administrador')">
@@ -742,7 +747,8 @@
 												  		</c:forEach>
 												  	</select>												  	
 										  		</div>
-										  </div>
+										  </div>										  
+										  
 										  <div class="input-group mb-3">
 										  		<div class="input-group-prepend">
 										  		<p>Si el cliente no aparece en la lista, porfavor informe al equipo de BH-ZOR con su nuevo cliente para que lo agreguen al sistema. Si no tiene cliente, deje en blanco</p>
@@ -1046,7 +1052,7 @@
                                                                             href="#collapseThree"
                                                                             class=" btn   btn-success" id="payInfo"
                                                                             style="width:100%;display: none;" onclick="$(this).fadeOut();  
-                   document.getElementById('collapseThree').scrollIntoView()">Enter Payment Information »</a>
+                   document.getElementById('collapseThree').scrollIntoView()">Introduzca Información del Pago »</a>
                                         </div>
                                     </h4>
                                 </div>
@@ -1195,7 +1201,69 @@
 					                        ${confirmedOrder.billingInfo.phone}<br>
 					    					${confirmedOrder.billingInfo.address}<br>
 					    					${confirmedOrder.billingInfo.city}, ${confirmedOrder.billingInfo.state} ${confirmedOrder.billingInfo.postalCode}
-					    				</address>				
+					    					<br/><a data-toggle="collapse" data-parent="#accordion" href="#collapseThree" >Cambiar Dirección</a>
+					    				</address>
+					    				<!-- new billing form -->
+					    				<div id="collapseThree" class="panel-collapse collapse">
+					    					<div class="panel-body">
+					    						<form:form modelAttribute="newShippingAddress"  class="form-horizontal" action="changeAddress" method="post">	
+							    				<b>Ingrese nueva información de facturación a continuación</b>
+		                                        <br/><br/>
+		                                        <table class="table table-striped" style="font-weight: bold;">
+		                                            <tr>
+		                                                <td style="width: 175px;">
+		                                                    <label for="id_address_line_1">Direccion:</label></td>
+		                                                <td>
+		                                                <spring:bind path="address">
+		                                                    <form:input type="text" path="address" class="form-control"
+					                            					autofocus="true"></form:input>
+					                            			<form:errors path="address"></form:errors>
+		                                                </spring:bind>
+		                                                </td>
+		                                            </tr>
+		                                            <tr>
+		                                                <td style="width: 175px;">
+		                                                    <label for="id_city">Ciudad:</label></td>
+		                                                <td>
+		                                                <spring:bind path="city">
+		                                                    <form:input type="text" path="city" class="form-control"
+					                            					autofocus="true"></form:input>
+					                            			<form:errors path="city"></form:errors>
+		                                                </spring:bind>
+		                                                </td>
+		                                            </tr>
+		                                            <tr>
+		                                                <td style="width: 175px;">
+		                                                    <label for="id_state">Estado:</label></td>
+		                                                <td>
+		                                                <spring:bind path="state">
+		                                                	<form:input type="text" path="state" class="form-control"
+					                            					autofocus="true"></form:input>
+					                            			<form:errors path="state"></form:errors>
+										                </spring:bind>
+		                                                </td>
+		                                            </tr>
+		                                            <tr>
+		                                                <td style="width: 175px;">
+		                                                    <label for="id_postalcode">Codigo Postal:</label></td>
+		                                                <td>
+		                                                 <spring:bind path="postalCode">
+		                                                    <form:input type="text" path="postalCode" class="form-control"
+					                            					autofocus="true"></form:input>
+					                            			<form:errors path="postalCode"></form:errors>
+		                                                </spring:bind>
+		                                                </td>
+		                                            </tr>                                            
+		                                        	</table>
+		                                        	<form:input name="billID" id="billID" type="hidden" path="billID" class="form-control" autofocus="true" value="${billID}"></form:input>
+		                                        	<form:input name="firstName" id="firstName" type="hidden" path="firstName" class="form-control" autofocus="true" value="${firstName}"></form:input>
+		                                        	<form:input name="lastName" id="lastName" type="hidden" path="lastName" class="form-control" autofocus="true" value="${lastName}"></form:input>
+		                                        	<form:input name="email" id="email" type="hidden" path="email" class="form-control" autofocus="true" value="${email}"></form:input>
+		                                        	<button class="btn btn-lg btn-primary btn-block text-center" type="submit">Confirmar</button>
+		                                   	 </form:form>
+					    					</div>				    										    				
+					    				</div>
+					    							    							
 					    			</div>
 					    			<div class="col-xs-6 text-right">
 					                <h1><span class="glyphicon glyphicon glyphicon-cloud-download" aria-hidden="true"></span></h1>

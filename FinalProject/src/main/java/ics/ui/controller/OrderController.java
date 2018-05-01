@@ -44,6 +44,7 @@ import ics.model.Product;
 import ics.model.ReplenishmentOrder;
 import ics.model.ShippedOrder;
 import ics.model.User;
+import ics.services.BillingInfoService;
 import ics.services.CartService;
 import ics.services.OrderService;
 import ics.services.ProductService;
@@ -59,6 +60,8 @@ public class OrderController {
 	private UserService userService;
 	@Autowired
 	private CartService	cartService;
+	@Autowired
+	private BillingInfoService billingInfoService;
 	
 	@RequestMapping(value="products/{productID}/order",method=RequestMethod.GET)
 	public String orderBindLink(@PathVariable Long productID, HttpSession session,
@@ -247,10 +250,11 @@ public class OrderController {
 			model.addAttribute("viewUnshippedOrders", unshipped);
 		}
 		if(!orderConfirmation.isEmpty()) {
-			model.addAttribute("orderConfirmation",orderConfirmation);
+			model.addAttribute("orderConfirmation",orderConfirmation);			
 			Order confirmedOrder = orderService.getLatestOrder();			
 			System.out.println("Confirmed order ID is " + confirmedOrder.getOrderID());
 			model.addAttribute("confirmedOrder", confirmedOrder);
+			model.addAttribute("newShippingAddress", confirmedOrder.getBillingInfo());
 		}		
 		if(!showCheckout.isEmpty()) {			
 			User userWhoPlaceOrder = userService.findUserByName(user);
@@ -1008,7 +1012,7 @@ public class OrderController {
 				 customer.getOrderReceiver().add(order);
 			 }else if(saleType.equals("vendorSale") && (!validateSelectBox(vendorName) || !validateSelectBox(customerName))) {
 				 System.out.println("check vendor sale");
-				 model.addAttribute("unselectedBoxError", "There is an unselected box. Please select!");
+				 model.addAttribute("unselectedBoxError", "Falto en escojer una opcion. Porfavor selecciona una opcion!");
 				 model.addAttribute("showCheckout", "showCheckout");
 				 return "redirect:/orders";
 			 }
@@ -1026,7 +1030,7 @@ public class OrderController {
 				 distributor.getOrderReceiver().add(order);
 			 }else if(saleType.equals("distributorSale") && !validateSelectBox(distributorName)) {
 				 System.out.println("check distributor sale");
-				 model.addAttribute("unselectedBoxError", "There is an unselected box. Please select!");
+				 model.addAttribute("unselectedBoxError", "Falto en escojer una opcion. Porfavor selecciona una opcion!");
 				 model.addAttribute("showCheckout", "showCheckout");
 				 return "redirect:/orders";
 			 }
@@ -1044,15 +1048,21 @@ public class OrderController {
 				 directCustomer.getOrderCreator().add(order);
 			 }else if(saleType.equals("directSale") && !validateSelectBox(directCustomerName)) {
 				 System.out.println("check direck sale");
-				 model.addAttribute("unselectedBoxError", "There is an unselected box. Please select!");
+				 model.addAttribute("unselectedBoxError", "Falto en escojer una opcion. Porfavor selecciona una opcion!");
 				 model.addAttribute("showCheckout", "showCheckout");
 				 return "redirect:/orders";
 			 }
 		 }
 		 
 		 //Vendor self-serving sale
-		 if(user.getRoleName().equals("Vendedor")) {
-			 String customerName = request.getParameter("customerName");
+		 String customerName = request.getParameter("customerName");
+		 if(!validateSelectBox(customerName)) {
+			 System.out.println("check vendor sale");
+			 model.addAttribute("unselectedBoxError", "Falto en escojer una opcion. Porfavor selecciona una opcion!");
+			 model.addAttribute("showCheckout", "showCheckout");
+			 model.addAttribute("user", userDetails.getUsername());
+			 return "redirect:/orders";
+		 }else if(user.getRoleName().equals("Vendedor")) {			 
 			 User customer = userService.getUserByName(customerName);
 			 order.setCreateByUser(user);
 			 order.setCreateForUser(customer);
@@ -1111,6 +1121,34 @@ public class OrderController {
 //		 Order confirmedOrder = orderCreatedByThisUser.get(orderCreatedByThisUser.size()-1);
 		 System.out.println("Order has been placed");
 		 return "redirect:/orders";
+	 }
+	 
+	 @RequestMapping(value="changeAddress", method=RequestMethod.POST)
+	 public String changeAddress(@Valid@ModelAttribute("newShippingAddress")BillingInfo billingInfo,
+			 					BindingResult bindingResult,Model model) {
+		 if(bindingResult.hasErrors()) {
+				System.out.println("data binding unsuccessful");
+				for(FieldError e:bindingResult.getFieldErrors()) System.out.println(e);
+				model.addAttribute("org.springframework.validation.BindingResult.billinginfo",bindingResult);
+				model.addAttribute("newShippingAddress", billingInfo);
+				Order confirmedOrder = orderService.getLatestOrder();
+				model.addAttribute("confirmedOrder", confirmedOrder);
+				String username = confirmedOrder.getCreateByUser().getUsername();
+				model.addAttribute("orderConfirmation", username);
+				return "orders";
+			}
+		 BillingInfo newBillingInfo = billingInfoService.get(billingInfo.getBillID());
+		 newBillingInfo.setAddress(billingInfo.getAddress());
+		 newBillingInfo.setCity(billingInfo.getCity());
+		 newBillingInfo.setState(billingInfo.getState());
+		 newBillingInfo.setPostalCode(billingInfo.getPostalCode());
+		 billingInfoService.addOrUpdateBillingInfo(newBillingInfo);
+		 System.out.println("new billinginfo updated!");
+		 Order confirmedOrder = orderService.getLatestOrder();
+		 model.addAttribute("confirmedOrder", confirmedOrder);
+		 String username = confirmedOrder.getCreateByUser().getUsername();
+		 model.addAttribute("orderConfirmation", username);
+		 return "orders";
 	 }
 	 
 	 @RequestMapping(value="thisAddress",method=RequestMethod.GET)

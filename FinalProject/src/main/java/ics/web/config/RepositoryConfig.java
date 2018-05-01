@@ -17,6 +17,8 @@ import org.springframework.orm.hibernate4.HibernateTransactionManager;
 import org.springframework.orm.hibernate4.LocalSessionFactoryBean;
 import org.springframework.transaction.annotation.EnableTransactionManagement;
 
+import ics.dao.BillingInfoDAO;
+import ics.dao.BillingInfoDAOHibernateImpl;
 import ics.dao.CartDAO;
 import ics.dao.CartHibernateDAOImpl;
 import ics.dao.OrderDAO;
