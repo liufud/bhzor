@@ -1,5 +1,8 @@
 package ics.dao;
 
+import java.util.Collection;
+import java.util.List;
+
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
@@ -31,6 +34,14 @@ public class BillingInfoDAOHibernateImpl implements BillingInfoDAO {
 		BillingInfo billingInfoToDelete = new BillingInfo();
 		billingInfoToDelete.setBillID(billingInfoID);
 		sessionFactory.getCurrentSession().delete(billingInfoID);
+	}
+	
+	@Transactional
+	public Collection<BillingInfo> listBillingInfo() {
+		@SuppressWarnings("unchecked")
+		List<BillingInfo> billingInfo = sessionFactory.getCurrentSession()
+				.createQuery("from BillingInfo").list();
+		return billingInfo;
 	}
 
 }

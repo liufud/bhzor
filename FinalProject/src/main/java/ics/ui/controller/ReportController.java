@@ -12,12 +12,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.servlet.ModelAndView;
 
+import ics.model.BillingInfo;
 import ics.model.Order;
 import ics.model.Product;
 import ics.model.ReceivedRpOrder;
 import ics.model.ReplenishmentOrder;
 import ics.model.ShippedOrder;
 import ics.model.User;
+import ics.services.BillingInfoService;
 import ics.services.OrderService;
 import ics.services.ProductService;
 import ics.services.ReceivedRpOrderService;
@@ -37,6 +39,8 @@ public class ReportController {
 	private ReplenishmentOrderService rpOrderService;
 	@Autowired
 	private ReceivedRpOrderService receivedRpOrderService;
+	@Autowired
+	private BillingInfoService billingInfoService;
 	
 	@RequestMapping(value="report", method=RequestMethod.GET)
 	public ModelAndView userListReport(HttpServletRequest req, 
@@ -50,6 +54,7 @@ public class ReportController {
 		List<ReplenishmentOrder> rpOrderList = (List<ReplenishmentOrder>) rpOrderService.listOrders();
 		List<ShippedOrder> shippedOrderList = (List<ShippedOrder>) orderService.listShippedOrders();
 		List<ReceivedRpOrder> receivedRpOrderList = (List<ReceivedRpOrder>)receivedRpOrderService.listOrders();
+		List<BillingInfo> billingInfoList = (List<BillingInfo>) billingInfoService.listBillingInfo();
 		
 		List<Object> fullDB = new ArrayList<Object>();
 		fullDB.add(0,userList);
@@ -58,6 +63,7 @@ public class ReportController {
 		fullDB.add(3, rpOrderList);
 		fullDB.add(4, shippedOrderList);
 		fullDB.add(5, receivedRpOrderList);
+		fullDB.add(6, billingInfoList);
 		
 		
 //		if(typeReport != null && typeReport.equals("xls")) {

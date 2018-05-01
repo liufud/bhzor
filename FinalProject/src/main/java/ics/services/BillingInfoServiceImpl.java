@@ -1,5 +1,7 @@
 package ics.services;
 
+import java.util.Collection;
+
 import org.springframework.beans.factory.annotation.Autowired;
 
 import ics.dao.BillingInfoDAO;
@@ -19,6 +21,10 @@ public class BillingInfoServiceImpl implements BillingInfoService {
 
 	public void delete(Long billingInfoID) {
 		billingInfoDAO.delete(billingInfoID);
+	}
+
+	public Collection<BillingInfo> listBillingInfo() {
+		return billingInfoDAO.listBillingInfo();
 	}
 
 }

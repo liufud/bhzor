@@ -13,6 +13,7 @@ import org.apache.poi.ss.usermodel.Workbook;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.servlet.view.document.AbstractXlsView;
 
+import ics.model.BillingInfo;
 import ics.model.Order;
 import ics.model.OrderedProd;
 import ics.model.Product;
@@ -39,6 +40,7 @@ public class ExcelUserListReportView extends AbstractXlsView{
 		List<ReplenishmentOrder> rpOrderList = (List<ReplenishmentOrder>) list.get(3);
 		List<ShippedOrder> shippedOrderList = (List<ShippedOrder>) list.get(4);
 		List<ReceivedRpOrder> receivedRpOrderList = (List<ReceivedRpOrder>) list.get(5);
+		List<BillingInfo> billingInfoList = (List<BillingInfo>) list.get(6);
 		
 		Sheet userSheet = (Sheet) workbook.createSheet("Usuarios");
 		Sheet productSheet = (Sheet) workbook.createSheet("Productos");
@@ -46,6 +48,7 @@ public class ExcelUserListReportView extends AbstractXlsView{
 		Sheet shippedOrderSheet = (Sheet) workbook.createSheet("Pedidos Enviadas");
 		Sheet rpOrderSheet = (Sheet) workbook.createSheet("Reposicion de Producto");		
 		Sheet receivedRpOrderSheet = (Sheet) workbook.createSheet("Reposicion de Producto Recibida");
+		Sheet billingInfoSheet = (Sheet) workbook.createSheet("Dirección de Envío");
 		
 		//User
 		//header row
@@ -271,6 +274,34 @@ public class ExcelUserListReportView extends AbstractXlsView{
 //			row.createCell(9).setCellValue(rRpO.getTotalCost());
 			
 		}
+		
+		//BillingInfo
+		Row billingInfoHeader = billingInfoSheet.createRow(0);
+		billingInfoHeader.createCell(0).setCellValue("ID");
+		billingInfoHeader.createCell(1).setCellValue("Direccion");
+		billingInfoHeader.createCell(2).setCellValue("Ciudad");
+		billingInfoHeader.createCell(3).setCellValue("Estado");
+		billingInfoHeader.createCell(4).setCellValue("Codigo Postal");
+		billingInfoHeader.createCell(5).setCellValue("email");
+		billingInfoHeader.createCell(6).setCellValue("Creado Para");
+		billingInfoHeader.createCell(7).setCellValue("Número de Teléfono");
+		billingInfoHeader.createCell(8).setCellValue("ID de Pedido");
+		
+		int billingInfoRowNum = 1;
+		
+		for(BillingInfo bi:billingInfoList) {
+			Row row = billingInfoSheet.createRow(billingInfoRowNum++);
+			row.createCell(0).setCellValue(bi.getBillID());
+			row.createCell(1).setCellValue(bi.getAddress());
+			row.createCell(2).setCellValue(bi.getCity());
+			row.createCell(3).setCellValue(bi.getState());
+			row.createCell(4).setCellValue(bi.getPostalCode());
+			row.createCell(5).setCellValue(bi.getEmail());
+			row.createCell(6).setCellValue(bi.getFirstName() + " "+ bi.getLastName());
+			row.createCell(7).setCellValue(bi.getPhone());
+			row.createCell(8).setCellValue(bi.getOrder().getOrderID());
+		}
+		
 	}
 
 }
