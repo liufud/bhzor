@@ -61,20 +61,19 @@
 							  <li class="nav-item">
 							    <!-- <a class="nav-link active" href="orders">Orders</a> -->
 							    <div class="dropdown show">
-								  <a class="nav-link active dropdown-toggle" href="orders" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+								  <a class="nav-link active dropdown-toggle" href="orders?selectOrderType=true" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
 								    Orders
 								  </a>								
 								  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
 								    <a class="dropdown-item" href="#">Search Order</a>
 								    <a class="dropdown-item" href="listProducts">Shopping</a>
 								     <a class="dropdown-item" href="myCart">My Cart</a>
-								    <a class="dropdown-item" href="#">Order Replenishment</a>
 								    <a class="dropdown-item" href="#">Replace Damaged Product</a>
 								  </div>
 							    </div>
 							  </li>
 							  <li class="nav-item">
-							    <a class="nav-link" href="inventory">Inventory</a>
+							    <a class="nav-link" href="inventory?orderStatus=openOrder">Inventory</a>
 							  </li>
 							  <li class="nav-item">
 							    <a class="nav-link" href="siteManagement">Site Management</a>
@@ -105,11 +104,138 @@
 						<a class="btn btn-sm btn-secondary" href="#" role="button">Search Order</a>
 						<a class="btn btn-sm btn-secondary" href="listProducts" role="button">Shopping</a>
 						<a class="btn btn-sm btn-secondary" href="myCart" role="button">My Cart</a>
-						<a class="btn btn-sm btn-secondary" href="#" role="button">Order Replenishment</a>
 						<a class="btn btn-sm btn-secondary" href="#" role="button">Replace Damaged Product</a>
 					</div>
 				</div>
 				<div class="col-9">
+				
+				<!-- Unshipped Order and Unpaid Order information -->
+				<c:if test="${not empty selectOrderType}">
+				<table class="table">								
+					<thead>
+						<tr>
+							<th scope="col">Select Orders Types</th>
+							<th scope="col">Action</th>
+						</tr>
+					</thead>					
+					<tbody>
+					<form:form method="POST" action="orderType">
+						<tr>
+							<th scope="row">
+								  <select class="custom-select custom-select-sm" name="orderTypeName">
+								    <option selected>All Orders</option>
+								    <option value="Unshipped Orders">Unshipped Orders</option>
+								    <option value="Unpaid Orders">Unpaid Orders</option>
+								  </select> 
+							</th>
+							<td>
+			                	<button class="btn btn-primary" type="submit">Submit</button>
+			                	<!-- <a href="deleteProduct">Delete</a> -->
+			                </td>				
+							<%-- <sec:authorize access="hasAuthority('Manager')">							
+							<td><a href="user/${order.orderID}/${orderplacedby}/deleteOrder">Delete</a></td>
+							</sec:authorize> --%>
+						</tr>
+					</form:form>					
+					</tbody>
+				</table>		
+				
+				<c:if test="${not empty viewUnshippedOrders}">
+				<h4><b>Unshipped Orders</b></h4>
+				<table class="table">								
+					<thead>
+						<tr>
+							<th scope="col">Order #</th>
+							<th scope="col">Date</th>
+							<c:forEach items="${productNames}" var="product">
+								<th scope="col">${product.productName}</th>
+							</c:forEach>
+							<th scope="col">Order Total</th>
+							<th scope="col">Action</th>
+						</tr>
+					</thead>					
+					<tbody>
+					<c:forEach items="${viewUnshippedOrders}" var="order">
+						<tr>
+							<th scope="row">${order.orderID}</th>
+							<td>${order.created_At}</td>
+							<c:forEach items="${order.products}" var="product">
+								<td>${product.orderedProductQty}</td>
+							</c:forEach>
+							<td>${order.totalPrice}</td>
+							<td>								
+								<a href="#">Mark as Received</a><br/>
+							</td>							
+						</tr>
+					</c:forEach>				
+					</tbody>
+				</table>
+				</c:if>	
+				
+				<c:if test="${not empty viewUnpaidOrders}">
+				<h4><b>Unpaid Orders</b></h4>
+				<table class="table">								
+					<thead>
+						<tr>
+							<th scope="col">Order #</th>
+							<th scope="col">Date</th>
+							<c:forEach items="${productNames}" var="product">
+								<th scope="col">${product.productName}</th>
+							</c:forEach>
+							<th scope="col">Order Total</th>
+							<th scope="col">Action</th>
+						</tr>
+					</thead>					
+					<tbody>
+					<c:forEach items="${viewUnpaidOrders}" var="order">
+						<tr>
+							<th scope="row">${order.orderID}</th>
+							<td>${order.created_At}</td>
+							<c:forEach items="${order.products}" var="product">
+								<td>${product.orderedProductQty}</td>
+							</c:forEach>
+							<td>${order.totalPrice}</td>
+							<td>								
+								<a href="#">Mark as Received</a><br/>
+							</td>							
+						</tr>
+					</c:forEach>				
+					</tbody>
+				</table>
+				</c:if>	
+				
+				<c:if test="${not empty viewAllOrders}">
+				<h4><b>All Orders</b></h4>
+				<table class="table">								
+					<thead>
+						<tr>
+							<th scope="col">Order #</th>
+							<th scope="col">Date</th>
+							<c:forEach items="${productNames}" var="product">
+								<th scope="col">${product.productName}</th>
+							</c:forEach>
+							<th scope="col">Order Total</th>
+							<th scope="col">Action</th>
+						</tr>
+					</thead>					
+					<tbody>
+					<c:forEach items="${viewAllOrders}" var="order">
+						<tr>
+							<th scope="row">${order.orderID}</th>
+							<td>${order.created_At}</td>
+							<c:forEach items="${order.products}" var="product">
+								<td>${product.orderedProductQty}</td>
+							</c:forEach>
+							<td>${order.totalPrice}</td>
+							<td>								
+								<a href="#">Mark as Received</a><br/>
+							</td>							
+						</tr>
+					</c:forEach>				
+					</tbody>
+				</table>
+				</c:if>	
+				</c:if>	
 				
 				<!-- Product Catalog to Shopping Cart -->
 				<c:if test="${not empty showList}">							
@@ -194,9 +320,9 @@
 							</td>
 							<td data-th="Price">${product.price}</td>
 							<td data-th="Quantity">
-								<input type="text" name="quantity" class="form-control text-center" value="${product.quantity}">
+								<input type="text" name="quantity" class="form-control text-center" value="${product.orderedProductQty}">
 							</td>
-							<td data-th="Subtotal" class="text-center">${product.price*product.quantity}</td>
+							<td data-th="Subtotal" class="text-center">${product.price*product.orderedProductQty}</td>
 							<td class="actions" data-th="">
 								<button type="submit" class="btn btn-info btn-sm"><i class="fa fa-refresh">Refresh</i></button><br/>
 								<a href="${product.productID}/deleteProductInCart" class="btn btn-danger btn-sm active" role="button" aria-pressed="true"><i class="fa fa-trash-o">&nbspDelete&nbsp</i></a>								
@@ -211,7 +337,11 @@
 						</tr> -->
 						<tr>
 							<td><a href="listProducts" class="btn btn-warning"><i class="fa fa-angle-left"></i> Continue Shopping</a></td>
-							<td colspan="2" class="hidden-xs"></td>
+							<td colspan="2">
+								<c:if test="${!empty shoppingCartQtyError}">
+									<p class="text-warning">Error: ${shoppingCartQtyError}</p>
+								</c:if>
+							</td>
 							<td class="hidden-xs text-center"><strong>Total $${cartTotal}</strong></td>
 							<c:if test="${not empty productsInCart}">
 							<td><a href="checkout" class="btn btn-success btn-block">Checkout <i class="fa fa-angle-right"></i></a></td>
@@ -753,8 +883,8 @@
 					    							<tr>
 					    								<td>${product.productName}</td>
 					            						<td class="text-center">${product.cost}</td>
-					            						<td class="text-center">${product.quantity}</td>
-					                                    <td class="text-right">${product.cost * product.quantity}</td>
+					            						<td class="text-center">${product.orderedProductQty}</td>
+					                                    <td class="text-right">${product.cost * product.orderedProductQty}</td>
 					    							</tr>
 					    							</c:forEach>
 					    							<tr>

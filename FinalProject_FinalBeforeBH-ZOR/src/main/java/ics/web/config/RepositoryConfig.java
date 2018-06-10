@@ -23,9 +23,12 @@ import ics.dao.OrderDAO;
 import ics.dao.OrderHibernateDAOImpl;
 import ics.dao.ProductDAO;
 import ics.dao.ProductHibernateDAOImpl;
+import ics.dao.ReceivedRpOrderDAO;
+import ics.dao.ReceivedRpOrderHibernateDAOImpl;
 import ics.dao.ReplenishmentOrderDAO;
 import ics.dao.VendorDAO;
 import ics.dao.VendorHibernateDAOImpl;
+import ics.model.ReceivedRpOrder;
 import ics.model.ReplenishmentOrder;
 
 @Configuration
@@ -33,7 +36,7 @@ import ics.model.ReplenishmentOrder;
 @ComponentScan("ics")
 public class RepositoryConfig {
 	  
-	@Bean()    
+		@Bean    
 	    public DataSource getDataSource()
 	    {
 	        DriverManagerDataSource ds = new DriverManagerDataSource();        
@@ -41,7 +44,7 @@ public class RepositoryConfig {
 	        ds.setUrl("jdbc:mysql://localhost:3306/bhzorinventory");
 	        ds.setUsername("root");
 	        ds.setPassword("0326");    	        
-//	        ds.setUrl("jdbc:mysql://bhzorinventory.crnhc996pmes.us-east-2.rds.amazonaws.com:3306/inventorysys");
+//	        ds.setUrl("jdbc:mysql://bhzorinventory.crnhc996pmes.us-east-2.rds.amazonaws.com:3306/bhzorinventory");
 //	        ds.setUsername("root");
 //	        ds.setPassword("12345678");
 	        return ds;
@@ -96,7 +99,7 @@ public class RepositoryConfig {
 	        properties.put("hibernate.dialect", "org.hibernate.dialect.MySQL5Dialect");
 	       // properties.put("hibernate.dialect", "org.hibernate.dialect.MySQLInnoDBDialect");
 	        properties.put("hibernate.show_sql", "true");
-	        properties.put("hibernate.hbm2ddl.auto", "update");
+	        properties.put("hibernate.hbm2ddl.auto", "create");
 	        
 	        return properties;
 	    }
@@ -125,6 +128,11 @@ public class RepositoryConfig {
 		@Bean
 		public ReplenishmentOrderDAO ReplenishmentOrderHibernateDAOImpl(SessionFactory sessionFactory) {
 			return new ics.dao.ReplenishmentOrderHibernateDAOImpl(sessionFactory);
+		}
+		@Autowired
+		@Bean
+		public ReceivedRpOrderDAO ReceivedOrderHibernateDAOImpl(SessionFactory sessionFactory) {
+			return new ReceivedRpOrderHibernateDAOImpl(sessionFactory);
 		}
     
 }

@@ -35,4 +35,14 @@ public class OrderServiceImpl implements OrderService {
 		return orderDAO.getOrderByUserId(userId);
 	}
 
+
+	public List<Order> getOrderByUsername(String username) {
+		return orderDAO.getOrderByUsername(username);
+	}
+
+
+	public Collection<Order> listOrders(String statusType, String status) {
+		return orderDAO.listOrders(statusType, status);
+	}
+
 }

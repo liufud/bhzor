@@ -37,6 +37,23 @@ public class OrderHibernateDAOImpl implements OrderDAO {
 				.createQuery("from Order").list();
 		return listOrders;
 	}
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public Collection<Order> listOrders(String statusType, String status) {
+		List<Order> listOrders = new ArrayList<Order>();
+		if(statusType == "paymentStatus") {
+			listOrders = sessionFactory.getCurrentSession()
+					.createQuery("from Order where paymentStatus=?")
+					.setParameter(0, status)
+					.list();
+		}else if(statusType == "shipmentStatus") {
+			listOrders = sessionFactory.getCurrentSession()
+					.createQuery("from Order where shipmentStatus=?")
+					.setParameter(0, status)
+					.list();
+		}		
+		return listOrders;
+	}
 	@Transactional
 	public void delete(Long orderID) {
 		Order orderToDelete = new Order();
@@ -51,6 +68,23 @@ public class OrderHibernateDAOImpl implements OrderDAO {
 		orders = sessionFactory.getCurrentSession()
 			.createQuery("from Order where createByUser=?")
 			.setParameter(0, userId)
+			.list();
+		//System.out.println("check if order size is greater than 0 ============");
+		if (orders.size() > 0) {
+			//System.out.println("order size check complete =======");
+			return orders;
+		} else {
+			return null;
+		}
+	}
+	@SuppressWarnings("unchecked")
+	@Transactional
+	public List<Order> getOrderByUsername(String username) {
+		List<Order> orders = new ArrayList<Order>();
+
+		orders = sessionFactory.getCurrentSession()
+			.createQuery("from Order where createByUser=?")
+			.setParameter(0, username)
 			.list();
 		//System.out.println("check if order size is greater than 0 ============");
 		if (orders.size() > 0) {

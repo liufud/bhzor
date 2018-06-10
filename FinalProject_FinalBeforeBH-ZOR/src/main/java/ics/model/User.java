@@ -63,6 +63,8 @@ public class User {
 	private List<Order> orders = new ArrayList<Order>();
 	@OneToMany(fetch = FetchType.LAZY, mappedBy="createByUser",cascade = {CascadeType.ALL})
 	private List<Order> rpOrders = new ArrayList<Order>();
+	@OneToMany(fetch = FetchType.LAZY, mappedBy="createByUser",cascade = {CascadeType.ALL})
+	private List<ReceivedRpOrder> receivedRpOrders = new ArrayList<ReceivedRpOrder>();
 	@OneToOne
 	private Cart cart;
 	@UpdateTimestamp
@@ -72,6 +74,33 @@ public class User {
 	public User() {
 		
 	}
+	
+	public User(String username, Long userId, String password, String passwordConfirm, String email, String firstName,
+			String lastName, Long phoneNumber, String address, String city, String state, String zip, boolean enabled,
+			List<Role> roles, List<Order> orders, List<Order> rpOrders, Cart cart, Date created_at, String roleName) {
+		super();
+		this.username = username;
+		this.userId = userId;
+		this.password = password;
+		this.passwordConfirm = passwordConfirm;
+		this.email = email;
+		this.firstName = firstName;
+		this.lastName = lastName;
+		this.phoneNumber = phoneNumber;
+		this.address = address;
+		this.city = city;
+		this.state = state;
+		this.zip = zip;
+		this.enabled = enabled;
+		this.roles = roles;
+		this.orders = orders;
+		this.rpOrders = rpOrders;
+		this.cart = cart;
+		this.created_at = created_at;
+		this.roleName = roleName;
+	}
+
+
 
 	public String getUsername() {
 		return username;
@@ -223,6 +252,14 @@ public class User {
 
 	public void setRoleName(String roleName) {
 		this.roleName = roleName;
+	}
+	
+	public List<ReceivedRpOrder> getReceivedRpOrders() {
+		return receivedRpOrders;
+	}
+
+	public void setReceivedRpOrders(List<ReceivedRpOrder> receivedRpOrders) {
+		this.receivedRpOrders = receivedRpOrders;
 	}
 
 	@Override

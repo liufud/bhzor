@@ -46,10 +46,10 @@
 							  </li>
 							</sec:authorize>
 							  <li class="nav-item">
-							    <a class="nav-link" href="orders">Orders</a>
+							    <a class="nav-link" href="orders?selectOrderType=true">Orders</a>
 							  </li>
 							  <li class="nav-item">
-							    <a class="nav-link" href="inventory">Inventory</a>
+							    <a class="nav-link" href="inventory?orderStatus=openOrder">Inventory</a>
 							  </li>
 							  <li class="nav-item">
 							    <a class="nav-link" href="siteManagement">Site Management</a>

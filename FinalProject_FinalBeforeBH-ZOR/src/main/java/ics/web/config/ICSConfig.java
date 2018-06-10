@@ -17,6 +17,8 @@ import org.springframework.web.servlet.view.InternalResourceViewResolver;
 
 import ics.dao.ProductDAO;
 import ics.dao.ProductInMemoryDAOImpl;
+import ics.dao.ReceivedRpOrderDAO;
+import ics.dao.ReceivedRpOrderHibernateDAOImpl;
 import ics.dao.RoleDAO;
 import ics.dao.RoleDAOImpl;
 import ics.dao.UserDAO;
@@ -28,6 +30,8 @@ import ics.services.CartService;
 import ics.services.CartServiceImpl;
 import ics.services.ProductService;
 import ics.services.ProductServiceImpl;
+import ics.services.ReceivedRpOrderService;
+import ics.services.ReceivedRpOrderServieImpl;
 import ics.services.ReplenishmentOrderService;
 import ics.services.ReplenishmentOrderServiceImpl;
 import ics.services.RoleService;
@@ -58,6 +62,7 @@ public class ICSConfig extends WebMvcConfigurerAdapter {
 	@Override
 	public void addResourceHandlers(final ResourceHandlerRegistry registry) {
 	    registry.addResourceHandler("/img/**").addResourceLocations("/img/");
+	    registry.addResourceHandler("/js/**").addResourceLocations("/js/");
 	    registry.addResourceHandler("/webjars/**").addResourceLocations("classpath:/META-INF/resources/webjars/");
 	}
 	
@@ -121,9 +126,14 @@ public class ICSConfig extends WebMvcConfigurerAdapter {
 		return new ReplenishmentOrderServiceImpl();
 	}
 	@Bean
+	public ReceivedRpOrderService receivedRpOrderService() {
+		return new ReceivedRpOrderServieImpl();
+	}
+	@Bean
 	public Role role() {
 		return new Role();
 	}
+
 	
 	
 	@Override

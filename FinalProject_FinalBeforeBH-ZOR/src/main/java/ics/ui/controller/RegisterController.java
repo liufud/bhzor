@@ -22,8 +22,8 @@ public class RegisterController {
 	@Autowired
 	private UserService userService;
 	
-	@Autowired
-	private SecurityService securityService;
+//	@Autowired
+//	private SecurityService securityService;
 	
 	@RequestMapping(value= {"register","addNewUser"},method=RequestMethod.GET)
 	public String registration(Model model, @ModelAttribute("addUser")String addUser) {

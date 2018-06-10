@@ -51,7 +51,7 @@
 		<beans:property name="url" value="jdbc:mysql://localhost:3306/bhzorinventory" />
 		<beans:property name="username" value="root" />
 		<beans:property name="password" value="0326" />
-		<!-- <beans:property name="url" value="jdbc:mysql://bhzorinventory.crnhc996pmes.us-east-2.rds.amazonaws.com:3306/inventorysys" />
+		<!-- <beans:property name="url" value="jdbc:mysql://bhzorinventory.crnhc996pmes.us-east-2.rds.amazonaws.com:3306/bhzorinventory" />
 		<beans:property name="username" value="root" />
 		<beans:property name="password" value="12345678" /> -->
 	</beans:bean>

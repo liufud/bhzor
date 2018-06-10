@@ -35,10 +35,10 @@ public class Order {
 //				inverseJoinColumns=@JoinColumn(name="Product_ID"))
 	private List<Product> products = new ArrayList<Product>();*/
 	
-	@ManyToMany(fetch=FetchType.EAGER)
-	@JoinTable(name="Order_Product",joinColumns= {@JoinColumn(name="Order_ID")},
+	@ManyToMany(cascade=CascadeType.ALL,fetch=FetchType.EAGER)
+	@JoinTable(name="OrderTable_Product",joinColumns= {@JoinColumn(name="Order_ID")},
 				inverseJoinColumns= {@JoinColumn(name="Product_ID")})
-	private List<Product> products = new ArrayList<Product>();
+	private List<OrderedProd> products = new ArrayList<OrderedProd>();
 	@NotNull
 	private Double totalPrice;
 	@ManyToOne(fetch=FetchType.EAGER)
@@ -63,10 +63,10 @@ public class Order {
 	public void setOrderID(Long orderID) {
 		this.orderID = orderID;
 	}
-	public List<Product> getProducts() {
+	public List<OrderedProd> getProducts() {
 		return products;
 	}
-	public void setProducts(List<Product> products) {
+	public void setProducts(List<OrderedProd> products) {
 		this.products = products;
 	}
 	public Double getTotalPrice() {

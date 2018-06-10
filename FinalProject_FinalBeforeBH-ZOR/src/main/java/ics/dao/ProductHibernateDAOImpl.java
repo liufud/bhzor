@@ -9,6 +9,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Repository;
 import org.springframework.transaction.annotation.Transactional;
 
+import ics.model.OrderedProd;
 import ics.model.Product;
 
 
@@ -27,7 +28,7 @@ public class ProductHibernateDAOImpl implements ProductDAO {
 	public Collection<Product> listProducts() {
 		@SuppressWarnings("unchecked")
 		List<Product> listProduct = sessionFactory.getCurrentSession()
-				.createQuery("from Product").list();
+				.createQuery("from Product as p where p.class = Product").list();
 		return listProduct;
 	}
 	
@@ -62,10 +63,10 @@ public class ProductHibernateDAOImpl implements ProductDAO {
 	
 	@Transactional
 	public void buyProduct(Integer quantity, Long productID) {
-		product = get(productID);
-		Integer newInventoryLevel = product.getInventoryLevel() - quantity;
-		product.setInventoryLevel(newInventoryLevel);
-		addOrUpdateProduct(product);
+//		product = get(productID);
+//		Integer newInventoryLevel = product.getInventoryLevel() - quantity;
+//		product.setInventoryLevel(newInventoryLevel);
+//		addOrUpdateProduct(product);
 	}
 	
 	@SuppressWarnings("unchecked")
@@ -74,7 +75,7 @@ public class ProductHibernateDAOImpl implements ProductDAO {
 		List<Product> products = new ArrayList<Product>();
 
 		products = sessionFactory.getCurrentSession()
-			.createQuery("from Product where productName=?")
+			.createQuery("from Product as p where productName=? and p.class = Product")
 			.setParameter(0, productName)
 			.list();
 
@@ -83,6 +84,17 @@ public class ProductHibernateDAOImpl implements ProductDAO {
 		} else {
 			return null;
 		}
+	}
+
+	public OrderedProd getOrderedProd(Long orderedProdID) {
+		product =  (OrderedProd) sessionFactory.getCurrentSession().get(OrderedProd.class, orderedProdID);
+		System.out.println("get Product is called.............. ");
+		//System.out.println(product);
+		return (OrderedProd) product;
+	}
+
+	public void addOrUpdateOrderedProduct(OrderedProd product) {
+		sessionFactory.getCurrentSession().saveOrUpdate(product);
 	}
 
 }
