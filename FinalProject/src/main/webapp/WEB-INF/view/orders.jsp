@@ -2,168 +2,231 @@
 <%@page import="ics.dao.UserDAO"%>
 <%@ page language="java" contentType="text/html; charset=ISO-8859-1"
     pageEncoding="ISO-8859-1"%>
-<!DOCTYPE html PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<!DOCTYPE html>
 <%@ taglib uri="http://www.springframework.org/tags/form" prefix="form"%>
 <%@ taglib prefix = "c" uri = "http://java.sun.com/jsp/jstl/core" %>
 <%@ page isELIgnored="false"%>
 <%@ taglib prefix="spring" uri="http://www.springframework.org/tags" %>
 <%@ taglib prefix="sec" uri="http://www.springframework.org/security/tags" %>
-<!-- <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/css/bootstrap.min.css" integrity="sha384-PsH8R72JQ3SOdhVi3uxftmaW6Vc51MKb0q5P2rRUpPvrszuE4W1povHYgTpBfshb" crossorigin="anonymous"> -->
-<!-- <link href="https://getbootstrap.com/docs/4.0/examples/cover/cover.css" rel="stylesheet"> -->
-<html>
+
+<html lang="es">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1">
-<meta name="viewport" content="initial-scale=1, maximum-scale=1">
-<link rel='stylesheet' href='webjars/bootstrap/4.0.0/css/bootstrap.css'>
-<script src="https://code.jquery.com/jquery-3.2.1.slim.min.js" integrity="sha384-KJ3o2DKtIkvYIK3UENzmM7KCkRr/rE9/Qpg6aAZGJwFDMVNA/GpGFF93hXpG5KkN" crossorigin="anonymous"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.12.3/umd/popper.min.js" integrity="sha384-vFJXuSJphROIrBnz7yo7oB41mKfc8JzQZiCq4NCceLEaO4IHwicKwpJf9c9IpFgh" crossorigin="anonymous"></script>
-<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.0.0-beta.2/js/bootstrap.min.js" integrity="sha384-alpBpkh1PFOepccYVYDB4do5UnbKysX5WZXm3XxPqe5iKTfUKjNkCk9SaVuEZflJ" crossorigin="anonymous"></script>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="author" content="Anupam Mondal">
+
+    <!-- Bootstrap -->
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
 <style type="text/css">
 #paymentOptions {display:none;}
 #vendorSale {display:none;}
 #distributorSale {display:none;}
 #customerSale {display:none;}
+/* www.anupammondal.in */
+header {
+  height: 300px;
+  background-color: #ffffff;
+  padding: 100px 20px;
+  background-size: cover;
+  background-image: url(https://images.pexels.com/photos/415825/pexels-photo-415825.jpeg?auto=compress&cs=tinysrgb&dpr=2&h=750&w=1260);
+  background-position: center;
+}
+header h2 {
+  border: #fff solid 2px;
+  border-radius: 3px;
+  padding: 30px;color: #fff;
+  background-color: #007bffcc;
+  width: fit-content;
+  margin: 0 auto;
+}
+.prdct {
+  margin: 25px 15px;
+  background: #007bff;
+  padding: 25px 20px;
+  border-radius: 5px;
+}
+.nav-tabs>li a {
+  color: #007bff;
+}
+.tab-content {
+  margin-bottom: 50px;
+}
+.prdct p a, .prdct p span {
+  color: #fff;
+  font-size: 15px;
+}
+p.userdtls {
+    margin: 15px;
+}
+button.btn.btn-info {
+  background-color: #007bff !important;
+  border-color: #007bff !important;
+  background-image: none;
+}
+footer {
+  background-color: #007bff;
+  color: #fff;
+  padding: 25px 20px;
+}
+div.prdct p {
+    cursor: pointer;
+}
 </style>
 
-<!-- <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.8.3/jquery.min.js"></script> -->
-
-<!-- <script src="//netdna.bootstrapcdn.com/bootstrap/3.2.0/js/bootstrap.min.js"></script> -->
 
 <title>Orders</title>
 </head>
 <body class="bg-light">
-
-	<div class="container">
-		<div class="row">
-			<div class="col"></div>
-			<div class="col-12">
-			<div class="row">
-				<div class="col"><img src="img/BH-ZOR_logo.png" height="70"></div>
-				<%-- <sec:authorize access="hasAuthority('Manager')"> --%>
-				<div class="col-7"><h1>BH-ZOR: Base de Datos</h1></div>
+    <div class="container">
+        <div class="row">
+            <div class="col-xs-12">
+                <img src="img/BH-ZOR_logo.png" height="70">
+            </div>
+            <%-- <sec:authorize access="hasAuthority('Manager')"> --%>
+            <div class="col-xs-12">
+                <h1 class="text-center text-info">BH-ZOR: Base de Datos</h1>
+            </div>
 <%-- 				</sec:authorize>
-				<sec:authorize access="hasAuthority('Customer')">
-				<div class="col5"><h1>Welcome</h1></div>
-				</sec:authorize> --%>
-				<div class="col-1"></div>
-			</div>
-			<div class="row">
-				<div class="col"></div>
-				<div class="col-12">
-					<br/>	
-						<ul class="nav nav-tabs">
-							<%-- <sec:authorize access="hasAuthority('Manager')">
-							  <li class="nav-item">
-							    <a class="nav-link" href="dashboard">Panel de Control</a>
-							  </li>					  				
-							  <li class="nav-item">
-							    <a class="nav-link" href="sales">Ventas</a>
-							    <!-- <div class="dropdown show">
-								  <a class="nav-link dropdown-toggle" href="sales" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								    Sales
-								  </a>								
-								  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-								    <a class="dropdown-item" href="#">Forecasts</a>
-								    <a class="dropdown-item" href="#">Vendor Sales</a>
-								    <a class="dropdown-item" href="#">Distributor Sales</a>
-								    <a class="dropdown-item" href="#">Direct Customer Sales</a>
-								  </div>
-							    </div> -->						    
-							  </li>							
-							</sec:authorize> --%>
-							  <li class="nav-item">
-							    <!-- <a class="nav-link active" href="orders">Orders</a> -->
-							    <div class="dropdown show">
-								  <a class="nav-link active" href="orders?selectOrderType=true" role="button"  aria-haspopup="true" aria-expanded="false">
-								    Pedidos
-								  </a>								
-								  <!-- <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-								    <a class="dropdown-item" href="#">Search Order</a>
-								    <a class="dropdown-item" href="listProducts">Shopping</a>
-								     <a class="dropdown-item" href="myCart">My Cart</a>
-								    <a class="dropdown-item" href="#">Replace Damaged Product</a>
-								  </div> -->
-							    </div>
-							  </li>
-							  <sec:authorize access="hasAuthority('Administrador')">
-							  <li class="nav-item">
-							    <a class="nav-link" href="inventory?orderStatus=openOrder">Inventario</a>
-							  </li>
-							  </sec:authorize>							  
-							  <li class="nav-item">
-							    <a class="nav-link" href="siteManagement">Administración de la Pagina</a>
-							    <!-- <div class="dropdown show">
-								  <a class="nav-link dropdown-toggle" href="inventory" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-								    Site Management
-								  </a>								
-								  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
-								    <a class="dropdown-item" href="#">Add User</a>
-								    <a class="dropdown-item" href="#">Edit/Remove User</a>
-								    <a class="dropdown-item" href="#">View User Info</a>
-								  </div>
-							     </div> -->
-							  </li>
-						</ul>
-						Conectado como: <sec:authentication property="name"/> <sec:authentication property="authorities"/>
-					<br/>
-				</div>
-				<div class="col"></div>
-			</div>			
+            <sec:authorize access="hasAuthority('Customer')">
+            <div class="col5"><h1>Welcome</h1></div>
+            </sec:authorize> --%>
+<!--                <div class="col-1"></div>-->
+        </div>
+            <div class="row">
+                <div class="col-xs-12">
+                    <ul class="nav nav-tabs" role="tablist">
+                        <%-- <sec:authorize access="hasAuthority('Manager')">
+                          <li class="nav-item">
+                            <a class="nav-link" href="dashboard">Panel de Control</a>
+                          </li>					  				
+                          <li class="nav-item">
+                            <a class="nav-link" href="sales">Ventas</a>
+                            <!-- <div class="dropdown show">
+                                  <a class="nav-link dropdown-toggle" href="sales" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Sales
+                                  </a>								
+                                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <a class="dropdown-item" href="#">Forecasts</a>
+                                    <a class="dropdown-item" href="#">Vendor Sales</a>
+                                    <a class="dropdown-item" href="#">Distributor Sales</a>
+                                    <a class="dropdown-item" href="#">Direct Customer Sales</a>
+                                  </div>
+                            </div> -->						    
+                          </li>							
+                        </sec:authorize> --%>
+                        <li role="presentation" class="active">
+                            <!-- <a class="nav-link active" href="orders">Orders</a> -->
+<!--                                            <div class="dropdown show">-->
+                            <a href="orders?selectOrderType=true" aria-controls="orders" role="tab" data-toggle="tab">
+                              Pedidos
+                            </a>								
+                                <!-- <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                  <a class="dropdown-item" href="#">Search Order</a>
+                                  <a class="dropdown-item" href="listProducts">Shopping</a>
+                                   <a class="dropdown-item" href="myCart">My Cart</a>
+                                  <a class="dropdown-item" href="#">Replace Damaged Product</a>
+                                </div> -->
+<!--                            </div>-->
+                          </li>
+                          <sec:authorize access="hasAuthority('Administrador')">
+                          <li role="presentation">
+                            <a href="inventory?orderStatus=openOrder" aria-controls="inventario" role="tab" data-toggle="tab">Inventario</a>
+                          </li>
+                          </sec:authorize>							  
+                          <li role="presentation">
+                            <a href="siteManagement" aria-controls="administración" role="tab" data-toggle="tab">Administración de la Pagina</a>
+                            <!-- <div class="dropdown show">
+                                  <a class="nav-link dropdown-toggle" href="inventory" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                                    Site Management
+                                  </a>								
+                                  <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
+                                    <a class="dropdown-item" href="#">Add User</a>
+                                    <a class="dropdown-item" href="#">Edit/Remove User</a>
+                                    <a class="dropdown-item" href="#">View User Info</a>
+                                  </div>
+                             </div> -->
+                          </li>
+                    </ul>
+                        <p class="userdtls">
+                        <strong>Conectado como : <sec:authentication property="name"/> <sec:authentication property="authorities"/></strong> 			
+                        <a class="btn btn-default" href="<c:url value="/perform_logout" />">Cerrar Sesión</a>	
+                    </p>
+                </div>
+            </div>
 			
 			<!-- Display Orders Content Here -->
 			
 			<div class="row">
-				<div class="col-3">
-				<br/>
-					<div class="btn-group-vertical">
-						<a class="btn btn-sm btn-secondary" href="orders?selectOrderType=true" role="button">Historial de Pedidos</a>	
-						<a class="btn btn-sm btn-secondary" href="listProducts" role="button">Hacer Pedido</a>
-						<a class="btn btn-sm btn-secondary" href="myCart" role="button">Mi Carrito de Compra</a>
-						<a class="btn btn-sm btn-secondary" href="mailto:isaacrozen8@gmail.com,scrowavila@gmail.com,arturoavilabaeza@yahoo.com?
-																subject=Reportar Producto Dañado&
-																body=Porfavor ponga la siguiente informacion:%0D%0A
-																1. Numero de Pedido %0D%0A
-																2. Descripcion sobre el producto dañado %0D%0A
-																3. Adjunte una foto del producto dañado %0D%0A %0D%0A
-																Le remplazaremos el producto dañado pronto! %0D%0A %0D%0A
-																Muchas Gracias, %0D%0A
-																El equipo de BHZOR" role="button">Remplazar Producto Dañado</a>
-					</div>
-				</div>
-				<div class="col-9">
+                            <div class="col-sm-4 col-xs-12">
+                                <div class="prdct">
+                                    <p>
+                                        <span class="glyphicon glyphicon-list" aria-hidden="true"></span> 
+                                        <a class="" href="orders?selectOrderType=true">Historial de Pedidos</a>
+                                    </p>
+                                    <p>
+                                        <span class="glyphicon glyphicon-credit-card" aria-hidden="true"></span> 
+                                        <a class="" href="listProducts">Hacer Pedido</a>
+                                    </p>
+                                    <p>
+                                        <span class="glyphicon glyphicon-shopping-cart" aria-hidden="true"></span> 
+                                        <a class="" href="myCart">Mi Carrito de Compra</a>
+                                    </p>
+                                    <p>
+                                        <span class="glyphicon glyphicon-transfer" aria-hidden="true"></span> 
+                                        <a class="" 
+                                          href="mailto:isaacrozen8@gmail.com,scrowavila@gmail.com,arturoavilabaeza@yahoo.com?
+                                            subject=Reportar Producto Dañado&
+                                            body=Porfavor ponga la siguiente informacion:%0D%0A
+                                            1. Numero de Pedido %0D%0A
+                                            2. Descripcion sobre el producto dañado %0D%0A
+                                            3. Adjunte una foto del producto dañado %0D%0A %0D%0A
+                                            Le remplazaremos el producto dañado pronto! %0D%0A %0D%0A
+                                            Muchas Gracias, %0D%0A
+                                            El equipo de BHZOR" role="button">Remplazar Producto Dañado</a>
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="col-sm-8 col-xs-12">
 				
 				<!-- Unshipped Order and Unpaid Order information -->
 				<c:if test="${not empty selectOrderType}">
 				<sec:authorize access="hasAuthority('Administrador')">
-				<table class="table">								
-					<thead>
-						<tr>
-							<th scope="col">Selecciona el tipo de Pedido</th>
-							<th scope="col">Accion</th>
-						</tr>
-					</thead>					
-					<tbody>
-					<form:form method="POST" action="orderType">
-						<tr>
-							<th scope="row">
-								  <select class="custom-select custom-select-sm" name="orderTypeName">
-								    <option selected>Todos los Pedidos</option>
-								    <!-- <option value="Shipped Orders">Pedidos Enviados</option> -->
-								    <option value="Unshipped Orders">Pedidos no Enviados</option>
-								    <option value="Unpaid Orders">Pedidos no Pagados</option>
-								  </select> 
-							</th>
-							<td>
-			                	<button class="btn btn-primary" type="submit">Confirmar</button>
-			                	<!-- <a href="deleteProduct">Delete</a> -->
-			                </td>				
-							<%-- <sec:authorize access="hasAuthority('Manager')">							
-							<td><a href="user/${order.orderID}/${orderplacedby}/deleteOrder">Delete</a></td>
-							</sec:authorize> --%>
-						</tr>
-					</form:form>					
-					</tbody>
-				</table>
+                                <div class="table-responsive">
+                                    <table class="table">								
+                                        <thead>
+                                            <tr>
+                                                <th scope="col">Selecciona el tipo de Pedido</th>
+                                                <th scope="col">Accion</th>
+                                            </tr>
+                                        </thead>					
+                                        <tbody>
+                                        <form:form method="POST" action="orderType">
+                                            <tr>
+                                                <th scope="row">
+                                                    <select class="form-control" name="orderTypeName">
+                                                      <option selected>Todos los Pedidos</option>
+                                                      <!-- <option value="Shipped Orders">Pedidos Enviados</option> -->
+                                                      <option value="Unshipped Orders">Pedidos no Enviados</option>
+                                                      <option value="Unpaid Orders">Pedidos no Pagados</option>
+                                                    </select> 
+                                                </th>
+                                                <td>
+                                                    <button class="btn btn-success" type="submit">Confirmar</button>
+                                                    <!-- <a href="deleteProduct">Delete</a> -->
+                                                </td>				
+                                                    <%-- <sec:authorize access="hasAuthority('Manager')">							
+                                                    <td><a href="user/${order.orderID}/${orderplacedby}/deleteOrder">Delete</a></td>
+                                                    </sec:authorize> --%>
+                                            </tr>
+                                        </form:form>					
+                                        </tbody>
+                                    </table>
+                                </div>
 				</sec:authorize>		
 				
 				<c:if test="${not empty shippedOrderForm}">
@@ -248,44 +311,46 @@
 				
 				
 				<h4><b>Pedidos no Enviados</b></h4>
-				<table class="table">								
-					<thead>
-						<tr>
-							<th scope="col"># de Pedido</th>
-							<th scope="col">Fecha de Creación</th>
-							<c:forEach items="${productNames}" var="product">
-								<th scope="col">${product.productName}</th>
-							</c:forEach>
-							<th scope="col">Creado Por</th>
-							<th scope="col">Creado Para</th>
-							<!-- <th scope="col">Total de Pedido</th> -->
-							<th scope="col">Acción</th>
-						</tr>
-					</thead>					
-					<tbody>
-					<c:forEach items="${viewUnshippedOrders}" var="order">
-						<tr>
-							<th scope="row">${order.orderID}</th>
-							<td>${order.created_At}</td>
-							<c:forEach items="${order.products}" var="product">
-								<td>${product.unshippedProductqty}</td>
-							</c:forEach>
-							<td>
-								${order.createByUser.firstName} ${order.createByUser.lastName}<br/>
-								(${order.createByUser.roleName})
-							</td>
-							<td>
-								${order.createForUser.firstName} ${order.createForUser.lastName}
-								(${order.createForUser.roleName})
-							</td>
-							<%-- <td>${order.totalPrice}</td> --%>
-							<td>								
-								<a href="${order.orderID}/shippedOrder">Marcar como Enviado</a><br/>
-							</td>							
-						</tr>
-					</c:forEach>				
-					</tbody>
-				</table>
+                                <div class="table-responsive">
+                                    <table class="table">								
+                                        <thead>
+                                            <tr>
+                                                <th scope="col"># de Pedido</th>
+                                                <th scope="col">Fecha de Creación</th>
+                                                <c:forEach items="${productNames}" var="product">
+                                                        <th scope="col">${product.productName}</th>
+                                                </c:forEach>
+                                                <th scope="col">Creado Por</th>
+                                                <th scope="col">Creado Para</th>
+                                                <!-- <th scope="col">Total de Pedido</th> -->
+                                                <th scope="col">Acción</th>
+                                            </tr>
+                                        </thead>					
+                                        <tbody>
+                                        <c:forEach items="${viewUnshippedOrders}" var="order">
+                                            <tr>
+                                                <th scope="row">${order.orderID}</th>
+                                                <td>${order.created_At}</td>
+                                                <c:forEach items="${order.products}" var="product">
+                                                    <td>${product.unshippedProductqty}</td>
+                                                </c:forEach>
+                                                <td>
+                                                    ${order.createByUser.firstName} ${order.createByUser.lastName}<br/>
+                                                    (${order.createByUser.roleName})
+                                                </td>
+                                                <td>
+                                                    ${order.createForUser.firstName} ${order.createForUser.lastName}
+                                                    (${order.createForUser.roleName})
+                                                </td>
+                                                <%-- <td>${order.totalPrice}</td> --%>
+                                                <td>								
+                                                    <a href="${order.orderID}/shippedOrder">Marcar como Enviado</a><br/>
+                                                </td>							
+                                            </tr>
+                                        </c:forEach>				
+                                        </tbody>
+                                    </table>
+                                </div>
 				</c:if>
 				<c:if test="${!empty orderPaid}">
 					<p class="text-success">${orderPaid}</p>
@@ -296,62 +361,66 @@
 				
 				<c:if test="${not empty viewUnpaidOrders}">
 				<c:if test="${not empty markAsPaid}">
-					<form name="markAsPaidForm" action="${markAsPaid}/orderPaid" method="post" class="form-control">
-						<label class="input-group-text" for="inputGroupSelect01">Que metodo de pago fue utlizado para este pedido</label>
-						  <select class="custom-select" id="inputGroupSelect01" name="paymentMethod">
-						   	<option selected>Choose...</option>
-						    <option value="Cash">Cash</option>
-						    <option value="Direct Deposit">Deposito Directo</option>
-						    <option value="Credit">Credito</option>
-						  </select>
-						  <div class="row">
-						  		<div class="col"></div>
-						  		<div class="col">
-						  			<button class="btn btn-lg btn-primary text-center" type="submit">Confirmar</button>
-						  		</div>
-						  		<div class="col"></div>
-						  </div>						  
-					</form>
+                                    <form name="markAsPaidForm" action="${markAsPaid}/orderPaid" method="post" class="form-control">
+                                        <label class="input-group-text" for="inputGroupSelect01">Que metodo de pago fue utlizado para este pedido</label>
+                                          <select class="custom-select" id="inputGroupSelect01" name="paymentMethod">
+                                                <option selected>Choose...</option>
+                                            <option value="Cash">Cash</option>
+                                            <option value="Direct Deposit">Deposito Directo</option>
+                                            <option value="Credit">Credito</option>
+                                          </select>
+                                          <div class="row">
+                                                <div class="col"></div>
+                                                <div class="col">
+                                                        <button class="btn btn-lg btn-primary text-center" type="submit">Confirmar</button>
+                                                </div>
+                                                <div class="col"></div>
+                                          </div>						  
+                                    </form>
 				</c:if>
-				<h4><b>Pedidos no Pagado</b></h4>
-				<table class="table">								
+				<h4>
+                                    <b>Pedidos no Pagado</b>
+                                </h4>
+                                <div class="table-responsive">
+                                    <table class="table">								
 					<thead>
-						<tr>
-							<th scope="col"># de Pedido</th>
-							<th scope="col">Fecha de Creación</th>
-							<c:forEach items="${productNames}" var="product">
-								<th scope="col">${product.productName}</th>
-							</c:forEach>
-							<th scope="col">Creado Por</th>
-							<th scope="col">Creado Para</th>
-							<!-- <th scope="col">Total de Pedido</th> -->
-							<th scope="col">Acción</th>
-						</tr>
+                                            <tr>
+                                                <th scope="col"># de Pedido</th>
+                                                <th scope="col">Fecha de Creación</th>
+                                                <c:forEach items="${productNames}" var="product">
+                                                        <th scope="col">${product.productName}</th>
+                                                </c:forEach>
+                                                <th scope="col">Creado Por</th>
+                                                <th scope="col">Creado Para</th>
+                                                <!-- <th scope="col">Total de Pedido</th> -->
+                                                <th scope="col">Acción</th>
+                                            </tr>
 					</thead>					
 					<tbody>
 					<c:forEach items="${viewUnpaidOrders}" var="order">
-						<tr>
-							<th scope="row">${order.orderID}</th>
-							<td>${order.created_At}</td>
-							<c:forEach items="${order.products}" var="product">
-								<td>${product.orderedProductQty}</td>
-							</c:forEach>
-							<td>
-								${order.createByUser.firstName} ${order.createByUser.lastName}
-								(${order.createByUser.roleName})
-							</td>
-							<td>
-								${order.createForUser.firstName} ${order.createForUser.lastName}
-								(${order.createForUser.roleName})
-							</td>
-							<%-- <td>${order.totalPrice}</td> --%>
-							<td>								
-								<a href="${order.orderID}/orderPaid">Marcar como Pagado</a><br/>
-							</td>							
-						</tr>
+                                            <tr>
+                                                <th scope="row">${order.orderID}</th>
+                                                <td>${order.created_At}</td>
+                                                <c:forEach items="${order.products}" var="product">
+                                                    <td>${product.orderedProductQty}</td>
+                                                </c:forEach>
+                                                <td>
+                                                    ${order.createByUser.firstName} ${order.createByUser.lastName}
+                                                    (${order.createByUser.roleName})
+                                                </td>
+                                                <td>
+                                                    ${order.createForUser.firstName} ${order.createForUser.lastName}
+                                                    (${order.createForUser.roleName})
+                                                </td>
+                                                <%-- <td>${order.totalPrice}</td> --%>
+                                                <td>								
+                                                    <a href="${order.orderID}/orderPaid">Marcar como Pagado</a><br/>
+                                                </td>
+                                            </tr>
 					</c:forEach>				
 					</tbody>
-				</table>
+                                    </table>
+                                </div>
 				</c:if>
 				<%-- <c:if test="${not empty viewShippedOrders}">
 				<h4><b>Pedidos no Pagado</b></h4>
@@ -1329,12 +1398,18 @@
 				
 				</div>
 				<div class="col"></div>
-			</div>			
-			<a href="<c:url value="/perform_logout" />">Cerrar Sesión</a>	
+			</div>
 			<div class="col"></div>
 		</div>
 	</div>
 </div>
+<!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
+
+
+<!-- Latest compiled and minified JavaScript -->
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 <script type="text/javascript">
 $("SELECT.saleType_selectbox").change(function(){
 	if($(this).val() == "vendorSale"){
