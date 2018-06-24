@@ -219,10 +219,12 @@ public class SiteManagementController {
 	@RequestMapping(value= {"addUser","addNewClient"},method=RequestMethod.GET)
 	public String addUser(RedirectAttributes attr,
 							@ModelAttribute("passwordError")String passwordError,
-							Model model, HttpServletRequest request) {	
-		attr.addFlashAttribute("addUser", "addUser");
-		model.addAttribute("userForm", new User());
-		attr.addFlashAttribute("passwordError", passwordError);
+							Model model, HttpServletRequest request) {
+		if(request.getRequestURI().contains("addUser")) {
+			attr.addFlashAttribute("addUser", "addUser");
+			model.addAttribute("userForm", new User());
+			attr.addFlashAttribute("passwordError", passwordError);
+		}		
 		if(request.getRequestURI().contains("addNewClient")) {
 			model.addAttribute("addNewClient", "addNewClient");
 			return "redirect:/siteManagement?addNewClient=true";

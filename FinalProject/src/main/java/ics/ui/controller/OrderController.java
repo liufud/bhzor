@@ -256,8 +256,10 @@ public class OrderController {
 			model.addAttribute("confirmedOrder", confirmedOrder);
 			model.addAttribute("newShippingAddress", confirmedOrder.getBillingInfo());
 		}		
-		if(!showCheckout.isEmpty()) {			
+		if(!showCheckout.isEmpty() && null != userService.findUserByName(user)) {			
 			User userWhoPlaceOrder = userService.findUserByName(user);
+			System.out.println("checking user");
+			System.out.println(userWhoPlaceOrder.getFirstName() + "--------------------");
 			List<User> vendorCustomers = userWhoPlaceOrder.getCustomer();
 //			System.out.println("customer is " + vendorCustomers.get(0).getFirstName() + " " + vendorCustomers.get(0).getLastName());
 //			List<String> customerNames = new ArrayList<String>();
@@ -988,7 +990,6 @@ public class OrderController {
 		 User user = userService.findUserByName(userDetails.getUsername());
 		 
 		 String saleType = request.getParameter("saleType");
-		 
 		 if(!validateSelectBox(saleType) && user.getRoleName().equals("Administrador")) {
 			 System.out.println("Check select type of sale");
 			 model.addAttribute("unselectedBoxError", "Falto en escojer una opcion. Porfavor selecciona una opcion!");
