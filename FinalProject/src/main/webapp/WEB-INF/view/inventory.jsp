@@ -165,8 +165,8 @@
                      </div> -->						    
                      </li>		
                      </sec:authorize> --%>
-                  <li role="tablist">
-                     <a href="orders?selectOrderType=true" aria-controls="home" role="tab" data-toggle="tab">Pedidos</a>
+                  <li role="tablist" class="active">
+                     <a href="orders?selectOrderType=true">Pedidos</a>
                      <!-- <div class="dropdown show">
                         <a class="nav-link dropdown-toggle" href="orders" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           Orders
@@ -182,7 +182,7 @@
                   <li role="tablist" class="active">
                      <!-- <a class="nav-link" href="inventory">Inventory</a> -->
                      <!--                                    <div class="dropdown show">-->
-                     <a href="inventory?orderStatus=openOrder" aria-controls="home" role="tab" data-toggle="tab">
+                     <a href="inventory?orderStatus=openOrder">
                      Inventario
                      </a>								
                      <!-- <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -194,7 +194,7 @@
                      <!--                                     </div>	-->
                   </li>
                   <li role="tablist">
-                     <a class="nav-link" href="siteManagement" aria-controls="home" role="tab" data-toggle="tab">Administración de la Pagina</a>
+                     <a class="nav-link" href="siteManagement">Administración de la Pagina</a>
                      <!-- <div class="dropdown show">
                         <a class="nav-link dropdown-toggle" href="inventory" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           Site Management
@@ -822,6 +822,7 @@
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
       <!-- Include all compiled plugins (below), or include individual files as needed -->
       <!-- Latest compiled and minified JavaScript -->
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" 
+      integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
    </body>
 </html>

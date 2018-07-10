@@ -165,7 +165,7 @@
                      </li>							
                      </sec:authorize> --%>
                   <li role="tablist">
-                     <a href="orders?selectOrderType=true" aria-controls="home" role="tab" data-toggle="tab">Pedidos</a>
+                     <a href="orders?selectOrderType=true">Pedidos</a>
                      <!-- <div class="dropdown show">
                         <a class="nav-link dropdown-toggle" href="orders" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                           Orders
@@ -180,7 +180,7 @@
                   </li>
                   <sec:authorize access="hasAuthority('Administrador')">
                      <li role="tablist">
-                        <a href="inventory?orderStatus=openOrder" aria-controls="home" role="tab" data-toggle="tab">Inventario</a>
+                        <a href="inventory?orderStatus=openOrder">Inventario</a>
                         <!-- <div class="dropdown show">
                            <a class="nav-link dropdown-toggle" href="inventory" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
                              inventory
@@ -193,10 +193,10 @@
                            </div> -->	
                      </li>
                   </sec:authorize>
-                  <li role="tablist" class="active">
+                  <li role="tablist">
                      <!-- <a class="nav-link" href="siteManagement">Site Management</a> -->
                      <!--							    <div class="dropdown show">-->
-                     <a href="inventory" aria-controls="home" role="tab" data-toggle="tab">
+                     <a href="inventory">
                      Administración de la Pagina
                      </a>								
                      <!-- <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
@@ -1004,7 +1004,8 @@
       <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
       <!-- Include all compiled plugins (below), or include individual files as needed -->
       <!-- Latest compiled and minified JavaScript -->
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" 
+      integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
       <script>
          $("SELECT.roleList_select").change(function(){
          	if($(this).val() == "Cliente"){

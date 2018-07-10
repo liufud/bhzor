@@ -53,11 +53,11 @@
          border: 1px solid #007bff;
          border-bottom-color: transparent;
          }
-         .thumbnail {
-         border-top: none;
-         border-radius: 0px 0px 4px 4px;
-         border-color: #007bff;
-         }
+        .thumbnail {
+            /* border-top: none; */
+            border-radius: 4px;
+            border-color: #007bff;
+        }
          .txt-bhzor {
          color: #4d5c93;
          }
@@ -130,14 +130,14 @@
          </div>
          <div class="row">
             <div class="col-xs-12">
-               <ul class="nav nav-tabs" role="tablist">
+<!--               <ul class="nav nav-tabs" role="tablist">
                   <sec:authorize access="hasAuthority('Administrador')">
-                     <!--  <li class="nav-item">
+                       <li class="nav-item">
                         <a class="nav-link" href="dashboard">Panel de Control</a>
                         </li>					  				
                         <li class="nav-item">
                         <a class="nav-link" href="sales">Ventas</a>
-                        </li> -->
+                        </li> 
                   </sec:authorize>
                   <li role="presentation" class="active">
                      <a href="orders?selectOrderType=true" aria-controls="home" role="tab" data-toggle="tab">Pedidos</a>
@@ -150,12 +150,12 @@
                   <li role="presentation">
                      <a class="nav-link" href="siteManagement">Administración de la Pagina</a>
                   </li>
-               </ul>
-            </div>
-         </div>
-         <main role="main">
-            <div class="row">
-               <div class="col-xs-12">
+               </ul>-->
+<!--            </div>
+         </div>-->
+            <main role="main">
+    <!--            <div class="row">
+                   <div class="col-xs-12">-->
                   <div class="thumbnail">
                      <img src="img/BH-ZOR_logo.png" alt="BH-ZOR" title="BH-ZOR">
                      <div class="caption">
@@ -189,15 +189,15 @@
                         </p>
                      </div>
                   </div>
-               </div>
-            </div>
-         </main>
+            </main>
+          </div>
+        </div>
       </div>
       <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
-      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>
+<!--      <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.12.4/jquery.min.js"></script>-->
       <!-- Include all compiled plugins (below), or include individual files as needed -->
       <!-- Latest compiled and minified JavaScript -->
-      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+<!--      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
       <script>
          var i = 0;
          var txt = 'Nanotecnología liposomado de excelencia';
@@ -212,4 +212,4 @@
          }
       </script>
    </body>
-</html>
+</html>-->
