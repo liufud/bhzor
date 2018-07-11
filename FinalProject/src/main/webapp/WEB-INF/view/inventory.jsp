@@ -145,7 +145,7 @@
          </div>
          <div class="row">
             <div class="col-xs-12">
-               <ul class="nav nav-tabs" role="tablist">
+               <ul class="nav nav-tabs">
                   <%-- <sec:authorize access="hasAuthority('Manager')">
                      <li class="nav-item">
                      <a class="nav-link" href="dashboard">Panel de Control</a>
@@ -165,7 +165,7 @@
                      </div> -->						    
                      </li>		
                      </sec:authorize> --%>
-                  <li role="tablist" class="active">
+                  <li role="presentation">
                      <a href="orders?selectOrderType=true">Pedidos</a>
                      <!-- <div class="dropdown show">
                         <a class="nav-link dropdown-toggle" href="orders" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -179,7 +179,7 @@
                         </div>
                         </div> -->
                   </li>
-                  <li role="tablist" class="active">
+                  <li role="presentation" class="active">
                      <!-- <a class="nav-link" href="inventory">Inventory</a> -->
                      <!--                                    <div class="dropdown show">-->
                      <a href="inventory?orderStatus=openOrder">
@@ -193,7 +193,7 @@
                         </div> -->
                      <!--                                     </div>	-->
                   </li>
-                  <li role="tablist">
+                  <li role="presentation">
                      <a class="nav-link" href="siteManagement">Administración de la Pagina</a>
                      <!-- <div class="dropdown show">
                         <a class="nav-link dropdown-toggle" href="inventory" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">

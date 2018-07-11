@@ -144,7 +144,7 @@
                <div class="col5"><h1>Welcome</h1></div>
                </sec:authorize> --%>
             <div class="col-xs-12">
-               <ul class="nav nav-tabs" role="tablist">
+               <ul class="nav nav-tabs">
                   <%-- <sec:authorize access="hasAuthority('Manager')">
                      <li class="nav-item">
                        <a class="nav-link" href="dashboard">Panel de Control</a>
@@ -164,7 +164,7 @@
                        </div>	 -->					    
                      </li>							
                      </sec:authorize> --%>
-                  <li role="tablist">
+                  <li role="presentation">
                      <a href="orders?selectOrderType=true">Pedidos</a>
                      <!-- <div class="dropdown show">
                         <a class="nav-link dropdown-toggle" href="orders" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -179,7 +179,7 @@
                         </div> -->
                   </li>
                   <sec:authorize access="hasAuthority('Administrador')">
-                     <li role="tablist">
+                     <li role="presentation">
                         <a href="inventory?orderStatus=openOrder">Inventario</a>
                         <!-- <div class="dropdown show">
                            <a class="nav-link dropdown-toggle" href="inventory" role="button" id="dropdownMenuLink" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
@@ -193,12 +193,10 @@
                            </div> -->	
                      </li>
                   </sec:authorize>
-                  <li role="tablist">
+                  <li role="presentation" class="active">
                      <!-- <a class="nav-link" href="siteManagement">Site Management</a> -->
                      <!--							    <div class="dropdown show">-->
-                     <a href="inventory">
-                     Administración de la Pagina
-                     </a>								
+                     <a href="siteManagement">Administración de la Pagina</a>								
                      <!-- <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                         <a class="dropdown-item" href="allUsers">All Users</a>
                         <a class="dropdown-item" href="addUser">Add User</a>

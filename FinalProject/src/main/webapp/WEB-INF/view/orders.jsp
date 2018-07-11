@@ -142,7 +142,7 @@
          </div>
          <div class="row">
             <div class="col-xs-12">
-               <ul class="nav nav-tabs" role="tablist">
+               <ul class="nav nav-tabs">
                   <%-- <sec:authorize access="hasAuthority('Manager')">
                      <li class="nav-item">
                        <a class="nav-link" href="dashboard">Panel de Control</a>
@@ -162,11 +162,11 @@
                        </div> -->						    
                      </li>							
                      </sec:authorize> --%>
-                  <li role="presentation">
+                  <li role="presentation" class="active">
                      <!-- <a class="nav-link active" href="orders">Orders</a> -->
                      <!--                                            <div class="dropdown show">-->
 <!--                     <a href="orders?selectOrderType=true" aria-controls="orders" role="tab" data-toggle="tab">Pedidos</a>-->
-                     <a href="orders?selectOrderType=true" aria-controls="home" role="tab" data-toggle="tab">Pedidos</a>
+                     <a href="orders?selectOrderType=true">Pedidos</a>
                      <!-- <div class="dropdown-menu" aria-labelledby="dropdownMenuLink">
                         <a class="dropdown-item" href="#">Search Order</a>
                         <a class="dropdown-item" href="listProducts">Shopping</a>
