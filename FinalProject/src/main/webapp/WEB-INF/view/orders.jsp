@@ -20,8 +20,10 @@
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
       <!-- Optional theme -->
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+      
+      <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
       <style>
-         paymentOptions {display:none;}
+         #paymentOptions {display:none;}
          #vendorSale {display:none;}
          #distributorSale {display:none;}
          #customerSale {display:none;}
@@ -714,7 +716,7 @@
                                        data-parent="#accordion"
                                        href="#collapseOne"
                                        class="btn btn-success"
-                                       onclick="$(this).fadeOut(); $('#payInfo').fadeIn();">Revisa tu Pedido»</a>
+                                       >Revisa tu Pedido»</a>
                                  </div>
                                  <br/>
                               </div>
@@ -784,7 +786,7 @@
                                        </c:if>
                                     </div>
                                  </div>
-                                 <sec:authorize access="hasAuthority('Vendedor')">
+                                 <sec:authorize access="hasAuthority('Vendedor') or hasAuthority('Administrador')">
                                     <div class="input-group mb-3">
                                        <div class="input-group-prepend">
                                           <label class="input-group-text" for="customers">Selecciona un Cliente para este Vendedor</label>
@@ -1130,7 +1132,7 @@
                                  </div>
                                  </c:if> --%>
                         <sec:authorize access="hasAuthority('Administrador')">
-                           <div class="panel panel-default">
+                           <!-- <div class="panel panel-default">
                               <div class="panel-heading">
                                  <h4 class="panel-title">
                                     <div style="text-align: center;"><a data-toggle="collapse"
@@ -1142,7 +1144,7 @@
                                     </div>
                                  </h4>
                               </div>
-                           </div>
+                           </div> -->
                         </sec:authorize>
                         <div class="panel panel-default">
                            <div class="panel-heading">
