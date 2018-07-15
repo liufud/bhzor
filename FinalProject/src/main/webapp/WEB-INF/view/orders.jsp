@@ -786,7 +786,7 @@
                                        </c:if>
                                     </div>
                                  </div>
-                                 <sec:authorize access="hasAuthority('Vendedor') or hasAuthority('Administrador')">
+                                 <sec:authorize access="hasAuthority('Vendedor')">
                                     <div class="input-group mb-3">
                                        <div class="input-group-prepend">
                                           <label class="input-group-text" for="customers">Selecciona un Cliente para este Vendedor</label>
@@ -798,6 +798,8 @@
                                           </select>
                                        </div>
                                     </div>
+                                 </sec:authorize> 
+                                 <sec:authorize access="hasAuthority('Vendedor') or hasAuthority('Administrador')">
                                     <div class="input-group mb-3">
                                        <div class="input-group-prepend"> 
                                           <a href="addNewClient">Agregar nuevo cliente</a>
