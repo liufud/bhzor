@@ -239,7 +239,7 @@
                <!-- Received Rp Order Form -->				
                <c:if test="${not empty rpOrderReceivedForm}">
                   <br/>
-                  <form:form name="receivedOrderForm" modelAttribute="receivedRpOrder" action="receivedRpOrder" method="post" class="form-control">
+                  <form:form name="receivedOrderForm" modelAttribute="receivedRpOrder" action="receivedRpOrder" method="post" class="">
                      <h2 class="form-signin-heading"># de Pedido ${rpOrderReceivedForm}</h2>
                      <div class="form-group row">
                         <label for="productName" class="col-sm-3 col-form-label">Producto</label>

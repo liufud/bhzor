@@ -268,7 +268,7 @@
                   </sec:authorize>
                   <c:if test="${not empty shippedOrderForm}">
                      <br/>
-                     <form:form name="shippedOrderForm" modelAttribute="shippedOrder" action="shippedOrder" method="post" class="form-control">
+                     <form:form name="shippedOrderForm" modelAttribute="shippedOrder" action="shippedOrder" method="post" class="">
                         <div class="row">
                            <div class="col"></div>
                            <div class="col-10">
