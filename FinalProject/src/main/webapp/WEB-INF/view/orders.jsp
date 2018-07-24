@@ -392,21 +392,15 @@
                   </c:if>
                   <c:if test="${not empty viewUnpaidOrders}">
                      <c:if test="${not empty markAsPaid}">
-                        <form name="markAsPaidForm" action="${markAsPaid}/orderPaid" method="post" class="form-control">
+                        <form name="markAsPaidForm" action="${markAsPaid}/orderPaid" method="post">
                            <label class="input-group-text" for="inputGroupSelect01">Que metodo de pago fue utlizado para este pedido</label>
-                           <select class="custom-select" id="inputGroupSelect01" name="paymentMethod">
-                              <option selected>Choose...</option>
+                           <select class="form-control" id="inputGroupSelect01" name="paymentMethod">
+                              <option selected disabled>Choose...</option>
                               <option value="Cash">Cash</option>
                               <option value="Direct Deposit">Deposito Directo</option>
                               <option value="Credit">Credito</option>
                            </select>
-                           <div class="row">
-                              <div class="col"></div>
-                              <div class="col">
-                                 <button class="btn btn-lg btn-primary text-center" type="submit">Confirmar</button>
-                              </div>
-                              <div class="col"></div>
-                           </div>
+                           <button class="btn btn-lg btn-primary text-center" type="submit">Confirmar</button>
                         </form>
                      </c:if>
                      <h4>
