@@ -98,7 +98,7 @@ public class InventoryController {
 		if(!receivedRpOrders.isEmpty()) {
 			List<ReceivedRpOrder> receivedRpOrdersList = (List<ReceivedRpOrder>) receivedRpOrderService.listOrders();
 			model.addAttribute("receivedRpOrders", receivedRpOrdersList);
-			for(OrderedProd o:receivedRpOrdersList.get(0).getReceivedProds()) System.out.println("received product name " + o.getProductName());
+//			for(OrderedProd o:receivedRpOrdersList.get(0).getReceivedProds()) System.out.println("received product name " + o.getProductName());
 		}		
 		if(!rpOrderReceivedForm.isEmpty()) {
 			model.addAttribute("receivedRpOrder", new ReceivedRpOrder());
@@ -111,6 +111,7 @@ public class InventoryController {
 //		System.out.println("Replenishment order info: " + replenishmentOrderConfirmed);
 		if(!orderSummary.isEmpty()) {
 			Cart cart = (Cart) session.getAttribute("cart");
+//			System.out.println("Cart total is: " + cart.getCartTotal());
 			model.addAttribute("cart", cart);
 			List<OrderedProd> products = cart.getProducts();
 			model.addAttribute("products", products);
@@ -689,6 +690,7 @@ public class InventoryController {
 		}
 		model.addAttribute("orderSummary", "orderSummary");
 		model.addAttribute("shoppingCartQtyError", shoppingCartQtyError);
+		session.setAttribute("cart", cart);
 		return "redirect:/inventory";
 	}
 	

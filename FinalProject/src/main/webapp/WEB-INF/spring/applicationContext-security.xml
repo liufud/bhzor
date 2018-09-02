@@ -92,7 +92,7 @@
 	    </authentication-provider> -->
 	    <security:authentication-provider>
             <user-service>
-                <user name="Jacky" password="pass" authorities="Administrador"/>
+                <user name="Isaac" password="123456" authorities="Administrador"/>
                 <user name="test" password="test" authorities="Cliente"/>
             </user-service>
         </security:authentication-provider>

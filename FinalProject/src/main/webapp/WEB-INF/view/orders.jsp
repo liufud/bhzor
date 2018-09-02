@@ -23,10 +23,10 @@
       <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" 
             integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
       <style>
-/*         #paymentOptions {display:none;}
+         #paymentOptions {display:none;}
          #vendorSale {display:none;}
          #distributorSale {display:none;}
-         #customerSale {display:none;}*/
+         #customerSale {display:none;}
          /* www.anupammondal.in */
          .container {
          margin-top: 25px;
@@ -335,7 +335,7 @@
                         </div>
                      </div>
                   </c:if>
-                  <c:if test="${not empty viewUnshippedOrders}">
+                  <c:if test="${not empty viewUnshippedOrders or !empty markAsShipped}">
                      <c:if test="${!empty shippedQtyError}">
                         <p class="text-warning">Error: ${shippedQtyError}</p>
                      </c:if>
@@ -837,7 +837,7 @@
                                        </div>
                                        <div class="input-group mb-3">
                                           <div class="input-group-prepend">
-                                             <p>Si el cliente no aparece en la lista, porfavor informe al equipo de BH-ZOR con su nuevo cliente para que lo agreguen al sistema. Si no tiene cliente, deje en blanco</p>
+                                             <p>Si el cliente no aparece en la lista, porfavor informe al equipo de BH-ZOR con su nuevo cliente para que lo agreguen al sistema.</p>
                                           </div>
                                        </div>
                                     </div>

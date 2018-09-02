@@ -16,6 +16,7 @@ import javax.security.auth.message.callback.PrivateKeyCallback.Request;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 import javax.validation.Valid;
+import javax.websocket.Session;
 
 import org.apache.http.HttpRequest;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -208,6 +209,7 @@ public class OrderController {
 							@ModelAttribute("orderPaid")String orderPaid,
 							@ModelAttribute("unselectedBoxError")String unselectedBoxError,
 							@ModelAttribute("markAsPaid")String markAsPaid,
+							@ModelAttribute("markAsShipped")String markAsShipped,
 							@ModelAttribute("qtyOnShelfExceeded")String qtyOnShelfExceeded) {
 		model.addAttribute("showList", showList);
 		model.addAttribute("addToCartSucceeded", addToCartSucceeded);
@@ -246,8 +248,16 @@ public class OrderController {
 			for(OrderedProd o:orderedProds) orderedProdNames.add(o.getProductName());
 			model.addAttribute("orderedProdNames", orderedProdNames);
 			model.addAttribute("orderID", orderID);
-			List<Order> unshipped = (List<Order>) orderService.listOrders("shipmentStatus","Pending Shipment");
-			model.addAttribute("viewUnshippedOrders", unshipped);
+			@SuppressWarnings("unchecked")
+			List<Order> unshipped = (List<Order>) session.getAttribute("viewUnshippedOrders");
+//			System.out.println("Unshipped order id " + unshipped.get(0).getOrderID());
+			if(!unshipped.isEmpty()) {
+				model.addAttribute("viewUnshippedOrders", unshipped);
+			}else {
+				unshipped = (List<Order>) orderService.listOrders("shipmentStatus","Envio Pendiente");
+				model.addAttribute("viewUnshippedOrders", unshipped);
+			}
+			
 		}
 		if(!orderConfirmation.isEmpty()) {
 			model.addAttribute("orderConfirmation",orderConfirmation);			
@@ -353,12 +363,16 @@ public class OrderController {
 	public String shippedOrderForm(@PathVariable String orderID, Model model,
 									@ModelAttribute("shippedQtyError")String shippedQtyError,
 									@ModelAttribute("shipFromAnotherLot")String shipFromAnotherLot,
-									@ModelAttribute("qtyOnShelfExceeded")String qtyOnShelfExceeded) {
+									@ModelAttribute("qtyOnShelfExceeded")String qtyOnShelfExceeded,
+									HttpSession session) {
 		model.addAttribute("shippedOrderForm", orderID);
 		model.addAttribute("orderID", orderID);
 		model.addAttribute("shippedQtyError", shippedQtyError);
 //		model.addAttribute("shipFromAnotherLot", shipFromAnotherLot);
 		model.addAttribute("qtyOnShelfExceeded", qtyOnShelfExceeded);
+		List<Order> unshipped = (List<Order>) orderService.listOrders("shipmentStatus","Envio Pendiente");
+		System.out.println("Unshipped order id " + unshipped.get(0).getOrderID());
+		session.setAttribute("viewUnshippedOrders", unshipped);
 		return "redirect:/orders?selectOrderType=true";
 	}
 	
@@ -815,7 +829,8 @@ public class OrderController {
 		Double cartTotal = (double) 0;
 		List<OrderedProd> p = cart.getProducts();
 		for(OrderedProd a:p) {
-//			cartTotal+=a.getPrice()*a.getOrderedProductQty();
+			cartTotal+=a.getCost()*1.16 * a.getOrderedProductQty();
+			System.out.println("product " + a.getProductName() + " qty " + a.getOrderedProductQty() + " has total " + cartTotal);
 		}
 		return cartTotal;
 	 }
@@ -884,6 +899,7 @@ public class OrderController {
 		 products.remove(index);
 		 cart.setProducts(products);
 		 Double cartTotal = cartTotal(products, cart);
+//		 System.out.println("Cart total is: " + cart.getCartTotal());
 		 cart.setCartTotal(cartTotal);
 		 session.setAttribute("cart", cart);
 		 Cart newCart = cartService.get(cart.getCartId());			

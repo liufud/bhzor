@@ -762,10 +762,10 @@
                               <td>${user.roleName}</td>
                               <td>${user.vendor.firstName} ${user.vendor.lastName}</td>
                               <td>
-                                 <a href="user/${user.userId}/updateRole">Update Role</a><br/>
+                                 <a href="user/${user.userId}/updateRole">Cambiar Tipo de Usuario</a><br/>
                                  <sec:authorize access="hasAuthority('Administrador')">
-                                    <a href="user/${user.userId}/updateInfo">Update Info</a><br/>							
-                                    <a href="user/${user.userId}/deleteUser">Delete</a>
+                                    <a href="user/${user.userId}/updateInfo">Actualizar Informacion</a><br/>							
+                                    <a href="user/${user.userId}/deleteUser">Eliminar</a>
                                  </sec:authorize>
                               </td>
                            </tr>

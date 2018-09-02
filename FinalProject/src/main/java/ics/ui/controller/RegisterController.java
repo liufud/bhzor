@@ -51,9 +51,9 @@ public class RegisterController {
 		}
 		try {
 			Role role = new Role();
-			role.setRoleName("Customer");
+			role.setRoleName("Cliente");
 			user.getRoles().add(role);
-			user.setRoleName("Customer");
+			user.setRoleName("Cliente");
 			user.setEnabled(true);
 			role.setUser(user);
 			userService.addUser(user);

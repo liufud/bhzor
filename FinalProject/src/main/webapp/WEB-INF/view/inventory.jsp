@@ -217,22 +217,22 @@
                      <a href="editProduct" role="button">Ver inventario</a>
                   </p>
                   <p>
-                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
-                     <a href="addProduct" role="button">Agregar Productos</a>
+                     <span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>						
+                     <a href="orderReplenishment" role="button">Pedidos de Reposición de Producto</a>
                   </p>
                   <p>
                      <span class="glyphicon glyphicon-folder-open" aria-hidden="true"></span>
-                     <a href="inventory?orderStatus=openOrder" role="button">Abrir Pedidos de Reposicion</a>
+                     <a href="inventory?orderStatus=openOrder" role="button">Abrir Pedidos de Reposición</a>
                   </p>
                   <p>
                      <span class="glyphicon glyphicon-record" aria-hidden="true"></span>
                      <a href="viewReceivedOrders" role="button">Ver Pedidos Recibidos</a>
                   </p>
-                  <!-- <a class="btn btn-sm btn-secondary" href="inventory?orderStatus=closedOrder" role="button">Cerrado Pedidos de Reposicion</a> -->
                   <p>
-                     <span class="glyphicon glyphicon-transfer" aria-hidden="true"></span>						
-                     <a href="orderReplenishment" role="button">Pedidos de Reposición de Producto</a>
-                  </p>
+                     <span class="glyphicon glyphicon-plus" aria-hidden="true"></span>
+                     <a href="addProduct" role="button">Agregar Productos</a>
+                  </p>                  
+                  <!-- <a class="btn btn-sm btn-secondary" href="inventory?orderStatus=closedOrder" role="button">Cerrado Pedidos de Reposicion</a> -->                  
                </div>
             </div>
             <div class="col-sm-8 col-xs-12">
