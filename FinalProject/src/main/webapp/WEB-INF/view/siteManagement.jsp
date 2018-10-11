@@ -588,19 +588,15 @@
                      </spring:bind>
                      <spring:bind path="state">
                         <div class="form-group">
-                           <form:select id="id_state" class="form-control" path = "state">
+                           <form:input type="text" path="state" class="form-control" placeholder="Estado"
+                              autofocus="true"></form:input>
+                           <form:errors path="state"></form:errors>
+                           <%-- <form:select id="id_state" class="form-control" path = "state">
                               <form:option value = "NONE" label = "Estado"/>
                               <form:options items = "${stateName}" />
-                           </form:select>
+                           </form:select> --%>
                         </div>
                      </spring:bind>
-                     <%-- <spring:bind path="state">
-                        <div class="form-group">
-                            <form:input type="text" path="state" class="form-control" placeholder="Estado"
-                                        autofocus="true"></form:input>
-                            <form:errors path="state"></form:errors>
-                        </div>
-                        </spring:bind> --%>
                      <spring:bind path="zip">
                         <div class="form-group">
                            <form:input type="text" path="zip" class="form-control" placeholder="Código Postal"
